@@ -1,1 +1,59 @@
+@font-face {
+  font-family: "Uni Sans";
+  src: url("/fonts/uni-sans.woff2") format("woff2");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
 @import "tailwindcss";
+
+@theme {
+  --color-primary: #111111;
+  --color-secondary: #fafafa;
+
+  /* Configuration des polices */
+  --font-uni-sans: "Uni Sans", sans-serif;
+  --font-ibm-plex-mono: "IBM Plex Mono", monospace;
+}
+
+@layer base {
+  body {
+    @apply bg-secondary text-primary font-ibm-plex-mono tracking-[2px];
+  }
+  h1 {
+    font-size: clamp(2rem, 4.19vw + 0.97rem, 6rem);
+    letter-spacing: 7px;
+    line-height: normal;
+    @apply font-uni-sans uppercase;
+  }
+  h2 {
+    font-size: clamp(1.5rem, 3.67vw + 0.6rem, 5rem);
+    letter-spacing: 7px;
+    line-height: normal;
+    @apply font-uni-sans uppercase;
+  }
+
+  h3 {
+    font-size: clamp(1rem, 1.31vw + 0.68rem, 2.25rem);
+    @apply uppercase;
+  }
+
+  p {
+    font-size: clamp(0.81rem, 0.46vw + 0.7rem, 1.25rem);
+  }
+
+  .btn {
+    font-size: clamp(0.75rem, 0.66vw + 0.59rem, 1.38rem);
+    @apply uppercase text-secondary bg-primary py-3 px-6 rounded-4xl duration-300 transition border border-transparent;
+  }
+
+  .btn:hover {
+    @apply bg-secondary text-primary border border-primary;
+  }
+
+  nav,
+  .header-text {
+    font-size: 1.56rem;
+  }
+}

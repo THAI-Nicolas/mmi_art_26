@@ -1,14 +1,57 @@
 ---
 import '../styles/global.css';
+
+const {
+  title = 'MMI Art 26 - Exposition Artistique MMI 2026',
+  description = 'Site officiel de la promotion MMI Art 26 de l\'Université Marie et Louis Pasteur à Montbéliard. Découvrez les projets artistiques et multimédias réalisés par nos étudiants en Métiers du Multimédia et de l\'Internet.',
+  keywords = 'MMI, Art, 26, Multimédia, Exposition Artistique, Université Marie et Louis Pasteur, MMI Monbéliard, Métiers, du, Multimédia, de, l\'Internet',
+  ogImage = '/og-image.png',
+  ogType = 'website',
+  canonical,
+} = Astro.props;
+
+const canonicalURL = canonical || new URL(Astro.url.pathname, Astro.site).href
 ---
 <!doctype html>
 <html lang="fr">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
+
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
-		<title>MMI Art 26</title>
+
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+
+		<meta name="color-scheme" content="light dark" />
+		<meta name="referrer" content="strict-origin-when-cross-origin" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		
+		<!-- SEO Meta Tags -->
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<meta name="keywords" content={keywords} />
+		<meta name="author" content="Nicolas THAI - Andréa MESTRE - Elois HENRY" />
+		<meta name="robots" content="index, follow" />
+		<link rel="canonical" href={canonicalURL} />
+		<link rel="sitemap" href="/sitemap-index.xml" />
+
+		<!-- Open Graph (Facebook, LinkedIn) -->
+		<meta property="og:type" content={ogType} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:image" content={new URL(ogImage, Astro.site).href} />
+		<meta property="og:url" content={canonicalURL} /> 
+		<meta property="og:locale" content="fr_FR" />
+		<meta property="og:site_name" content="MMI Art 26 - Exposition Artistique MMI 2026" />
+
+		<!-- Twitter Cards -->
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={new URL(ogImage, Astro.site).href} /> 
 	</head>
 	<body>
 		<slot />
