@@ -8,4 +8,5 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
   site: "https://mmi-art-26.fr",
+  output: "server",
 });

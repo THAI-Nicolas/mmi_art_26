@@ -1,8 +1,72 @@
+---
+import { GetArtistById, getImageUrl } from "../lib/backend"
+import { pb } from "../lib/pb"
+const id = "5kli99frxg9udlh"
+const artiste = await GetArtistById(id)
+const urlAvatar = getImageUrl(artiste, artiste.avatar)
+console.log(artiste)
+---
+
 <div>
 	<h1>Titre 1</h1>
 	<h2>Titre 2</h2>
 	<h3>Titre 3</h3>
 
 	<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Asperiores, labore. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eveniet veritatis sed, reprehenderit facere modi aliquam.</p>
-	<a class="btn" href="">Les artistes</a>
+	<div class="mt-16">
+		<a class="btn" href="">Les artistes</a>
+	</div>
+	
+
+	<nav class="mt-16">
+		<ul>
+			<li><a href="">Accueil</a></li>
+			<li><a href="">Artistes</a></li>
+			<li><a href="">Contact</a></li>
+		</ul>
+	</nav>
+
+	<section class="mt-20">
+		<h3>Test des fonctionnalitées Backend</h3>
+		<div class=" flex items-center">
+			<img class="w-20" src={urlAvatar} alt="">
+			<p>{artiste.name}</p>
+		</div>
+		<p>{artiste.bio}</p>
+		<h3>Les oeuvres de {artiste.name}</h3>
+		
+		<ul>
+			{
+					artiste.expand.oeuvres_id.map((oeuvre) => {
+					
+					const imageRecord = oeuvre.expand.oeuvres_images[0]; 
+
+					
+					const urlOeuvre = getImageUrl(imageRecord, imageRecord.images);
+
+					return (
+					<div>
+						<h3>{oeuvre.title}</h3>
+						<img class="w-32" src={urlOeuvre} alt={oeuvre.title} />
+					</div>
+					);
+				})
+			}
+		</ul>
+
+		<h3>Les réseaux sociaux de {artiste.name}</h3>
+		<ul>
+			{
+				artiste.expand.canaux_id.map((canal) => {
+					return (<div>
+						<p>Plateforme : {canal.platform}</p>
+						<a href=`${canal.link}` target="_blank" >Lien : {canal.link}</a>
+					</div>)
+				})
+			}
+		</ul>
+
+
+		
+	</section>
 </div>

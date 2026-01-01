@@ -55,5 +55,7 @@
   nav,
   .header-text {
     font-size: 1.56rem;
+    font-weight: 250;
+    @apply uppercase;
   }
 }
