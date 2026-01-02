@@ -28,7 +28,7 @@ export async function GetArtistById(id) {
       error.status,
       error.message
     );
-    return [];
+    return null;
   }
 }
 

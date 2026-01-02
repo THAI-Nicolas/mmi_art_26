@@ -20,6 +20,8 @@
 @layer base {
   body {
     @apply bg-secondary text-primary font-ibm-plex-mono tracking-[2px];
+    width: 100%;
+    overflow-x: hidden;
   }
   h1 {
     font-size: clamp(2rem, 4.19vw + 0.97rem, 6rem);
@@ -54,8 +56,8 @@
 
   nav,
   .header-text {
-    font-size: 1.56rem;
+    font-size: clamp(0.9rem, 1.6vw, 1.8rem);
     font-weight: 250;
-    @apply uppercase;
+    @apply uppercase text-center;
   }
 }

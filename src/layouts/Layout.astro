@@ -1,6 +1,8 @@
 ---
+import { ViewTransitions } from 'astro:transitions';
 import '../styles/global.css';
-
+//import TransitionPage from '../components/gsap/TransitionPage.astro';
+import BackgroundGrid from '../components/ui/BackgroundGrid.astro';
 const {
   title = 'MMI Art 26 - Exposition Artistique MMI 2026',
   description = 'Site officiel de la promotion MMI Art 26 de l\'Université Marie et Louis Pasteur à Montbéliard. Découvrez les projets artistiques et multimédias réalisés par nos étudiants en Métiers du Multimédia et de l\'Internet.',
@@ -15,6 +17,7 @@ const canonicalURL = canonical || new URL(Astro.url.pathname, Astro.site).href
 <!doctype html>
 <html lang="fr">
 	<head>
+		<ViewTransitions />
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
 
@@ -54,6 +57,7 @@ const canonicalURL = canonical || new URL(Astro.url.pathname, Astro.site).href
 		<meta name="twitter:image" content={new URL(ogImage, Astro.site).href} /> 
 	</head>
 	<body>
+		<BackgroundGrid />
 		<slot />
 	</body>
 </html>

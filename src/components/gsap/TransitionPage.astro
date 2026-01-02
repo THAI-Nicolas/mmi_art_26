@@ -1,0 +1,284 @@
+---
+/**
+ * Composant TransitionPage - Transition liquid morphism entre les pages
+ * 
+ * Utilise GSAP pour animer des SVG paths en forme de vagues liquides
+ * Déclenche automatiquement lors de la navigation Astro
+ */
+---
+
+<svg class="shape-overlays" viewBox="0 0 100 100" preserveAspectRatio="none">
+  <path class="shape-overlays__path" fill="#111111"></path>
+  <path class="shape-overlays__path" fill="#111111"></path>
+</svg>
+
+<style>
+  .shape-overlays {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    /* Optimisations GPU */
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+  
+  .shape-overlays__path {
+    /* Optimisation pour les modifications fréquentes */
+    will-change: d;
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+
+  // Flag global pour éviter les répétitions
+  let globalIsTransitioning = false;
+
+  function initTransition() {
+    const overlay = document.querySelector(".shape-overlays");
+    const paths = document.querySelectorAll(".shape-overlays__path");
+
+    if (!overlay || !paths.length) return;
+
+    const numPoints = 10;
+    const numPaths = paths.length;
+    const delayPointsMax = 0.3;
+    const delayPerPath = 0.15;
+    const introDuration = 0.8; // Animation intro accélérée
+    const transitionDuration = 0.5; // Transition entre pages plus rapide
+    let allPoints: number[][] = [];
+
+    // Délais fixes pour une animation reproductible
+    const fixedDelays = [0, 0.05, 0.15, 0.08, 0.22, 0.12, 0.18, 0.03, 0.25, 0.1];
+
+    // Initialiser les points pour chaque path
+    for (let i = 0; i < numPaths; i++) {
+      let points: number[] = [];
+      allPoints.push(points);
+      for (let j = 0; j < numPoints; j++) {
+        points.push(100); // Position de départ (bas, invisible)
+      }
+    }
+
+    // Fonction de rendu des paths
+    function render() {
+      for (let i = 0; i < numPaths; i++) {
+        let path = paths[i] as SVGPathElement;
+        let points = allPoints[i];
+
+        let d = `M 0 0 V ${points[0]} C`; // Commencer en haut et descendre jusqu'au premier point
+
+        for (let j = 0; j < numPoints - 1; j++) {
+          let p = ((j + 1) / (numPoints - 1)) * 100;
+          let cp = p - (1 / (numPoints - 1) * 100) / 2;
+          d += ` ${cp} ${points[j]} ${cp} ${points[j + 1]} ${p} ${points[j + 1]}`;
+        }
+
+        d += ` V 100 H 0`; // Descendre en bas et revenir à gauche
+        path.setAttribute("d", d);
+      }
+    }
+
+    // Animation d'intro : révéler le contenu (liquide monte du bas)
+    function playIntroAnimation() {
+      const tl = gsap.timeline({
+        onUpdate: render,
+        defaults: {
+          ease: "power2.inOut",
+          duration: introDuration
+        }
+      });
+
+      // Commencer avec les points à 0 (liquide couvre l'écran)
+      for (let i = 0; i < numPaths; i++) {
+        for (let j = 0; j < numPoints; j++) {
+          allPoints[i][j] = 0;
+        }
+      }
+      render();
+
+      // Animer vers 100 (liquide descend/monte pour révéler)
+      for (let i = 0; i < numPaths; i++) {
+        let points = allPoints[i];
+        let pathDelay = delayPerPath * i;
+
+        for (let j = 0; j < numPoints; j++) {
+          let delay = fixedDelays[j];
+          tl.to(
+            points,
+            {
+              [j]: 100
+            },
+            delay + pathDelay
+          );
+        }
+      }
+    }
+
+    // Animation de transition : couvrir puis révéler
+    async function playPageTransition() {
+      // Étape 1 : Couvrir l'écran (liquide descend de 100 à 0)
+      await new Promise<void>((resolve) => {
+        const tl = gsap.timeline({
+          onUpdate: render,
+          onComplete: resolve,
+          defaults: {
+            ease: "power2.inOut",
+            duration: transitionDuration
+          }
+        });
+
+        // Initialiser les délais aléatoires
+        for (let i = 0; i < numPoints; i++) {
+          pointsDelay[i] = Math.random() * delayPointsMax;
+        }
+
+        // Les points partent de 100 (invisible) vers 0 (couvre l'écran)
+        for (let i = 0; i < numPaths; i++) {
+          let points = allPoints[i];
+          let pathDelay = delayPerPath * (numPaths - i - 1); // Ordre inversé
+
+          for (let j = 0; j < numPoints; j++) {
+            let delay = pointsDelay[j];
+            tl.to(
+              points,
+              {
+                [j]: 0
+              },
+              delay + pathDelay
+            );
+          }
+        }
+      });
+
+      // Étape 2 : Pause de 1s avec écran noir complet
+      await new Promise<void>((resolve) => setTimeout(resolve, 1000));
+
+      // Étape 3 : Révéler le nouveau contenu (liquide monte de 0 à 100)
+      await new Promise<void>((resolve) => {
+        const tl = gsap.timeline({
+          onUpdate: render,
+          onComplete: resolve,
+          defaults: {
+            ease: "power2.inOut",
+            duration: transitionDuration
+          }
+        });
+
+        // Initialiser les délais aléatoires
+        for (let i = 0; i < numPoints; i++) {
+          pointsDelay[i] = Math.random() * delayPointsMax;
+        }
+
+        // Les points vont de 0 (couvre) vers 100 (révèle)
+        for (let i = 0; i < numPaths; i++) {
+          let points = allPoints[i];
+          let pathDelay = delayPerPath * i;
+
+          for (let j = 0; j < numPoints; j++) {
+            let delay = pointsDelay[j];
+            tl.to(
+              points,
+              {
+                [j]: 100
+              },
+              delay + pathDelay
+            );
+          }
+        }
+      });
+    }
+
+    // Toujours jouer l'animation d'intro au chargement
+    playIntroAnimation();
+
+    // Animation de transition avant la navigation
+    async function playTransitionOut() {
+      // Liquide descend pour couvrir l'écran
+      await new Promise<void>((resolve) => {
+        const tl = gsap.timeline({
+          onUpdate: render,
+          onComplete: resolve,
+          defaults: {
+            ease: "power2.inOut",
+            duration: transitionDuration
+          }
+        });
+
+        for (let i = 0; i < numPaths; i++) {
+          let points = allPoints[i];
+          let pathDelay = delayPerPath * (numPaths - i - 1);
+
+          for (let j = 0; j < numPoints; j++) {
+            let delay = fixedDelays[j];
+            tl.to(
+              points,
+              {
+                [j]: 0
+              },
+              delay + pathDelay
+            );
+          }
+        }
+      });
+
+      // Pause réduite avec écran noir
+      await new Promise<void>((resolve) => setTimeout(resolve, 500));
+    }
+
+    // Exposer les fonctions globalement pour les réutiliser
+    (window as any).__transitionFunctions = {
+      playTransitionOut
+    };
+  }
+
+  // Initialisation
+  initTransition();
+
+  // Intercepter la navigation AVANT qu'elle commence (event listener global, une seule fois)
+  document.addEventListener("astro:before-preparation", async (event) => {
+    // Empêcher les appels multiples avec flag global
+    if (globalIsTransitioning) {
+      return;
+    }
+    
+    globalIsTransitioning = true;
+
+    const originalLoader = (event as any).loader;
+    
+    // Remplacer le loader pour jouer notre animation d'abord
+    (event as any).loader = async () => {
+      // Récupérer les éléments actuels
+      const overlay = document.querySelector(".shape-overlays");
+      const paths = document.querySelectorAll(".shape-overlays__path");
+      
+      if (overlay && paths.length) {
+        // Appeler initTransition pour avoir accès aux fonctions
+        const { playTransitionOut } = (window as any).__transitionFunctions || {};
+        if (playTransitionOut) {
+          await playTransitionOut();
+        }
+      }
+      
+      // Continuer avec le chargement normal de la page
+      return await originalLoader();
+    };
+  });
+
+  document.addEventListener("astro:after-swap", () => {
+    globalIsTransitioning = false;
+    // Réinitialiser et relancer l'intro
+    initTransition();
+  });
+
+  // Réinitialiser sur chaque chargement de page (View Transitions)
+  document.addEventListener("astro:page-load", () => {
+    globalIsTransitioning = false;
+    initTransition();
+  });
+</script>

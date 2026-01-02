@@ -1,0 +1,288 @@
+---
+/**
+ * Composant BlobTransition - Forme liquide avec déformation point par point
+ *
+ * Utilisé pour les transitions de fond (blanc vers noir) avec interaction souris.
+ * Système de déformation basé sur le parsing de path SVG et animation idle continue.
+ *
+ * @prop svgPath - Le path SVG de la forme (requis)
+ * @prop viewBox - Le viewBox du SVG (requis) ex: "0 0 1917 2608"
+ * @prop color - Couleur de remplissage (défaut: "#000000")
+ * @prop deformStrength - Intensité de la déformation au survol (0-1, défaut: 0.3)
+ * @prop className - Classes CSS additionnelles
+ */
+interface Props {
+  svgPath: string;
+  viewBox: string;
+  color?: string;
+  deformStrength?: number;
+  className?: string;
+}
+
+const {
+  svgPath,
+  viewBox,
+  color = "#000000",
+  deformStrength = 0.3,
+  className = "",
+} = Astro.props;
+
+const uniqueId = `blob-transition-${Math.random().toString(36).substr(2, 9)}`;
+---
+
+<div
+  class={`blob-transition-container ${className}`}
+  data-blob-id={uniqueId}
+  data-path={svgPath}
+  data-deform={deformStrength}
+>
+  <svg
+    class="blob-transition-svg"
+    viewBox={viewBox}
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      id={`blob-transition-path-${uniqueId}`}
+      class="blob-transition-shape"
+      d={svgPath}
+      fill={color}></path>
+  </svg>
+</div>
+
+<style>
+  .blob-transition-container {
+    position: relative;
+    display: inline-block;
+    overflow: visible;
+  }
+
+  .blob-transition-svg {
+    display: block;
+  }
+
+  .blob-transition-shape {
+    transition: all 0.1s ease-out;
+  }
+
+  /* Styles pour le mode plein écran */
+  :global(.fond-tache-container) {
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    background: white;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+  }
+
+  :global(.fond-tache-container) .blob-transition-container {
+    width: 100%;
+  }
+
+  :global(.fond-tache-container) .blob-transition-svg {
+    width: 100% !important;
+    height: auto !important;
+  }
+
+  /* Mobile : allonger verticalement sans toucher aux extrémités */
+  @media (max-width: 768px) {
+    :global(.fond-tache-container) {
+      min-height: 120vh; /* Plus de hauteur sur mobile */
+    }
+
+    :global(.fond-tache-container) .blob-transition-svg {
+      transform: scaleY(1.3); /* Étirement vertical de 30% */
+      transform-origin: center center;
+    }
+  }
+
+  @media (max-width: 480px) {
+    :global(.fond-tache-container) .blob-transition-svg {
+      transform: scaleY(1.5); /* Étirement vertical de 50% sur petit mobile */
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener("astro:page-load", () => {
+    initializeBlobTransitions();
+  });
+
+  function initializeBlobTransitions() {
+    const containers = document.querySelectorAll(".blob-transition-container");
+
+    containers.forEach((container) => {
+      const blobId = container.getAttribute("data-blob-id");
+      const svg = container.querySelector(
+        ".blob-transition-svg"
+      ) as SVGSVGElement;
+      const blobPath = svg?.querySelector(
+        `#blob-transition-path-${blobId}`
+      ) as SVGPathElement;
+      const originalPath = container.getAttribute("data-path");
+      const deformStrength = parseFloat(
+        container.getAttribute("data-deform") || "0.3"
+      );
+
+      if (!svg || !blobPath || !originalPath) return;
+
+      // Parser le path SVG pour extraire tous les points
+      const points = parseSVGPath(originalPath);
+      let mouseX = 0;
+      let mouseY = 0;
+      let isHovering = false;
+      let time = 0;
+
+      // Boucle d'animation continue
+      function animate() {
+        time += 0.025;
+
+        // Déformation de chaque point
+        const deformedPoints = points.map((point, index) => {
+          let newX = point.x;
+          let newY = point.y;
+
+          // Animation idle : oscillation ondulante continue
+          // Zone de sécurité pour éviter de casser la forme en haut
+          const isTopArea = point.y < 150;
+
+          if (!isTopArea) {
+            const wavePhase = time + index * 0.25;
+            const amplitude = 8;
+
+            const offsetX = Math.sin(wavePhase) * amplitude;
+            const offsetY = Math.cos(wavePhase * 0.7) * amplitude * 0.5;
+
+            newX = point.x + offsetX;
+            newY = point.y + offsetY;
+          }
+
+          // Répulsion souris : s'ajoute à l'animation idle
+          if (isHovering) {
+            const dx = mouseX - newX;
+            const dy = mouseY - newY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            const maxDistance = 150;
+
+            if (distance < maxDistance) {
+              const force = (1 - distance / maxDistance) * deformStrength * 50;
+              const angle = Math.atan2(dy, dx);
+
+              // Repousse depuis la position déjà animée
+              newX = newX - Math.cos(angle) * force;
+              newY = newY - Math.sin(angle) * force;
+            }
+          }
+
+          return {
+            ...point,
+            x: newX,
+            y: newY,
+          };
+        });
+
+        // Reconstruire le path SVG avec les points déformés
+        const newPath = buildSVGPath(deformedPoints);
+        blobPath.setAttribute("d", newPath);
+
+        requestAnimationFrame(animate);
+      }
+
+      // Suivi de la souris avec conversion vers les coordonnées du viewBox
+      svg.addEventListener("mousemove", (e) => {
+        const rect = svg.getBoundingClientRect();
+        const viewBoxParts = svg.getAttribute("viewBox")?.split(" ") || [
+          "0",
+          "0",
+          "1917",
+          "2608",
+        ];
+        const viewBoxWidth = parseFloat(viewBoxParts[2]);
+        const viewBoxHeight = parseFloat(viewBoxParts[3]);
+
+        mouseX = ((e.clientX - rect.left) / rect.width) * viewBoxWidth;
+        mouseY = ((e.clientY - rect.top) / rect.height) * viewBoxHeight;
+      });
+
+      svg.addEventListener("mouseenter", () => {
+        isHovering = true;
+      });
+
+      svg.addEventListener("mouseleave", () => {
+        isHovering = false;
+      });
+
+      // Démarrer l'animation
+      animate();
+    });
+  }
+
+  /**
+   * Parse un path SVG et extrait tous les points de contrôle
+   * Supporte les commandes M (move), L (line), C (cubic bezier)
+   */
+  function parseSVGPath(pathString: string) {
+    const points: Array<{ x: number; y: number; type: string }> = [];
+    const commands = pathString.match(/[MLHVCSQTAZ][^MLHVCSQTAZ]*/gi) || [];
+
+    commands.forEach((cmd) => {
+      const type = cmd[0];
+      const coords = cmd
+        .slice(1)
+        .trim()
+        .split(/[\s,]+/)
+        .map(Number)
+        .filter((n) => !isNaN(n));
+
+      if (type === "M" || type === "L") {
+        for (let i = 0; i < coords.length; i += 2) {
+          points.push({ x: coords[i], y: coords[i + 1], type });
+        }
+      } else if (type === "C") {
+        // Courbe de Bézier cubique : 3 paires de coordonnées (2 points de contrôle + 1 point final)
+        for (let i = 0; i < coords.length; i += 6) {
+          points.push({ x: coords[i], y: coords[i + 1], type: "C1" });
+          points.push({ x: coords[i + 2], y: coords[i + 3], type: "C2" });
+          points.push({ x: coords[i + 4], y: coords[i + 5], type });
+        }
+      }
+    });
+
+    return points;
+  }
+
+  /**
+   * Reconstruit un path SVG depuis un tableau de points déformés
+   * Recrée les commandes M, L, C en fonction du type de chaque point
+   */
+  function buildSVGPath(points: Array<{ x: number; y: number; type: string }>) {
+    let path = "";
+    let i = 0;
+
+    while (i < points.length) {
+      const point = points[i];
+
+      if (point.type === "M") {
+        path += `M${point.x},${point.y} `;
+        i++;
+      } else if (point.type === "C") {
+        const c1 = points[i - 2];
+        const c2 = points[i - 1];
+        path += `C${c1.x},${c1.y} ${c2.x},${c2.y} ${point.x},${point.y} `;
+        i++;
+      } else if (point.type === "L") {
+        path += `L${point.x},${point.y} `;
+        i++;
+      } else {
+        // Points de contrôle C1, C2 : sauter, ils seront traités avec le point C
+        i++;
+      }
+    }
+
+    return path + "Z";
+  }
+
+  // Initialisation immédiate si le DOM est déjà chargé
+  if (document.readyState !== "loading") {
+    initializeBlobTransitions();
+  }
+</script>
