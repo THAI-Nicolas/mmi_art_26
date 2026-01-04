@@ -56,8 +56,11 @@
 
   nav,
   .header-text {
-    font-size: clamp(0.9rem, 1.6vw, 1.8rem);
+    font-size: clamp(1.2rem, 1.6vw, 1.8rem);
     font-weight: 250;
     @apply uppercase text-center;
+  }
+  section {
+    @apply px-12;
   }
 }

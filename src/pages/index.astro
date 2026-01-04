@@ -1,9 +1,181 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
+import AnimatedH1 from '../components/ui/AnimatedH1.astro';
+import BlobTransition from '../components/ui/BlobTransition.astro';
+import BlobDynamic from '../components/ui/BlobDynamic.astro';
+import TimeBeforeDate from '../components/ui/TimeBeforeDate.astro';
+import Oeuvre1 from '../assets/images/oeuvre_1.webp';
+import Oeuvre2 from '../assets/images/oeuvre_2.webp';
+import Oeuvre3 from '../assets/images/oeuvre_3.webp';
+import ImgExpo from '../assets/images/image_expo.webp';
+
+import { getImageUrl, getOneOeuvre, GetArtistById } from '../lib/backend';
+import CardArtiste from '../components/ui/CardArtiste.astro';
+
+const projectIds = [
+	"sohru0uj4e8ppd7",
+	"d3rflpfwzcxjequ",
+	"j6p699ckzjviy4p",
+	"das19nwl3b355if",
+	"z6c9nik0bfsnxzu"
+];
+
+const artistsIds = [
+	"z6aisibgwcazrt9",
+	"gu9fv2orsdfckbl",
+	"mslywn9hbt3usnn",
+]
+
+const oeuvres = await Promise.all(
+	projectIds.map(id => getOneOeuvre(id))
+);
+
+const artistes = await Promise.all(
+	artistsIds.map(id => GetArtistById(id))
+);
+
 ---
 
 <Layout>
 	<Header/>
+	<main class="overflow-x-hidden">
+		<section class="my-12">
+			<header>
+				<AnimatedH1 variant="accueil" text="Bienvenue à MMI ART 26" />
+				<p class="mt-12">
+					Découvrez l'exposition d'art des étudiants en MMI de 2026, un parcours créatif qui met en avant les projets numériques, installations interactives et expériences visuelles conçus en formation Multimédia et Internet. 
+				</p>
+			</header>
+			<div>
+				<div class="flex justify-end mt-6 ">
+					<a href="/exposition" class="btn">L'exposition</a>
+				</div>
+
+				<div class="flex flex-col mt-12 gap-2">
+					<p class="font-uni-sans text-lg text-left">L'exposition est <br> dans</p>
+					<TimeBeforeDate />
+				</div>
+			</div>
+			<span class="absolute top-30 right-12 font-semibold text-xs">22 au 24 janvier 2026</span>
+		</section>
+
+		{/* Vague du haut */}
+		<BlobTransition position="top" color="#111111" deformStrength={0.3} />
+
+		{/* Section avec fond noir */}
+		<section class="bg-[#111] py-20 relative">
+			<header>
+				<h2 class="text-secondary text-center px-6">MMI Art 26</h2>
+			</header>
+			<div class="flex flex-col justify-center mx-auto px-6">
+				<div class="w-50 mt-10 mx-auto">
+					<BlobDynamic imageUrl={ImgExpo.src} variant={1} />
+				</div>
+			<div class="flex flex-col mt-8 gap-6 text-secondary space-y-3">
+				<p class="text-[0.6rem]">
+					Le programme est pensé pour les futurs étudiants MMI, les visiteurs de la JPO et toutes les personnes curieuses de découvrir concrètement les projets réalisés en formation multimédia. 
+				</p>
+					<p class="text-[0.6rem]">
+						Entre visites guidées, démonstrations de projets et temps d'échanges avec les étudiants, chaque créneau vous permet d'explorer l'univers MMI et de poser toutes vos questions sur la formation.
+					</p>
+				</div>
+				<ul class="flex mt-12 flex-col gap-8 items-center">
+					<li class="w-36"><BlobDynamic color='#FAFAFA' variant={1} /></li>
+					<li class="w-36"><BlobDynamic color='#FAFAFA' variant={1} /></li>
+					<li class="w-36"><BlobDynamic color='#FAFAFA' variant={1} /></li>
+				</ul>
+			</div>
+		</section>
+
+		{/* Vague du bas */}
+		<BlobTransition position="bottom" color="#111111" deformStrength={0.3} />
+
+		<section class="mt-20 -mx-6 px-0">
+			<header class="ml-18">
+				<h2>Les oeuvres</h2>
+			</header>
+			<div class="overflow-x-auto scrollbar-hide" id="carousel-container">
+				<ul class="py-12 flex justify-start items-center gap-0 pl-6">
+					{oeuvres.map((oeuvre, index) => (
+						<li class="w-96 md:w-70 lg:w-87.5 xl:w-120 shrink-0" data-index={index}>
+							<img 
+								src={getImageUrl(oeuvre.expand.oeuvres_images[0], oeuvre.expand.oeuvres_images[0].images)} 
+								alt={oeuvre.title}
+								class="w-96 h-96 md:w-70 md:h-70 lg:w-87.5 lg:h-87.5 xl:w-120 xl:h-120 object-cover"
+							/>
+							<h3 class="bg-primary text-secondary text-center border-secondary border-x text-sm!">{oeuvre.expand.artiste_id.name}</h3>
+						</li>
+					))}
+				</ul>
+			</div>
+			<div class="flex justify-center">
+				<a href="/exposition" class="btn">Galerie</a>
+			</div>
+		</section>
+
+		<section class="mt-20">
+			<header>
+				<h2 class="">Les Artistes</h2>
+			</header>
+			<ul class="flex flex-col items-center mt-12 gap-12 md:flex-row md:flex-wrap md:justify-center">
+				{artistes.map((artiste) => (
+					<li>
+						<CardArtiste artiste={artiste} urlAvatar={getImageUrl(artiste, artiste.avatar)} />
+					</li>
+				))}
+			</ul>
+			<div>
+				<div class="flex justify-center my-12">
+					<a href="/artistes" class="btn">Les artistes</a>
+				</div>
+			</div>
+		</section>
+
+		<section class="mt-20">
+			<header>
+				<h2 class="">Impossible de venir ?</h2>
+			</header>
+			<div>
+				<div class="space-y-4 mt-8">
+					<p>Impossible de venir à l'exposition MMI sur place ? Découvrez la visite virtuelle 360° de l'expo et explorez les projets d'art numérique des étudiants comme si vous étiez dans la salle.</p>
+					<p>Plongez au cœur des œuvres interactives, installations et créations des étudiants MMI grâce à une expérience de visite en ligne accessible depuis n'importe où.</p>
+				</div>
+				<div class="w-70 mt-10 mx-auto">
+					<BlobDynamic imageUrl={ImgExpo.src} variant={2} />
+				</div>
+			</div>
+			<div class="flex justify-center my-12">
+				<a href="/visite-virtuelle" class="btn">Visite 360°</a>
+			</div>
+		</section>
+
+	</main>
 </Layout>
 
+<style>
+	.scrollbar-hide::-webkit-scrollbar {
+		display: none;
+	}
+	.scrollbar-hide {
+		-ms-overflow-style: none;
+		scrollbar-width: none;
+	}
+</style>
+
+<script>
+	document.addEventListener('astro:page-load', () => {
+		const container = document.getElementById('carousel-container');
+		const thirdItem = container?.querySelector('[data-index="2"]') as HTMLElement;
+		
+		if (container && thirdItem) {
+			const containerWidth = container.offsetWidth;
+			const itemLeft = thirdItem.offsetLeft;
+			const itemWidth = thirdItem.offsetWidth;
+			
+			// Centrer le 3ème élément
+			const scrollPosition = itemLeft - (containerWidth / 2) + (itemWidth / 2);
+			container.scrollLeft = scrollPosition;
+		}
+	});
+</script>

@@ -1,132 +1,180 @@
 ---
 /**
- * Composant BlobTransition - Forme liquide avec déformation point par point
+ * Composant BlobTransition - Vagues liquides animées (Cap et Footer)
  *
- * Utilisé pour les transitions de fond (blanc vers noir) avec interaction souris.
- * Système de déformation basé sur le parsing de path SVG et animation idle continue.
+ * Système sandwich : affiche une vague animée en haut et/ou en bas
+ * Le contenu entre les deux est géré par une section avec fond noir
  *
- * @prop svgPath - Le path SVG de la forme (requis)
- * @prop viewBox - Le viewBox du SVG (requis) ex: "0 0 1917 2608"
- * @prop color - Couleur de remplissage (défaut: "#000000")
+ * @prop position - Position de la vague : "top", "bottom", ou "both" (défaut: "top")
+ * @prop color - Couleur de remplissage (défaut: "#111111")
  * @prop deformStrength - Intensité de la déformation au survol (0-1, défaut: 0.3)
  * @prop className - Classes CSS additionnelles
  */
 interface Props {
-  svgPath: string;
-  viewBox: string;
+  position?: "top" | "bottom" | "both";
   color?: string;
   deformStrength?: number;
   className?: string;
 }
 
 const {
-  svgPath,
-  viewBox,
-  color = "#000000",
+  position = "top",
+  color = "#111111",
   deformStrength = 0.3,
   className = "",
 } = Astro.props;
 
-const uniqueId = `blob-transition-${Math.random().toString(36).substr(2, 9)}`;
+// Paths SVG depuis les fichiers
+const svgPathDesktop = "M-.001 1914.81l959.276-850.31 959.275 712.87V3120H-.001V1914.81z M87.615 405.61C-18.198 398.15 9.01 1875.41-.001 1914.81l959.276-850.31 959.275 712.87c0-4.03 5.51-1497.995 0-1499.353-121.66-29.995-81.61-135.203-224.8-147.291-131.14-11.071-133.48 103.995-264.35 137.89-72.6 18.803-151.7-11.192-181.24-54.171-32.78-47.688 10.01-84.166 19.03-133.413C1272.84 50.142 1237.65 0 1180.07 0c-56.88 0-92.62 39.845-89.12 81.032 3.51 41.188 59.58 94.911 12.02 140.128-12.02 11.424-32.55 47.456-113.154 47.456-108.644 0-82.13-187.584-328.437-187.584-224.298 0-224.801 206.387-294.894 206.387-216.288 0-158.21 126.697-278.87 118.191z";
+const svgPathMobile = "M227.041 0c26.495 0 42.69 23.706 40.089 38.31-4.147 23.282-23.838 40.53-8.755 63.075 13.593 20.319 49.995 34.5 83.402 25.61 23.943-6.371 38.536-18.81 51.223-31.153V198H0V38.64c100.906 5.88 91.277 88.355 139.491 88.355 37.094 0 46.54-17.035 52.07-22.435 21.887-21.378-3.918-46.777-5.531-66.25C184.419 18.838 200.868 0 227.041 0z";
+
+const viewBoxDesktop = "0 0 1921 769";
+const viewBoxMobile = "0 0 393 198";
+
+const uniqueIdTop = `liquid-wave-top-${Math.random().toString(36).substr(2, 9)}`;
+const uniqueIdBottom = `liquid-wave-bottom-${Math.random().toString(36).substr(2, 9)}`;
+
+const showTop = position === "top" || position === "both";
+const showBottom = position === "bottom" || position === "both";
 ---
 
-<div
-  class={`blob-transition-container ${className}`}
-  data-blob-id={uniqueId}
-  data-path={svgPath}
-  data-deform={deformStrength}
->
-  <svg
-    class="blob-transition-svg"
-    viewBox={viewBox}
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      id={`blob-transition-path-${uniqueId}`}
-      class="blob-transition-shape"
-      d={svgPath}
-      fill={color}></path>
-  </svg>
-</div>
+{/* Vague du haut */}
+{showTop && (
+  <>
+    {/* Desktop */}
+    <div
+      class={`liquid-wave-container relative w-full overflow-visible -mb-32 md:-mb-40 lg:-mb-48 xl:-mb-64 2xl:-mb-88 hidden md:block ${className}`}
+      data-wave-id={uniqueIdTop}
+      data-path={svgPathDesktop}
+      data-deform={deformStrength}
+    >
+      <svg
+        class="block w-full h-auto scale-105"
+        viewBox={viewBoxDesktop}
+        preserveAspectRatio="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          id={`liquid-wave-path-${uniqueIdTop}`}
+          class="transition-all duration-100 ease-out"
+          d={svgPathDesktop}
+          fill={color}
+        />
+      </svg>
+    </div>
 
-<style>
-  .blob-transition-container {
-    position: relative;
-    display: inline-block;
-    overflow: visible;
-  }
+    {/* Mobile */}
+    <div
+      class={`liquid-wave-container liquid-wave-mobile relative w-full overflow-visible -mb-18 block md:hidden ${className}`}
+      data-wave-id={`${uniqueIdTop}-mobile`}
+      data-path={svgPathMobile}
+      data-deform={deformStrength}
+    >
+      <svg
+        class="block w-full h-auto scale-105"
+        viewBox={viewBoxMobile}
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          id={`liquid-wave-path-${uniqueIdTop}-mobile`}
+          class="transition-all duration-100 ease-out"
+          d={svgPathMobile}
+          fill={color}
+        />
+      </svg>
+    </div>
+  </>
+)}
 
-  .blob-transition-svg {
-    display: block;
-  }
+{/* Vague du bas (même SVG mais rotaté) */}
+{showBottom && (
+  <>
+    {/* Desktop */}
+    <div
+      class={`liquid-wave-container relative w-full overflow-visible -mt-32 md:-mt-40 lg:-mt-48 xl:-mt-64 2xl:-mt-88 rotate-180 -z-10 hidden md:block ${className}`}
+      data-wave-id={uniqueIdBottom}
+      data-path={svgPathDesktop}
+      data-deform={deformStrength}
+    >
+      <svg
+        class="block w-full h-auto scale-105"
+        viewBox={viewBoxDesktop}
+        preserveAspectRatio="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          id={`liquid-wave-path-${uniqueIdBottom}`}
+          class="transition-all duration-100 ease-out"
+          d={svgPathDesktop}
+          fill={color}
+        />
+      </svg>
+    </div>
 
-  .blob-transition-shape {
-    transition: all 0.1s ease-out;
-  }
+    {/* Mobile */}
+    <div
+      class={`liquid-wave-container liquid-wave-mobile relative w-full overflow-visible -mt-18 rotate-180 -z-10 block md:hidden ${className}`}
+      data-wave-id={`${uniqueIdBottom}-mobile`}
+      data-path={svgPathMobile}
+      data-deform={deformStrength}
+    >
+      <svg
+        class="block w-full h-auto scale-105"
+        viewBox={viewBoxMobile}
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          id={`liquid-wave-path-${uniqueIdBottom}-mobile`}
+          class="transition-all duration-100 ease-out"
+          d={svgPathMobile}
+          fill={color}
+        />
+      </svg>
+    </div>
+  </>
+)}
 
-  /* Styles pour le mode plein écran */
-  :global(.fond-tache-container) {
-    width: 100vw;
-    margin-left: calc(-50vw + 50%);
-    background: white;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
-
-  :global(.fond-tache-container) .blob-transition-container {
-    width: 100%;
-  }
-
-  :global(.fond-tache-container) .blob-transition-svg {
-    width: 100% !important;
-    height: auto !important;
-  }
-
-  /* Mobile : allonger verticalement sans toucher aux extrémités */
-  @media (max-width: 768px) {
-    :global(.fond-tache-container) {
-      min-height: 120vh; /* Plus de hauteur sur mobile */
-    }
-
-    :global(.fond-tache-container) .blob-transition-svg {
-      transform: scaleY(1.3); /* Étirement vertical de 30% */
-      transform-origin: center center;
-    }
-  }
-
-  @media (max-width: 480px) {
-    :global(.fond-tache-container) .blob-transition-svg {
-      transform: scaleY(1.5); /* Étirement vertical de 50% sur petit mobile */
-    }
-  }
-</style>
 
 <script>
   document.addEventListener("astro:page-load", () => {
-    initializeBlobTransitions();
+    initializeLiquidWaves();
   });
 
-  function initializeBlobTransitions() {
-    const containers = document.querySelectorAll(".blob-transition-container");
+  function initializeLiquidWaves() {
+    const containers = document.querySelectorAll(".liquid-wave-container");
 
     containers.forEach((container) => {
-      const blobId = container.getAttribute("data-blob-id");
-      const svg = container.querySelector(
-        ".blob-transition-svg"
-      ) as SVGSVGElement;
-      const blobPath = svg?.querySelector(
-        `#blob-transition-path-${blobId}`
+      const waveId = container.getAttribute("data-wave-id");
+      const svg = container.querySelector("svg") as SVGSVGElement;
+      const wavePath = svg?.querySelector(
+        `#liquid-wave-path-${waveId}`
       ) as SVGPathElement;
       const originalPath = container.getAttribute("data-path");
       const deformStrength = parseFloat(
         container.getAttribute("data-deform") || "0.3"
       );
 
-      if (!svg || !blobPath || !originalPath) return;
+      if (!svg || !wavePath || !originalPath) return;
+
+      // Désactiver l'interaction souris pour mobile (mais garder l'animation idle)
+      const isMobile = container.classList.contains('liquid-wave-mobile');
 
       // Parser le path SVG pour extraire tous les points
       const points = parseSVGPath(originalPath);
+      
+      // Récupérer les dimensions du viewBox pour adapter l'amplitude
+      const viewBoxParts = svg.getAttribute("viewBox")?.split(" ") || ["0", "0", "1917", "2608"];
+      const viewBoxWidth = parseFloat(viewBoxParts[2]);
+      const viewBoxHeight = parseFloat(viewBoxParts[3]);
+      
+      // Adapter l'amplitude selon la taille du viewBox
+      const baseAmplitude = 8;
+      const amplitudeScale = viewBoxWidth / 1917;
+      const amplitude = baseAmplitude * amplitudeScale;
+      
+      // Adapter la zone de sécurité
+      const safeZoneThreshold = 150 * amplitudeScale;
+      
       let mouseX = 0;
       let mouseY = 0;
       let isHovering = false;
@@ -143,11 +191,10 @@ const uniqueId = `blob-transition-${Math.random().toString(36).substr(2, 9)}`;
 
           // Animation idle : oscillation ondulante continue
           // Zone de sécurité pour éviter de casser la forme en haut
-          const isTopArea = point.y < 150;
+          const isTopArea = point.y < safeZoneThreshold;
 
           if (!isTopArea) {
             const wavePhase = time + index * 0.25;
-            const amplitude = 8;
 
             const offsetX = Math.sin(wavePhase) * amplitude;
             const offsetY = Math.cos(wavePhase * 0.7) * amplitude * 0.5;
@@ -182,34 +229,28 @@ const uniqueId = `blob-transition-${Math.random().toString(36).substr(2, 9)}`;
 
         // Reconstruire le path SVG avec les points déformés
         const newPath = buildSVGPath(deformedPoints);
-        blobPath.setAttribute("d", newPath);
+        wavePath.setAttribute("d", newPath);
 
         requestAnimationFrame(animate);
       }
 
-      // Suivi de la souris avec conversion vers les coordonnées du viewBox
-      svg.addEventListener("mousemove", (e) => {
-        const rect = svg.getBoundingClientRect();
-        const viewBoxParts = svg.getAttribute("viewBox")?.split(" ") || [
-          "0",
-          "0",
-          "1917",
-          "2608",
-        ];
-        const viewBoxWidth = parseFloat(viewBoxParts[2]);
-        const viewBoxHeight = parseFloat(viewBoxParts[3]);
+      // Suivi de la souris avec conversion vers les coordonnées du viewBox (uniquement desktop)
+      if (!isMobile) {
+        svg.addEventListener("mousemove", (e) => {
+          const rect = svg.getBoundingClientRect();
 
-        mouseX = ((e.clientX - rect.left) / rect.width) * viewBoxWidth;
-        mouseY = ((e.clientY - rect.top) / rect.height) * viewBoxHeight;
-      });
+          mouseX = ((e.clientX - rect.left) / rect.width) * viewBoxWidth;
+          mouseY = ((e.clientY - rect.top) / rect.height) * viewBoxHeight;
+        });
 
-      svg.addEventListener("mouseenter", () => {
-        isHovering = true;
-      });
+        svg.addEventListener("mouseenter", () => {
+          isHovering = true;
+        });
 
-      svg.addEventListener("mouseleave", () => {
-        isHovering = false;
-      });
+        svg.addEventListener("mouseleave", () => {
+          isHovering = false;
+        });
+      }
 
       // Démarrer l'animation
       animate();
@@ -218,31 +259,70 @@ const uniqueId = `blob-transition-${Math.random().toString(36).substr(2, 9)}`;
 
   /**
    * Parse un path SVG et extrait tous les points de contrôle
-   * Supporte les commandes M (move), L (line), C (cubic bezier)
+   * Supporte les commandes M (move), L (line), C (cubic bezier), V (vertical line), c (cubic bezier relative)
    */
   function parseSVGPath(pathString: string) {
     const points: Array<{ x: number; y: number; type: string }> = [];
-    const commands = pathString.match(/[MLHVCSQTAZ][^MLHVCSQTAZ]*/gi) || [];
+    const commands = pathString.match(/[MLHVCSQTAZmlhvcsqtaz][^MLHVCSQTAZmlhvcsqtaz]*/gi) || [];
+    
+    let currentX = 0;
+    let currentY = 0;
 
     commands.forEach((cmd) => {
       const type = cmd[0];
-      const coords = cmd
-        .slice(1)
-        .trim()
-        .split(/[\s,]+/)
+      // Extraire les nombres (y compris négatifs) avec une regex améliorée
+      const coords = (cmd.slice(1).match(/-?[0-9]*\.?[0-9]+/g) || [])
         .map(Number)
         .filter((n) => !isNaN(n));
 
-      if (type === "M" || type === "L") {
+      if (type === "M") {
+        // Move absolu
+        currentX = coords[0];
+        currentY = coords[1];
+        points.push({ x: currentX, y: currentY, type: "M" });
+      } else if (type === "L") {
+        // Line absolu
         for (let i = 0; i < coords.length; i += 2) {
-          points.push({ x: coords[i], y: coords[i + 1], type });
+          currentX = coords[i];
+          currentY = coords[i + 1];
+          points.push({ x: currentX, y: currentY, type: "L" });
+        }
+      } else if (type === "l") {
+        // Line relatif
+        for (let i = 0; i < coords.length; i += 2) {
+          currentX = currentX + coords[i];
+          currentY = currentY + coords[i + 1];
+          points.push({ x: currentX, y: currentY, type: "L" });
+        }
+      } else if (type === "V") {
+        // Ligne verticale absolue
+        for (let i = 0; i < coords.length; i++) {
+          currentY = coords[i];
+          points.push({ x: currentX, y: currentY, type: "L" });
+        }
+      } else if (type === "H") {
+        // Ligne horizontale absolue
+        for (let i = 0; i < coords.length; i++) {
+          currentX = coords[i];
+          points.push({ x: currentX, y: currentY, type: "L" });
         }
       } else if (type === "C") {
-        // Courbe de Bézier cubique : 3 paires de coordonnées (2 points de contrôle + 1 point final)
+        // Courbe de Bézier cubique absolue
         for (let i = 0; i < coords.length; i += 6) {
           points.push({ x: coords[i], y: coords[i + 1], type: "C1" });
           points.push({ x: coords[i + 2], y: coords[i + 3], type: "C2" });
-          points.push({ x: coords[i + 4], y: coords[i + 5], type });
+          currentX = coords[i + 4];
+          currentY = coords[i + 5];
+          points.push({ x: currentX, y: currentY, type: "C" });
+        }
+      } else if (type === "c") {
+        // Courbe de Bézier cubique relative
+        for (let i = 0; i < coords.length; i += 6) {
+          points.push({ x: currentX + coords[i], y: currentY + coords[i + 1], type: "C1" });
+          points.push({ x: currentX + coords[i + 2], y: currentY + coords[i + 3], type: "C2" });
+          currentX = currentX + coords[i + 4];
+          currentY = currentY + coords[i + 5];
+          points.push({ x: currentX, y: currentY, type: "C" });
         }
       }
     });
@@ -261,13 +341,22 @@ const uniqueId = `blob-transition-${Math.random().toString(36).substr(2, 9)}`;
     while (i < points.length) {
       const point = points[i];
 
+      // Vérifier que les coordonnées sont valides
+      if (isNaN(point.x) || isNaN(point.y)) {
+        i++;
+        continue;
+      }
+
       if (point.type === "M") {
         path += `M${point.x},${point.y} `;
         i++;
       } else if (point.type === "C") {
         const c1 = points[i - 2];
         const c2 = points[i - 1];
-        path += `C${c1.x},${c1.y} ${c2.x},${c2.y} ${point.x},${point.y} `;
+        // Vérifier que les points de contrôle sont valides
+        if (c1 && c2 && !isNaN(c1.x) && !isNaN(c1.y) && !isNaN(c2.x) && !isNaN(c2.y)) {
+          path += `C${c1.x},${c1.y} ${c2.x},${c2.y} ${point.x},${point.y} `;
+        }
         i++;
       } else if (point.type === "L") {
         path += `L${point.x},${point.y} `;
@@ -283,6 +372,6 @@ const uniqueId = `blob-transition-${Math.random().toString(36).substr(2, 9)}`;
 
   // Initialisation immédiate si le DOM est déjà chargé
   if (document.readyState !== "loading") {
-    initializeBlobTransitions();
+    initializeLiquidWaves();
   }
 </script>

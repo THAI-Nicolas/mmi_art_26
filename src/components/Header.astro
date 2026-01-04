@@ -54,10 +54,10 @@ import BlobDynamic from "./ui/BlobDynamic.astro";
 <style>
     /* Optimisation GPU pour le menu */
     #menu-overlay {
-        will-change: transform, opacity;
+        will-change: transform;
         transform: translateX(100%);
         opacity: 0;
-        transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+        transition: transform 0.5s ease-in-out, all 0.5s ease-in-out;
     }
     
     /* Menu ouvert : slide in depuis le haut */

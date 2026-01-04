@@ -1,0 +1,77 @@
+---
+/**
+ * Composant TimeBeforeDate - Compte à rebours jusqu'à l'exposition
+ * 
+ * Affiche le temps restant jusqu'au 22 janvier 2026 à 12h00
+ * Mise à jour en temps réel chaque seconde
+ */
+interface Props {
+  className?: string;
+}
+
+const { className = "" } = Astro.props;
+---
+
+<div class={`timer-container ${className}`}>
+    <p class="font-uni-sans text-xl text-right">
+        <span id="days">--</span> J 
+        <span id="hours">--</span> H 
+        <span id="minutes">--</span> M
+    </p>
+</div>
+
+<script>
+    function initTimer() {
+        const targetDate = new Date('2026-01-22T12:00:00+01:00'); // 22 janvier 2026 à 12h (fuseau France)
+        
+        const daysEl = document.getElementById('days');
+        const hoursEl = document.getElementById('hours');
+        const minutesEl = document.getElementById('minutes');
+
+        if (!daysEl || !hoursEl || !minutesEl) return;
+
+        function updateTimer() {
+            const now = new Date();
+            const diff = targetDate.getTime() - now.getTime();
+
+            if (diff <= 0) {
+                // L'exposition est ouverte
+                daysEl.textContent = '0';
+                hoursEl.textContent = '0';
+                minutesEl.textContent = '0';
+                return;
+            }
+
+            // Calcul des jours, heures, minutes
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+            // Mise à jour du DOM
+            daysEl.textContent = String(days);
+            hoursEl.textContent = String(hours);
+            minutesEl.textContent = String(minutes);
+        }
+
+        // Mise à jour immédiate
+        updateTimer();
+
+        // Mise à jour toutes les minutes pour optimiser les performances
+        const interval = setInterval(updateTimer, 60000);
+
+        // Nettoyage lors de la navigation
+        document.addEventListener('astro:before-preparation', () => {
+            clearInterval(interval);
+        }, { once: true });
+    }
+
+    // Initialisation
+    if (document.readyState !== 'loading') {
+        initTimer();
+    } else {
+        document.addEventListener('DOMContentLoaded', initTimer);
+    }
+
+    // Réinitialiser lors des navigations View Transitions
+    document.addEventListener('astro:page-load', initTimer);
+</script>
