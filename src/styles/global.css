@@ -25,13 +25,13 @@
   }
   h1 {
     font-size: clamp(2rem, 4.19vw + 0.97rem, 6rem);
-    letter-spacing: 7px;
+    letter-spacing: 2px;
     line-height: normal;
     @apply font-uni-sans uppercase;
   }
   h2 {
     font-size: clamp(1.5rem, 3.67vw + 0.6rem, 5rem);
-    letter-spacing: 7px;
+    letter-spacing: 2px;
     line-height: normal;
     @apply font-uni-sans uppercase;
   }
@@ -61,6 +61,26 @@
     @apply uppercase text-center;
   }
   section {
-    @apply px-12;
+    font-size: clamp(0.75rem, 0.66vw + 0.59rem, 1.38rem);
+    @apply px-12 pt-20;
+  }
+  .black-section {
+    @apply bg-primary text-secondary py-20 relative;
+  }
+  .text-content {
+    @apply flex flex-col space-y-4 mt-10;
+  }
+  .btn-wrapper {
+    @apply flex justify-center my-8;
+  }
+  .ul-flex {
+    @apply flex flex-col items-center my-12 gap-12 md:flex-row md:flex-wrap md:justify-center;
+  }
+  .btn-white {
+    font-size: clamp(0.75rem, 0.66vw + 0.59rem, 1.38rem);
+    @apply uppercase text-primary bg-secondary py-3 px-6 rounded-4xl duration-300 transition border border-transparent;
+  }
+  .btn-white:hover {
+    @apply bg-primary text-secondary border border-secondary;
   }
 }

@@ -1,0 +1,34 @@
+---
+//imports des composants
+import Layout from '../../layouts/Layout.astro';
+import CardArtisteEtOeuvre from '../../components/ui/CardArtisteEtOeuvre.astro';
+import BlobDynamic from '../../components/ui/BlobDynamic.astro';
+
+//imports des fonctions backend
+import { getAllArtistes } from '../../lib/backend';
+
+//Récupération des artistes
+const artistes = await getAllArtistes();
+
+---
+<Layout>
+    <main class="">
+
+        <section class="py-10">
+            <header>
+                <h1 class="text-center">Artistes</h1>
+            </header>
+            <ul class="ul-flex py-6">
+                {
+                    artistes.map((artiste, index) => (
+                        <li>
+                            <CardArtisteEtOeuvre artiste={artiste} index={(index % 3) + 1} />
+                        </li>
+                        
+                    ))
+                }
+            </ul>
+        </section>
+        
+    </main>
+</Layout>

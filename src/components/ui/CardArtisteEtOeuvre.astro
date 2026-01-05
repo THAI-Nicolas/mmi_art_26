@@ -1,0 +1,38 @@
+---
+import BlobDynamic from '../ui/BlobDynamic.astro';
+import { getImageUrl } from '../../lib/backend';
+
+const { artiste, oeuvre, variant = 1 } = Astro.props;
+
+// Déterminer si c'est un artiste ou une oeuvre
+const isArtiste = !!artiste;
+const isOeuvre = !!oeuvre;
+
+// Pour artiste
+const artisteName = isArtiste ? artiste.name : null;
+const artisteAvatarUrl = isArtiste && artiste.avatar ? getImageUrl(artiste, artiste.avatar) : null;
+const artisteId = isArtiste ? artiste.id : null;
+
+// Pour oeuvre
+const oeuvreTitre = isOeuvre ? oeuvre.title : null;
+const oeuvreImageRecord = isOeuvre && oeuvre.expand?.oeuvres_images?.[0];
+const oeuvreImageUrl = oeuvreImageRecord && oeuvreImageRecord.images?.[0] 
+  ? getImageUrl(oeuvreImageRecord, oeuvreImageRecord.images[0]) 
+  : null;
+const oeuvreArtisteName = isOeuvre ? oeuvre.expand?.artiste_id?.name : null;
+const oeuvreId = isOeuvre ? oeuvre.id : null;
+
+const imageUrl = isArtiste ? artisteAvatarUrl : oeuvreImageUrl;
+const mainTitle = isArtiste ? artisteName : oeuvreTitre;
+const linkHref = isArtiste ? `/artistes/${artisteId}` : `/oeuvres/${oeuvreId}`;
+
+---
+<a href={linkHref} class="w-68 h-68 md:w-76 md:h-76 lg:w-84 lg:h-84 xl:w-90 xl:h-90 bg-secondary flex flex-col items-center gap-4 shadow-md rounded-md hover:scale-102 transition-transform p-4 text-center relative">
+    {isOeuvre && oeuvreArtisteName && (
+        <p class="absolute top-2 right-2 text-xs md:text-sm text-primary font-medium">{oeuvreArtisteName}</p>
+    )}
+    <div class="w-56 mt-2">
+        <BlobDynamic imageUrl={imageUrl} variant={variant} />
+    </div>
+    <h3 class="text-primary">{mainTitle}</h3>
+</a>

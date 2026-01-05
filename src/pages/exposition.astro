@@ -1,0 +1,141 @@
+---
+import Layout from '../layouts/Layout.astro'; 
+import AnimatedH1 from '../components/ui/AnimatedH1.astro';
+import BlobTransition from '../components/ui/BlobTransition.astro';
+import BlobDynamic from '../components/ui/BlobDynamic.astro';
+import TimeBeforeDate from '../components/ui/TimeBeforeDate.astro';
+import { getOneOeuvre, getImageUrl } from '../lib/backend';
+import CardArtisteEtOeuvre from '../components/ui/CardArtisteEtOeuvre.astro';
+import ImgMMI from '../assets/images/image_mmi.webp';
+import ImgPresentoire from '../assets/images/image_presentoire.webp';
+import ImgGroupeOeuvres from '../assets/images/image_groupe_oeuvres.webp';
+import ContactCTA from '../components/ui/ContactCTA.astro';
+
+const IdTeaserOeuvres = [
+     "5kkgpfre68rmglw",
+     "das19nwl3b355if",
+     "d3rflpfwzcxjequ",
+     "h4uuy2z8rz80ipa",
+     "xo6q6bu170vmmow",
+     "yp7iue20o7ipz9s",
+     "qwe0qkhta4ujktw",
+     "z6c9nik0bfsnxzu",
+     "xvdvetb0mnreor8",
+    ];
+
+    const oeuvre = await Promise.all(
+        IdTeaserOeuvres.map((id) => getOneOeuvre(id))
+    )
+---
+<Layout>
+    <main class="overflow-hidden">
+        <section class="">
+			<header class="mt-20">
+				<AnimatedH1 variant="exposition" text="Bienvenue à MMI ART 26" />
+			</header>
+			<div>
+				
+
+				<div class="flex flex-col mt-20 gap-2">
+					<p class="font-uni-sans text-lg text-right mb-6">L'exposition est <br> dans</p>
+					<TimeBeforeDate />
+				</div>
+			</div>
+			<span class="absolute top-30 right-12 my-8 font-bold text-xs ">22 au 24 janvier 2026</span>
+		</section>
+
+        <section class="mb-20">
+            <header>
+                <h2 class="">Teaser</h2>
+            </header>
+            <ul class="ul-flex">
+                {oeuvre.map((oeuvre, index) => ( 
+                    <li>
+                        <CardArtisteEtOeuvre oeuvre={oeuvre} variant={(index % 3 ) + 1} />
+                    </li>
+                ))}
+            </ul>
+        </section>
+
+        <BlobTransition position="top" color="#111111" deformStrength={0.3} />
+
+        <section class="black-section">
+            <header>
+                <h2 class="">L'exposition</h2>
+            </header>
+            <div class="flex flex-col">
+                <div class="text-content">
+                    <p>MMI ART 26 est pensée comme une vitrine des compétences acquises au cours de la formation, mais aussi comme un espace de rencontre entre étudiants, enseignants, lycéens et visiteurs extérieurs. Les œuvres présentées témoignent de la créativité des étudiants, mais aussi de leur capacité à concevoir des projets de bout en bout, de l’idée au prototype final.</p>
+                    <p>Tout au long de l’événement, les visiteurs peuvent découvrir les projets en accès libre, lors de créneaux dédiés aux étudiants MMI puis pendant la Journée Portes Ouvertes de l’IUT. Selon les moments, des membres de l’équipe ainsi que certains exposants seront présents pour présenter les œuvres, répondre aux questions et accompagner les visiteurs dans la découverte des différents espaces.</p>
+                </div>
+                <div class="flex justify-center items-center mt-12">
+                    <div class="flex flex-col ">
+                        <div class="w-40">
+                            <BlobDynamic imageUrl={ImgMMI.src}  variant={1} />
+                        </div>
+                        <div class="w-40">
+                            <BlobDynamic imageUrl={ImgGroupeOeuvres.src} variant={4} />
+                        </div>
+                    </div>
+                    
+                    <div class="w-50 mx-auto">
+                        <BlobDynamic imageUrl={ImgPresentoire.src} variant={2} />
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <BlobTransition position="bottom" color="#111111" deformStrength={0.3} />
+
+        <section class="">
+			<header>
+				<h2 class="">Infos Pratiques</h2>
+			</header>
+            <div class="flex flex-col gap-12">
+                <div class="text-content">
+                    <p>MMI ART 26 se tient dans les locaux de l’IUT à Montbéliard, facilement accessibles en transports en commun et en voiture. L’entrée est gratuite et ouverte à toutes et tous, dans la limite des horaires communiqués sur le site et les supports de communication. 
+                    Vous trouverez ci-contre un plan du lieu pour mieux vous repérer. 
+                    </p>
+                    <p>De plus, le lieu de l’exposition est accessible aux personnes à mobilité réduite, avec des circulations adaptées et des accès par ascenseur ou rampes selon les espaces. Des toilettes sont à disposition à proximité immédiate de l’expo, ainsi que des espaces avec machines à café ou distributeurs, afin de permettre aux visiteurs de faire une pause pendant leur parcours.</p>
+                </div>
+                <div class="w-60 flex justify-center mx-auto">
+                    <BlobDynamic color='#111111' variant={2} />
+                </div>
+            </div>
+            <div class="btn-wrapper">
+                <a href="" class="btn">Télécharger le plan</a>
+            </div>
+		</section>
+
+        <section class="">
+            <header>
+                <h2>Partenaires</h2>
+            </header>
+            <div>
+                <div class="text-content">
+                    <p>Elle est également accompagnée par Le Géant des Beaux-Arts, partenaire fournissant du matériel et des ressources pour la mise en valeur des œuvres physiques, ce qui renforce le lien entre pratiques artistiques traditionnelles et création numérique.</p>
+                    <p>L’exposition bénéficie du soutien de l’IUT Nord Franche-Comté et du département MMI, qui mettent à disposition les locaux, le matériel et l’accompagnement pédagogique nécessaires. </p>
+                </div>
+                <div>
+                    <div class="flex justify-center items-center my-12">
+                    <div class="flex flex-col ">
+                        <div class="w-40">
+                            <BlobDynamic color='#111111'  variant={1} />
+                        </div>
+                        <div class="w-40">
+                            <BlobDynamic color='#111111' variant={4} />
+                        </div>
+                    </div>
+                    
+                    <div class="w-50 mx-auto">
+                        <BlobDynamic color='#111111' variant={2} />
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            <ContactCTA />
+        </section>
+        
+    </main>
+</Layout>

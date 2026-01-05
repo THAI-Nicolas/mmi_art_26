@@ -51,10 +51,29 @@ export async function getOneOeuvre(id) {
   try {
     const record = await pb
       .collection("oeuvres")
-      .getOne(id, { expand: "artiste_id, oeuvres_images" });
+      .getOne(id, { expand: "artiste_id,oeuvres_images" });
     return record;
   } catch (error) {
     console.error("Erreur lors de la récupération de l'oeuvre");
+    return null;
+  }
+}
+
+//Fonction pour récupérer toutes les oeuvres d'un artiste
+export async function getOeuvresByArtistId(artistId, excludeOeuvreId = null) {
+  try {
+    const filter = excludeOeuvreId
+      ? `artiste_id = "${artistId}" && id != "${excludeOeuvreId}"`
+      : `artiste_id = "${artistId}"`;
+
+    const records = await pb.collection("oeuvres").getFullList({
+      filter: filter,
+      expand: "oeuvres_images",
+      sort: "-created",
+    });
+    return records;
+  } catch (error) {
+    console.error("Erreur lors de la récupération des œuvres de l'artiste");
     return [];
   }
 }

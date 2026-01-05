@@ -1,0 +1,97 @@
+---
+//Imports des composants
+import Layout from "../../layouts/Layout.astro";
+import BlobDynamic from "../../components/ui/BlobDynamic.astro";
+import BlobTransition from "../../components/ui/BlobTransition.astro";
+import CardArtisteEtOeuvre from "../../components/ui/CardArtisteEtOeuvre.astro";
+
+//Imports des icones
+import IconPinterest from "../../assets/icones/pinterest.webp";
+import IconInstagram from "../../assets/icones/instagram.webp";
+import IconLinkedin from "../../assets/icones/linkedin.webp";
+import IconEmail from "../../assets/icones/email.webp";
+
+
+
+//Imports des fonctions Backend
+import { GetArtistById, getImageUrl } from "../../lib/backend";
+const id = Astro.params.id;
+const artiste = await GetArtistById(id);
+const IdsAutresArtistes = [
+    "gu9fv2orsdfckbl",
+    "mslywn9hbt3usnn",
+    "r6slnzglmbrbb9w"
+]
+
+const autresArtistes = await Promise.all(
+    IdsAutresArtistes.map(idAutres => (GetArtistById(idAutres)))
+)
+---
+<Layout>
+    <main class="overflow-hidden">
+        <section class="pt-4">
+            <header>
+                <div class="w-70 flex mx-auto mb-16">
+                    <BlobDynamic imageUrl={artiste.avatar ? getImageUrl(artiste, artiste.avatar) : null} variant={4} />
+                </div>
+                <div class="flex flex-col">
+                    <h1 class="text-center">{artiste.name}</h1>
+                    <span class="uppercase text-right">{artiste.mmi_year}</span>
+                </div>
+            </header>
+            <div class="my-8">
+                <p>{artiste.bio}</p>
+            </div>
+            <div class="flex flex-col gap-12 items-center my-12">
+                    <div class="flex gap-8">
+                        <img class="w-10" src={IconPinterest.src} alt="Icone Pinterest">
+                        <img class="w-10" src={IconInstagram.src} alt="Icone Instagram">
+                        <img class="w-10" src={IconLinkedin.src} alt="Icone Linkedin">
+                        <img class="w-10" src={IconEmail.src} alt="Icone Email">
+                    </div>
+                    <div>
+                        <a href="" class="btn">Portfolio</a>
+                    </div>
+                </div>
+            
+        </section>
+
+        <BlobTransition position="top" color="#111111" deformStrength={0.3} />
+
+        <section class="black-section">
+            <header>
+                <h2>Découvrir ses oeuvres</h2>
+            </header>
+            <ul class="ul-flex">
+                {
+                    artiste.expand?.oeuvres_id?.map((oeuvre, index) =>  (
+                            <li>
+                                <CardArtisteEtOeuvre oeuvre={oeuvre} variant={(index % 3) + 1} />
+                            </li>
+                        )
+                    )
+                }
+            </ul>
+            <div class="btn-wrapper">
+                <a href="/exposition" class="btn-white">Teaser des oeuvres</a>
+            </div>
+        </section>
+
+        <BlobTransition position="bottom" color="#111111" deformStrength={0.3} />
+
+        <section>
+            <header>
+                <h2>Découvrir d'autres artistes</h2>
+            </header>
+            <ul class="ul-flex">
+                {
+                    autresArtistes.map((artiste) => (
+                    <li>
+                        <CardArtisteEtOeuvre artiste={artiste} />
+                    </li>
+                    ))
+                }
+            </ul>
+        </section>
+    </main>
+</Layout>
