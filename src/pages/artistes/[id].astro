@@ -14,18 +14,17 @@ import IconEmail from "../../assets/icones/email.webp";
 
 
 //Imports des fonctions Backend
-import { GetArtistById, getImageUrl } from "../../lib/backend";
+import { GetArtistById, getImageUrl, getSuggestedArtistes } from "../../lib/backend";
 const id = Astro.params.id;
 const artiste = await GetArtistById(id);
-const IdsAutresArtistes = [
-    "gu9fv2orsdfckbl",
-    "mslywn9hbt3usnn",
-    "r6slnzglmbrbb9w"
-]
 
-const autresArtistes = await Promise.all(
-    IdsAutresArtistes.map(idAutres => (GetArtistById(idAutres)))
-)
+// Rediriger vers 404 si l'artiste n'existe pas
+if (!artiste) {
+  return Astro.redirect('/404');
+}
+
+// Récupérer 3 artistes de la même promotion avec tri déterministe SEO
+const autresArtistes = await getSuggestedArtistes(artiste, 3);
 ---
 <Layout>
     <main class="overflow-hidden">
@@ -92,6 +91,9 @@ const autresArtistes = await Promise.all(
                     ))
                 }
             </ul>
+            <div class="btn-wrapper">
+                <a href="/artistes" class="btn">Voir tous les artistes</a>
+            </div>
         </section>
     </main>
 </Layout>

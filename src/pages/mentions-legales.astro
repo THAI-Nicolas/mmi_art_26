@@ -1,0 +1,182 @@
+---
+import Layout from "../layouts/Layout.astro";
+import BlobDynamic from "../components/ui/BlobDynamic.astro";
+---
+
+<Layout 
+    title="Mentions Légales | MMI Art 26"
+    description="Mentions légales de l'exposition MMI Art 26. Informations sur l'éditeur, l'hébergement, la propriété intellectuelle et la protection des données personnelles."
+>
+    <main class="overflow-hidden">
+        <section class="relative">
+            <!-- Blob décoratif -->
+            <div class="absolute -z-10 opacity-10 scale-75 top-0 lg:hidden">
+                <BlobDynamic variant={1} imageUrl={null} />
+            </div>
+
+            <header class="mb-12">
+                <h1 class="text-center mb-4">Mentions Légales</h1>
+                <p class="text-center text-sm opacity-70">Dernière mise à jour : Janvier 2026</p>
+            </header>
+
+            <div class="max-w-4xl mx-auto space-y-12">
+                <!-- 1. Éditeur du site -->
+                <article>
+                    <h2 class="mb-6">1. Éditeur du site</h2>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <h3 class="mb-3">Établissement responsable</h3>
+                            <ul class="space-y-2 list-none pl-0">
+                                <li><strong>Nom :</strong> BUT MMI Montbéliard</li>
+                                <li><strong>Adresse :</strong> 4 Place Lucien Tharradin, 25200 Montbéliard, France</li>
+                                <li><strong>Représentant :</strong> Pascal CHATONNAY</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h3 class="mb-3">Responsable du projet</h3>
+                            <ul class="space-y-2 list-none pl-0">
+                                <li><strong>Étudiants :</strong> Eloïs HENRY - Andréa MESTRE - Nicolas THAI</li>
+                                <li><strong>Mail :</strong> <a href="mailto:expommi2026@gmail.com" class="underline hover:opacity-70">expommi2026@gmail.com</a></li>
+                            </ul>
+                            <p class="mt-3 italic opacity-80">Ce site a été développé dans le cadre d'un projet pédagogique.</p>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- 2. Hébergement -->
+                <article>
+                    <h2 class="mb-6">2. Hébergement</h2>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <h3 class="mb-3">Hébergeur du site web</h3>
+                            <ul class="space-y-2 list-none pl-0">
+                                <li><strong>Hébergeur :</strong> Infomaniak Network SA</li>
+                                <li><strong>Adresse :</strong> Rue Eugène-Marziano 25, 1227 Genève, Suisse</li>
+                                <li><strong>Site web :</strong> <a href="https://infomaniak.com" target="_blank" rel="noopener noreferrer" class="underline hover:opacity-70">infomaniak.com</a></li>
+                            </ul>
+                        </div>
+
+                        
+                    </div>
+                </article>
+
+                <!-- 3. Propriété intellectuelle -->
+                <article>
+                    <h2 class="mb-6">3. Propriété intellectuelle</h2>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <h3 class="mb-3">3.1 Propriété du site et des contenus éditoriaux</h3>
+                            <p>
+                                L'ensemble du code source, de la structure, des textes et des créations graphiques présents sur ce site 
+                                (à l'exception des œuvres d'art exposées) sont la propriété du département MMI de l'établissement 
+                                BUT Montbéliard et des étudiants développeurs du projet, sauf mention contraire. Toute reproduction, 
+                                distribution ou utilisation sans autorisation préalable est interdite.
+                            </p>
+                        </div>
+
+                        <div>
+                            <h3 class="mb-3">3.2 Propriété des œuvres d'art exposées</h3>
+                            <p class="mb-3">
+                                Les œuvres d'art exposées sur ce site appartiennent <strong>exclusivement à leurs artistes respectifs</strong>.
+                            </p>
+                            <p class="mb-3">
+                                La présentation de ces œuvres sur ce site web ne transfère en aucun cas la propriété ou les droits 
+                                intellectuels à l'établissement ou aux développeurs du projet.
+                            </p>
+                            <p>
+                                Chaque artiste conserve l'intégrité de ses droits d'auteur et droits moraux sur ses œuvres.
+                            </p>
+                        </div>
+
+                        <div>
+                            <h3 class="mb-3">3.3 Autorisation de reproduction des œuvres</h3>
+                            <p class="mb-3">
+                                Les images des œuvres sont reproduites sur ce site uniquement selon les autorisations données par 
+                                chaque artiste dans le cadre du contrat d'exposition signé.
+                            </p>
+                            <p>
+                                Chaque artiste a eu la possibilité de consentir ou non à la reproduction et diffusion de ses œuvres 
+                                en ligne. Les conditions spécifiques de chaque autorisation sont documentées individuellement et 
+                                respectées strictement.
+                            </p>
+                        </div>
+
+                        <div>
+                            <h3 class="mb-3">3.4 Crédits et mention des artistes</h3>
+                            <p>
+                                Chaque œuvre reproduite sur ce site est accompagnée de la mention du nom de son créateur. 
+                                Il est interdit de reproduire ou d'utiliser ces images sans attribuer le crédit à l'artiste approprié.
+                            </p>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- 4. Protection des données personnelles -->
+                <article>
+                    <h2 class="mb-6">4. Protection des données personnelles</h2>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <h3 class="mb-3">4.1 Collecte de données</h3>
+                            <p class="mb-3">Ce site collecte un minimum de données personnelles :</p>
+                            <ul class="space-y-2 list-disc pl-6">
+                                <li><strong>Formulaire de contact :</strong> Nom, prénom, email et message</li>
+                                <li><strong>Données de navigation :</strong> Aucun cookie de suivi ou analytics n'est utilisé</li>
+                                <li><strong>Préférences utilisateur :</strong> Paramètres d'interface stockés localement dans le navigateur (localStorage)</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h3 class="mb-3">4.2 Utilisation des données</h3>
+                            <p>
+                                Les données collectées via le formulaire de contact sont utilisées exclusivement pour répondre à vos demandes. 
+                                Elles ne sont jamais partagées avec des tiers, vendues ou utilisées à des fins commerciales.
+                            </p>
+                        </div>
+
+                        <div>
+                            <h3 class="mb-3">4.3 Vos droits RGPD</h3>
+                            <p class="mb-3">
+                                Conformément au Règlement Général sur la Protection des Données (RGPD), vous disposez d'un droit d'accès, 
+                                de rectification et de suppression de vos données personnelles.
+                            </p>
+                            <p class="mb-2">Pour exercer ces droits, contactez :</p>
+                            <ul class="space-y-2 list-none pl-0">
+                                <li><strong>Email :</strong> <a href="mailto:expommi2026@gmail.com" class="underline hover:opacity-70">expommi2026@gmail.com</a></li>
+                                <li><strong>Adresse postale :</strong> 4 Place Lucien Tharradin, 25200 Montbéliard, France</li>
+                            </ul>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- 5. Cookies et stockage local -->
+                <article class="pb-20">
+                    <h2 class="mb-6">5. Cookies et stockage local</h2>
+                    
+                    <div class="space-y-4">
+                        <p>
+                            Ce site utilise le stockage local du navigateur (localStorage) pour sauvegarder vos préférences d'interface, 
+                            telles que :
+                        </p>
+                        <ul class="space-y-2 list-disc pl-6">
+                            <li>Paramètres de navigation</li>
+                            <li>Choix du thème et de la langue (si applicable)</li>
+                        </ul>
+                        <p>
+                            Ces données sont stockées uniquement sur votre appareil et ne sont jamais transmises à des serveurs externes. 
+                            Vous pouvez les supprimer à tout moment en vidant le cache de votre navigateur.
+                        </p>
+                        <p class="font-bold mt-4">
+                            Aucun cookie de suivi, analytics ou données commerciales ne sont utilisés sur ce site. 
+                            Votre navigation est entièrement privée.
+                        </p>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </main>
+</Layout>

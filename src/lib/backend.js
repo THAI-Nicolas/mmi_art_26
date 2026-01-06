@@ -145,3 +145,133 @@ export async function getFilteredOeuvres(years, category, recherche) {
     return [];
   }
 }
+
+//Fonction pour récupérer des suggestions d'artistes de la même promotion
+export async function getSuggestedArtistes(currentArtiste, limit = 3) {
+  try {
+    const mmiYear = currentArtiste?.mmi_year;
+    const currentId = currentArtiste?.id;
+
+    if (!mmiYear || !currentId) return [];
+
+    const filter = `mmi_year = "${mmiYear}" && id != "${currentId}"`;
+
+    const artistes = await pb.collection("artistes").getFullList({
+      filter: filter,
+      expand: "canaux_id",
+      sort: "name", // Tri alphabétique déterministe pour le SEO
+    });
+
+    return artistes.slice(0, limit);
+  } catch (error) {
+    console.error("Erreur lors de la récupération des suggestions d'artistes");
+    return [];
+  }
+}
+
+//Fonction pour récupérer des suggestions d'œuvres avec stratégie Waterfall SEO
+// Priorité : Catégorie → Promotion MMI → Plus récentes
+export async function getSuggestedOeuvres(
+  currentOeuvre,
+  excludeIds = [],
+  limit = 3
+) {
+  try {
+    const suggestions = [];
+    const category = currentOeuvre?.category;
+    const mmiYear = currentOeuvre?.expand?.artiste_id?.mmi_year;
+    const currentId = currentOeuvre?.id || "";
+
+    // Tri déterministe basé sur l'ID pour varier les suggestions par œuvre
+    const deterministicSort = (items) => {
+      const hash = currentId
+        .split("")
+        .reduce((acc, char) => acc + char.charCodeAt(0), 0);
+      return items.sort((a, b) => {
+        const hashA = (a.id.charCodeAt(0) + hash) % items.length;
+        const hashB = (b.id.charCodeAt(0) + hash) % items.length;
+        return hashA - hashB;
+      });
+    };
+
+    const buildExcludeFilter = (ids) =>
+      ids.length > 0 ? ids.map((id) => `id != "${id}"`).join(" && ") : "";
+
+    // PRIORITÉ 1 : Même catégorie (avec diversification d'artistes)
+    if (category && suggestions.length < limit) {
+      const filter = [
+        `category = "${category}"`,
+        buildExcludeFilter(excludeIds),
+      ]
+        .filter(Boolean)
+        .join(" && ");
+
+      const oeuvres = await pb.collection("oeuvres").getFullList({
+        filter,
+        expand: "artiste_id, oeuvres_images",
+      });
+
+      const sorted = deterministicSort([...oeuvres]);
+
+      // Prioriser 1 œuvre par artiste différent
+      const uniqueArtists = [];
+      const seenArtists = new Set();
+
+      for (const oeuvre of sorted) {
+        const artistId = oeuvre.expand?.artiste_id?.id;
+        if (artistId && !seenArtists.has(artistId)) {
+          uniqueArtists.push(oeuvre);
+          seenArtists.add(artistId);
+          if (uniqueArtists.length >= limit) break;
+        }
+      }
+
+      // Utiliser artistes uniques si suffisant, sinon compléter
+      if (uniqueArtists.length >= limit) {
+        suggestions.push(...uniqueArtists.slice(0, limit));
+      } else {
+        suggestions.push(...uniqueArtists);
+        const remaining = sorted.filter((o) => !uniqueArtists.includes(o));
+        suggestions.push(...remaining.slice(0, limit - suggestions.length));
+      }
+    }
+
+    // PRIORITÉ 2 : Même promotion MMI
+    if (mmiYear && suggestions.length < limit) {
+      const allExcludeIds = [...excludeIds, ...suggestions.map((o) => o.id)];
+      const filter = [
+        `artiste_id.mmi_year = "${mmiYear}"`,
+        buildExcludeFilter(allExcludeIds),
+      ]
+        .filter(Boolean)
+        .join(" && ");
+
+      const oeuvres = await pb.collection("oeuvres").getFullList({
+        filter,
+        expand: "artiste_id, oeuvres_images",
+        sort: "-created",
+      });
+
+      suggestions.push(...oeuvres.slice(0, limit - suggestions.length));
+    }
+
+    // PRIORITÉ 3 : Plus récentes
+    if (suggestions.length < limit) {
+      const allExcludeIds = [...excludeIds, ...suggestions.map((o) => o.id)];
+      const filter = buildExcludeFilter(allExcludeIds);
+
+      const oeuvres = await pb.collection("oeuvres").getFullList({
+        filter: filter || undefined,
+        expand: "artiste_id, oeuvres_images",
+        sort: "-created",
+      });
+
+      suggestions.push(...oeuvres.slice(0, limit - suggestions.length));
+    }
+
+    return suggestions.slice(0, limit);
+  } catch (error) {
+    console.error("Erreur lors de la récupération des suggestions d'œuvres");
+    return [];
+  }
+}

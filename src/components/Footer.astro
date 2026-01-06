@@ -1,0 +1,97 @@
+---
+import Logo from "../assets/icones/logo.svg";
+import LiquidWave from "../assets/svgs/liquidwave_footer.svg";
+import IconInstagram from "../assets/icones/instagram_footer.webp";
+import LogoGba from "../assets/icones/logo_gba.webp";
+import LogoUmlp from "../assets/icones/logo_umlp.webp";
+import LogoMmi from "../assets/icones/logo_mmi.webp";
+
+---
+<div class="w-full md:-mb-22 -mb-32 overflow-x-hidden relative">
+    <div class="w-full overflow-x-hidden">
+        <LiquidWave class="w-full" />
+    </div>
+</div>
+
+<footer class="bg-primary pt-4 pb-20 px-12">
+    <div class="max-w-7xl mx-auto px-6 md:px-12">
+        
+        <!-- Contenu principal du footer -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8 py-12 md:items-center md:justify-center ">
+            
+            <!-- Colonne 1 : Logo -->
+            <div class="flex flex-col items-center md:items-start">
+                <a href="/" class="mb-6">
+                    <div class="text-white">
+                        <Logo class="h-16 md:h-20 w-auto brightness-0 invert" />
+                    </div>
+                    
+                </a>
+                <p class="text-secondary text-sm text-center md:text-left opacity-70">
+                    Exposition Artistiques des créations des étudiants MMI Montbéliard
+                </p>
+            </div>
+
+            <!-- Colonne 2 : Navigation légale -->
+            <div class="flex flex-col items-center justify-center">
+                <h3 class="text-secondary mb-8 text-sm">Informations</h3>
+                <nav class="flex flex-col gap-8 text-center">
+                    <a href="/exposition" class="text-secondary text-sm lg:text-lg hover:opacity-70 transition-opacity">
+                        L'exposition
+                    </a>
+                    <a href="/artistes" class="text-secondary text-sm lg:text-lg hover:opacity-70 transition-opacity">
+                        Les artistes
+                    </a>
+                    <a href="/contact" class="text-secondary text-sm lg:text-lg hover:opacity-70 transition-opacity">
+                        Nous contacter
+                    </a><a href="/visite-virtuelle" class="text-secondary text-sm lg:text-lg hover:opacity-70 transition-opacity">
+                        Visite virtuelle
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Colonne 3 : Réseaux sociaux & Partenaires -->
+            <div class="flex flex-col items-center md:items-end gap-6">
+                <!-- Instagram -->
+                <div class="flex flex-col items-center md:items-end">
+                    <h3 class="text-secondary mb-3 text-sm">Suivez-nous</h3>
+                    <a 
+                        href="https://www.instagram.com/mmi_montbeliard/" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        class="hover:opacity-70 transition-opacity"
+                        aria-label="Notre Instagram"
+                    >
+                        <img src={IconInstagram.src} alt="Instagram" class="h-10 w-10 brightness-0 invert" />
+                    </a>
+                </div>
+
+                <!-- Partenaires -->
+                <div class="flex flex-col items-center md:items-end">
+                    <h3 class="text-secondary mb-3 text-sm">Nos partenaires</h3>
+                    <div class="flex gap-4 items-center">
+                        <img src={LogoGba.src} alt="Grand Belfort Agglomération" class="h-12 w-auto object-contain" />
+                        <img src={LogoUmlp.src} alt="Université de Montbéliard" class="h-12 w-auto object-contain" />
+                        <img src={LogoMmi.src} alt="MMI Montbéliard" class="h-12 w-auto object-contain" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Séparateur -->
+        <div class="border-t border-secondary/60 my-6"></div>
+
+        <!-- Copyright & Liens légaux -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+            <p class="text-secondary text-xs opacity-80 text-center md:text-left">
+                © 2026 MMI ART 26
+            </p>
+            <a href="/mentions-legales" class="text-secondary text-xs opacity-80 hover:opacity-100 transition-opacity text-center">
+                Mentions légales
+            </a>
+            <a href="#" class="text-secondary text-xs opacity-80 hover:opacity-100 transition-opacity text-center md:text-right">
+                Politique de confidentialité
+            </a>
+        </div>
+    </div>
+</footer>

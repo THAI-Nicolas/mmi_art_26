@@ -6,15 +6,26 @@ import CardArtisteEtOeuvre from "../../components/ui/CardArtisteEtOeuvre.astro";
 
 
 //Imports des fonctions backend
-import { getOneOeuvre, getImageUrl, getOeuvresByArtistId } from "../../lib/backend";
+import { getOneOeuvre, getImageUrl, getOeuvresByArtistId, getSuggestedOeuvres } from "../../lib/backend";
 const id = Astro.params.id ;
 const oeuvres = await getOneOeuvre(id);
+
+// Rediriger vers 404 si l'œuvre n'existe pas
+if (!oeuvres) {
+  return Astro.redirect('/404');
+}
+
 const imageRecord = oeuvres?.expand?.oeuvres_images[0] ;
 const UrlImage = getImageUrl(imageRecord, imageRecord.images[0]);
 
 // Récupérer les autres oeuvres du même artiste
 const artistId = oeuvres?.expand?.artiste_id?.id;
 const autresOeuvres = artistId ? await getOeuvresByArtistId(artistId, id) : [];
+
+//Récupérer 3 suggestions d'œuvres avec stratégie SEO (Catégorie → Promotion MMI → Récentes)
+const excludeIds = [id, ...autresOeuvres.map(o => o.id)];
+const oeuvresSuggestions = await getSuggestedOeuvres(oeuvres, excludeIds, 3);
+
 ---
 
 <Layout>
@@ -46,7 +57,7 @@ const autresOeuvres = artistId ? await getOeuvresByArtistId(artistId, id) : [];
             </div>
         </section>
 
-        <section class="pt-0 mt-0 black-section">
+        <section class="pt-0 -mt-2 black-section">
             <header>
                 <h2>Du même artiste</h2>
             </header>
@@ -61,6 +72,27 @@ const autresOeuvres = artistId ? await getOeuvresByArtistId(artistId, id) : [];
             ) : (
                 <p class="text-center mt-8 text-secondary">Aucune autre œuvre de cet artiste pour le moment.</p>
             )}
+        </section>
+         <BlobTransition position="bottom" color="#111111" deformStrength={0.3} />
+
+        <section>
+            <header>
+                <h2>Autres oeuvres</h2>
+            </header>
+            {oeuvresSuggestions.length > 0 ? (
+                <ul class="flex flex-col items-center mt-12 gap-12 md:flex-row md:flex-wrap md:justify-center">
+                    {oeuvresSuggestions.map((oeuvre, index) => (
+                        <li>
+                            <CardArtisteEtOeuvre oeuvre={oeuvre} variant={(index % 3) + 1} />
+                        </li>
+                    ))}
+                </ul>
+            ) : (
+                <p class="text-center mt-8 text-secondary">Aucune autre œuvre disponible pour le moment.</p>
+            )}
+            <div class="btn-wrapper">
+                <a class="btn" href="/exposition">Teaser des oeuvres</a>
+            </div>
         </section>
     </main>
 </Layout>

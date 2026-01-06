@@ -1,0 +1,41 @@
+---
+import Layout from "../layouts/Layout.astro";
+import BlobDynamic from "../components/ui/BlobDynamic.astro";
+---
+
+<Layout>
+    <main class="overflow-hidden flex items-center justify-center px-4">
+        <section class="pt-10 md:pt-20 lg:pt-12 xl:pt-10 2xl:pt-6 relative flex flex-col items-center justify-center gap-6 md:gap-4 text-center max-w-5xl w-full">
+            <!-- Blob décoratif en arrière-plan -->
+            <div class="absolute -z-10 opacity-20 scale-140 md:scale-125 lg:scale-130 xl:scale-150 xl:top-50 top-36 md:top-20">
+                <BlobDynamic variant={4} imageUrl={null} />
+            </div>
+
+            <!-- Titre 404 -->
+            <h1 class="text-[clamp(8rem,20vw,20rem)] leading-none mb-4 md:mb-8">404</h1>
+
+            <!-- Message d'erreur -->
+            <div class="flex flex-col gap-3 md:gap-4 max-w-2xl lg:max-w-4xl">
+                <h2 class="text-center">Page introuvable</h2>
+                <div class="space-y-2">
+                    <p class="text-center px-4">
+                        Oups ! La page que vous recherchez semble avoir disparu.
+                    </p>
+                    <p class="text-center px-4">Elle a peut-être été déplacée, supprimée, ou n'a jamais existé.</p>
+                </div>
+            </div>
+
+            <!-- Boutons de navigation -->
+            <div class="flex flex-col sm:flex-row gap-4 mt-6 md:mt-8 w-full max-w-3xl justify-center px-4">
+                <a href="/" class="btn whitespace-nowrap">Retour à l'accueil</a>
+                <a href="/artistes" class="btn-white border-primary whitespace-nowrap">Voir les artistes</a>
+                <a href="/exposition" class="btn-white border-primary whitespace-nowrap">Teaser des oeuvres</a>
+            </div>
+
+            <!-- Suggestion -->
+            <p class="mt-8 md:mt-12 text-sm opacity-70 px-4">
+                Peut-être cherchiez-vous l'une de nos expositions ?
+            </p>
+        </section>
+    </main>
+</Layout>
