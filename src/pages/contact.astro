@@ -1,0 +1,63 @@
+---
+//Imports des composantes et images
+import Layout from "../layouts/Layout.astro";
+import BlobTransition from "../components/ui/BlobTransition.astro";
+import IconInstagram from "../assets/icones/instagram.webp";
+import IconEmail from "../assets/icones/email.webp";
+import ContactForm from "../components/ui/ContactForm.astro";
+---
+
+<Layout>
+    <main class="overflow-hidden">
+
+        <div class="">
+            <BlobTransition position="top" color="#111111" deformStrength={0.3} >
+        </div>
+        
+        <section class="black-section">
+            
+            <header class="flex flex-col justify-center items-center">
+                <h2 class="py-6">Besoin d'aide ?</h2>
+                <p class="text-center">Nous vous répondons généralement sous 48 h pour toute question liée à l’exposition, aux artistes ou à votre visite. </p>
+            </header>
+            <ContactForm />
+        </section>
+        <div>
+            <BlobTransition position="bottom" color="#111111" deformStrength={0.3} ></BlobTransition>
+        </div>
+        
+        <section>
+            <header>
+                <h2>Infos pratiques</h2>
+            </header>
+            <div class="py-8">
+                <p class="text-center">Le MMI Art 26 se déroule sur 3 jours de suite !</p>
+                <div class="mt-4">
+                    <p><b>22 janvier</b>: 12h - 13h30 </p>
+                    <p><b>23 janvier</b> : 12h - 13h30</p>
+                    <p><b>24 janvier</b> : 9h - 17h</p>
+                </div>
+                
+                <div class="py-4">
+                    <h3 class="font-bold py-2">Adresse</h3>
+                    <a href="https://maps.app.goo.gl/REjZ4KDKDzUNUv8i7" target="_blank" class="underline">4 Pl. Lucien Tharradin, 25200 Montbéliard</a>
+                </div>
+                <div class="py-4">
+                    <h3 class="font-bold py-2">Lieu</h3>Bâtiment Amphithéâtre Salle 007
+                </div>
+                <div class="py-4">
+                    <h3 class="font-bold ">Autres moyens de contact</h3>
+                    <div class="flex justify-center items-center gap-8 py-6">
+                        <a href="mailto:expommi2026@gmail.com">
+                            <img class="w-10" src={IconEmail.src} alt="Email">
+                        </a>
+                        <a href="https://www.instagram.com/mmi_art_26/" target="_blank">
+                            <img class="w-10" src={IconInstagram.src} alt="Instagram">
+                            </a>
+                    </div>
+                    
+                </div>
+            </div>
+        </section>
+    </main>
+</Layout>

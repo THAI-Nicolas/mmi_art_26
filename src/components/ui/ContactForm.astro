@@ -1,0 +1,64 @@
+---
+import { actions } from "astro:actions";
+import IconCheck from "../../assets/icones/check.webp";
+//On récupére le résultat de l'action pour gérer l'affichage des erreurs ou messages de succès du formulaire
+const result = Astro.getActionResult(actions.sendContact)
+
+//On extraits les erreurs de Zod
+const inputErrors = (result?.error as any)?.fields || {};
+---
+<div>
+    {result?.data?.success ? (
+        <div class="flex flex-col items-center justify-center p-6 bg-transparent border border-secondary rounded-md mt-8 w-full md:mt-16 md:w-[50%] mx-auto px-8 md:p-10">
+            <img src={IconCheck.src} alt="Icône de succès" class="w-12 h-12 mb-6 md:w-16 md:h-16" />
+            <p class="text-secondary font-semibold text-center text-xs md:text-lg">Merci {result.data.firstname} ! <br>Nous vous répondrons bientôt. </p>
+        </div>
+       
+    ) : (
+        <form method="POST" action={actions.sendContact} class="my-12" accept-charset="UTF-8">
+            <div class="hidden">
+                <input name="hp_field" tabindex="-1" autocomplete="off" />
+            </div>
+            <div>
+
+            </div>
+            <div class="flex flex-col gap-4">
+                <div class="flex gap-6 mb-2">
+                    <div>
+                        <label for="lastname" class="block mb-4 font-medium text-sm">Nom :</label>
+                        <input type="text" id="lastname" name="lastname" class="w-full p-3 text-primary bg-secondary rounded-md placeholder:text-primary/40" placeholder="Julien" required />
+                        {inputErrors.lastname && <p class="text-red-600 text-sm mt-1">{inputErrors.lastname}</p>}
+                    
+                    </div>
+                    <div>
+                        <label for="firstname" class="block mb-4 font-medium text-sm">Prénom :</label>
+                        <input type="text" id="firstname" name="firstname" class="w-full p-3 text-primary bg-secondary rounded-md placeholder:text-primary/40" placeholder="Dupont" required />
+                        {inputErrors.firstname && <p class="text-red-600 text-sm mt-1">{inputErrors.firstname}</p>}
+                    </div>
+                </div>
+                <div class="mb-2">
+                    <label for="email" class="block mb-4 font-medium text-sm">Email :</label>
+                    <input type="email" id="email" name="email" class="w-full p-3 text-primary bg-secondary rounded-md placeholder:text-primary/40" placeholder="julien@example.com" required />
+                    {inputErrors.email && <p class="text-red-600 text-sm mt-1">{inputErrors.email}</p>}
+                </div>
+                <div class="mb-2">
+                    <label for="subject" class="block mb-4 font-medium text-sm">Sujet :</label>
+                    <input type="text" id="subject" name="subject" class="w-full p-3 text-primary bg-secondary rounded-md placeholder:text-primary/40" placeholder="Sujet de votre message..." required />
+                    {inputErrors.subject && <p class="text-red-600 text-sm mt-1">{inputErrors.subject}</p>} 
+                </div>
+                <div class="mb-2">
+                    <label for="message" class="block mb-4 font-medium text-sm">Message :</label>
+                    <textarea id="message" name="message" rows="8" class="w-full p-3 text-primary bg-secondary rounded-md placeholder:text-primary/40" placeholder="Votre message..." required></textarea>
+                    {inputErrors.message && <p class="text-red-600 text-sm mt-1">{inputErrors.message}</p>}
+                </div>
+
+                {
+                    result?.error && !result.error.fields && (
+                        <p class="text-red-600 text-sm mt-1">Une erreur est survenue lors de l'envoi du message. Veuillez réessayer plus tard.</p>
+                    )
+                }
+
+                <button type="submit" class="btn-white mt-2">Envoyer</button>
+            </div>
+        </form>
+    )}
