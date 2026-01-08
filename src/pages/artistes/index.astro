@@ -10,6 +10,14 @@ import { getAllArtistes } from '../../lib/backend';
 //Récupération des artistes
 const artistes = await getAllArtistes();
 
+// Options pour le filtre année MMI
+const yearOptions = [
+  { value: 'TOUT', label: 'TOUS' },
+  { value: '1e année', label: '1ère année' },
+  { value: '2e année', label: '2ème année' },
+  { value: '3e année', label: '3ème année' },
+  { value: 'ancien étudiant', label: 'Anciens étudiants' }
+];
 ---
 <Layout title="Les Artistes | MMI Art 26" description="Découvrez les artistes talentueux de MMI Art 26. Explorez leurs œuvres et plongez dans l'univers créatif de notre exposition annuelle à Montbéliard.">
     <main class="">
@@ -18,17 +26,101 @@ const artistes = await getAllArtistes();
             <header>
                 <h1 class="text-center">Artistes</h1>
             </header>
-            <ul class="ul-flex py-6">
+            
+            {/* Filtres */}
+            <div class="flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between my-8 max-w-[1200px] mx-auto px-4">
+                {/* Barre de recherche */}
+                <div class="flex-1 md:max-w-[400px]">
+                    <input 
+                        type="text" 
+                        id="search-input"
+                        placeholder="Rechercher un artiste..." 
+                        class="w-full px-4 py-3 border-2 border-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-primary placeholder:text-primary/50"
+                    />
+                </div>
+                
+                {/* Menu déroulant année */}
+                <div class="md:min-w-[200px]">
+                    <select 
+                        id="year-select"
+                        class="w-full px-4 py-3 border-2 border-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-primary font-bold uppercase bg-secondary cursor-pointer"
+                    >
+                        {yearOptions.map(option => (
+                            <option value={option.value} selected={option.value === 'TOUT'}>
+                                {option.label}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+            </div>
+            
+            <ul id="artistes-list" class="ul-flex py-6">
                 {
                     artistes.map((artiste, index) => (
-                        <li>
-                            <CardArtisteEtOeuvre artiste={artiste} index={(index % 3) + 1} />
+                        <li data-artiste-name={artiste.name.toLowerCase()} data-artiste-year={artiste.mmi_year}>
+                            <CardArtisteEtOeuvre artiste={artiste} variant={(index % 3) + 1} />
                         </li>
-                        
                     ))
                 }
             </ul>
+            
+            {/* Message si aucun résultat */}
+            <div id="no-results" class="hidden text-center py-12">
+                <p class="text-primary text-lg font-bold">Aucun artiste ne correspond à vos critères de recherche.</p>
+            </div>
         </section>
         
     </main>
 </Layout>
+
+<script>
+    document.addEventListener('astro:page-load', () => {
+        const searchInput = document.getElementById('search-input') as HTMLInputElement;
+        const yearSelect = document.getElementById('year-select') as HTMLSelectElement;
+        const artistesList = document.getElementById('artistes-list');
+        const noResults = document.getElementById('no-results');
+        
+        function filterArtistes() {
+            const searchTerm = searchInput?.value.toLowerCase().trim() || '';
+            const selectedYear = yearSelect?.value || 'TOUT';
+            
+            const items = artistesList?.querySelectorAll('li');
+            let visibleCount = 0;
+            
+            items?.forEach(item => {
+                const artisteName = item.getAttribute('data-artiste-name') || '';
+                const artisteYear = item.getAttribute('data-artiste-year') || '';
+                
+                // Vérifier la correspondance avec la recherche
+                const matchesSearch = searchTerm === '' || artisteName.includes(searchTerm);
+                
+                // Vérifier la correspondance avec l'année
+                let matchesYear = selectedYear === 'TOUT';
+                if (!matchesYear) {
+                    matchesYear = artisteYear === selectedYear;
+                }
+                
+                // Afficher ou masquer l'élément
+                if (matchesSearch && matchesYear) {
+                    (item as HTMLElement).style.display = '';
+                    visibleCount++;
+                } else {
+                    (item as HTMLElement).style.display = 'none';
+                }
+            });
+            
+            // Afficher le message "aucun résultat" si nécessaire
+            if (noResults) {
+                if (visibleCount === 0) {
+                    noResults.classList.remove('hidden');
+                } else {
+                    noResults.classList.add('hidden');
+                }
+            }
+        }
+        
+        // Écouter les changements
+        searchInput?.addEventListener('input', filterArtistes);
+        yearSelect?.addEventListener('change', filterArtistes);
+    });
+</script>

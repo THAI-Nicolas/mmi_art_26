@@ -9,6 +9,8 @@ import CardArtisteEtOeuvre from "../../components/ui/CardArtisteEtOeuvre.astro";
 import IconPinterest from "../../assets/icones/pinterest.webp";
 import IconInstagram from "../../assets/icones/instagram.webp";
 import IconLinkedin from "../../assets/icones/linkedin.webp";
+import IconTiktok from "../../assets/icones/tiktok.webp";
+import IconBehance from "../../assets/icones/behance.webp";
 import IconEmail from "../../assets/icones/email.webp";
 
 
@@ -32,6 +34,34 @@ const artisteImageData = artiste.avatar ? {
   record: artiste.id,
   file: artiste.avatar
 } : null;
+
+// Récupérer les canaux numériques de l'artiste
+const canaux = artiste.expand?.canaux_id || [];
+
+// Séparer le portfolio des autres réseaux sociaux
+const portfolio = canaux.find(c => c.platform?.toLowerCase() === 'portfolio');
+const reseauxSociaux = canaux.filter(c => c.platform?.toLowerCase() !== 'portfolio');
+
+// Mapping des icônes par plateforme
+const iconMap = {
+  instagram: IconInstagram,
+  tiktok: IconTiktok,
+  behance: IconBehance,
+  linkedin: IconLinkedin,
+  pinterest: IconPinterest
+};
+
+// Fonction pour obtenir le label d'accessibilité
+const getAriaLabel = (platform) => {
+  const labels = {
+    instagram: 'Instagram',
+    tiktok: 'TikTok',
+    behance: 'Behance',
+    linkedin: 'LinkedIn',
+    pinterest: 'Pinterest'
+  };
+  return labels[platform?.toLowerCase()] || platform;
+};
 ---
 <Layout title={artiste.name + " | MMI Art 26"} description={"Découvrez le profil de " + artiste.name + ", un talentueux artiste de la promotion MMI Art 26. Explorez son parcours, ses œuvres et son univers créatif."}>
     <main class="overflow-hidden">
@@ -53,24 +83,35 @@ const artisteImageData = artiste.avatar ? {
                 <p>{artiste.bio}</p>
             </div>
             <div class="flex flex-col gap-12 items-center my-12">
-                    <div class="flex gap-8">
-                        <a href="#" aria-label="Pinterest de l'artiste">
-                            <img class="w-10" src={IconPinterest.src} alt="">
-                        </a>
-                        <a href="#" aria-label="Instagram de l'artiste">
-                            <img class="w-10" src={IconInstagram.src} alt="">
-                        </a>
-                        <a href="#" aria-label="LinkedIn de l'artiste">
-                            <img class="w-10" src={IconLinkedin.src} alt="">
-                        </a>
-                        <a href="#" aria-label="Email de l'artiste">
+                <div class="flex gap-8 flex-wrap justify-center items-center">
+                    {/* Réseaux sociaux dynamiques */}
+                    {reseauxSociaux.map((canal) => {
+                        const platformKey = canal.platform?.toLowerCase();
+                        const icon = iconMap[platformKey];
+                        if (icon) {
+                            return (
+                                <a href={canal.link} target="_blank" rel="noopener noreferrer" aria-label={`${getAriaLabel(canal.platform)} de ${artiste.name}`}>
+                                    <img class="w-10" src={icon.src} alt="">
+                                </a>
+                            );
+                        }
+                    })}
+                    
+                    {/* Email (obligatoire) */}
+                    {artiste.email && (
+                        <a href={`mailto:${artiste.email}`} aria-label={`Envoyer un email à ${artiste.name}`}>
                             <img class="w-10" src={IconEmail.src} alt="">
                         </a>
-                    </div>
-                    <div>
-                        <a href="#" class="btn" aria-label="Voir le portfolio de l'artiste">Portfolio</a>
-                    </div>
+                    )}
                 </div>
+                
+                {/* Portfolio (bouton si disponible) */}
+                {portfolio && (
+                    <div>
+                        <a href={portfolio.link} target="_blank" rel="noopener noreferrer" class="btn" aria-label={`Voir le portfolio de ${artiste.name}`}>Portfolio</a>
+                    </div>
+                )}
+            </div>
             
         </section>
 

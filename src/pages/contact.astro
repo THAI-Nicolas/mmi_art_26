@@ -2,6 +2,7 @@
 //Imports des composantes et images
 import Layout from "../layouts/Layout.astro";
 import BlobTransition from "../components/ui/BlobTransition.astro";
+import BlobDynamic from "../components/ui/BlobDynamic.astro";
 import IconInstagram from "../assets/icones/instagram.webp";
 import IconEmail from "../assets/icones/email.webp";
 import ContactForm from "../components/ui/ContactForm.astro";
@@ -41,6 +42,18 @@ import ContactForm from "../components/ui/ContactForm.astro";
                 <div class="py-4">
                     <h3 class="font-bold py-2">Adresse</h3>
                     <a href="https://maps.app.goo.gl/REjZ4KDKDzUNUv8i7" target="_blank" rel="noopener noreferrer" class="underline" aria-label="Voir l'adresse sur Google Maps">4 Pl. Lucien Tharradin, 25200 Montbéliard</a>
+                    <div class="flex justify-center my-6">
+                        <BlobDynamic variant={2} className="w-full max-w-125">
+                            <iframe 
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d21565.716814373303!2d6.786224842071536!3d47.49547292805217!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4792172655793f9f%3A0x1b3b0f76560084ad!2sD%C3%A9partement%20MMI%20de%20Montb%C3%A9liard!5e0!3m2!1sfr!2sfr!4v1767894018694!5m2!1sfr!2sfr" 
+                                class="w-full h-full min-h-100"
+                                style="border:0;" 
+                                allowfullscreen="" 
+                                loading="lazy" 
+                                referrerpolicy="no-referrer-when-downgrade"
+                            ></iframe>
+                        </BlobDynamic>
+                    </div>
                 </div>
                 <div class="py-4">
                     <h3 class="font-bold py-2">Lieu</h3>Bâtiment Amphithéâtre Salle 007
@@ -48,10 +61,10 @@ import ContactForm from "../components/ui/ContactForm.astro";
                 <div class="py-4">
                     <h3 class="font-bold ">Autres moyens de contact</h3>
                     <div class="flex justify-center items-center gap-8 py-6">
-                        <a href="mailto:expommi2026@gmail.com">
+                        <a href="mailto:expommi2026@gmail.com"></a>
                             <img class="w-10" src={IconEmail.src} alt="Email">
                         </a>
-                        <a href="https://www.instagram.com/mmi_art_26/" target="_blank">
+                        <a href="https://www.instagram.com/expommi2026/" target="_blank">
                             <img class="w-10" src={IconInstagram.src} alt="Instagram">
                             </a>
                     </div>

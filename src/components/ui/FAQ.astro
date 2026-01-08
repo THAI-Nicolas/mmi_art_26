@@ -1,0 +1,122 @@
+---
+/**
+ * Composant FAQ - Liste de questions/réponses accordéon
+ * Questions et réponses statiques sur l'exposition MMI Art 26
+ */
+
+const faqItems = [
+  {
+    question: "L'exposition est-elle ouverte à tout le monde ou seulement aux futurs étudiants MMI ?",
+    answer: "L'exposition est ouverte à tous ! Que vous soyez un futur étudiant, un professionnel, un parent ou simplement curieux, venez découvrir les créations artistiques des étudiants MMI Art 26."
+  },
+  {
+    question: "Faut-il s'inscrire ou réserver un créneau avant de venir à l'exposition ?",
+    answer: "Non, aucune inscription n'est nécessaire. L'accès est libre et gratuit pendant les horaires d'ouverture. Vous pouvez venir à tout moment durant les créneaux indiqués."
+  },
+  {
+    question: "Où se déroule l'exposition et comment y accéder ?",
+    answer: "L'exposition se tient au Département MMI de Montbéliard, 4 Place Lucien Tharradin, 25200 Montbéliard. Bâtiment Amphithéâtre, Salle 007. Accessible en transport en commun ou parking à proximité."
+  },
+  {
+    question: "Quels sont les jours et horaires d'ouverture de l'exposition et de la JPO ?",
+    answer: "L'exposition se déroule sur 3 jours : 22 janvier de 12h à 13h30, 23 janvier de 12h à 13h30, et 24 janvier de 9h à 17h (journée complète pour la JPO)."
+  },
+  {
+    question: "L'exposition est-elle accessible aux personnes à mobilité réduite ?",
+    answer: "Oui, le Département MMI dispose d'infrastructures adaptées pour accueillir les personnes à mobilité réduite. N'hésitez pas à nous contacter si vous avez des besoins spécifiques."
+  }
+];
+---
+
+<div class="flex flex-col gap-6 w-full max-w-[800px] mx-auto">
+  {faqItems.map((item, index) => (
+    <div class="faq-item bg-secondary rounded-lg shadow-[0_35px_47px_-21px_rgba(148,148,148,0.25)] transition-all duration-300 hover:shadow-[0_38px_50px_-18px_rgba(148,148,148,0.3)]" data-faq-index={index}>
+      <button 
+        class="faq-button w-full flex items-center gap-4 md:gap-6 p-6 md:p-10 bg-transparent border-none cursor-pointer text-left transition-all duration-300" 
+        aria-expanded="false"
+        aria-controls={`faq-answer-${index}`}
+      >
+        <div class="relative w-5 h-5 md:w-[26px] md:h-[26px] shrink-0">
+          <span class="faq-line-h absolute bg-primary rounded-full transition-all duration-300 w-5 h-[3px] md:w-[26px] md:h-1 top-1/2 left-0 -translate-y-1/2"></span>
+          <span class="faq-line-v absolute bg-primary rounded-full transition-all duration-300 w-[3px] h-5 md:w-1 md:h-[26px] left-1/2 top-0 -translate-x-1/2"></span>
+        </div>
+        <span class="flex-1 text-sm md:text-base lg:text-lg font-bold uppercase text-primary leading-tight">{item.question}</span>
+        <div class="shrink-0">
+          <div class="faq-toggle-circle w-7 h-7 md:w-[34px] md:h-[34px] bg-primary rounded-full flex items-center justify-center transition-all duration-300">
+            <span class="text-secondary text-2xl md:text-[1.75rem] font-light leading-none">+</span>
+          </div>
+        </div>
+      </button>
+      <div 
+        class="faq-answer max-h-0 overflow-hidden transition-all duration-[400ms] ease-out" 
+        id={`faq-answer-${index}`}
+        aria-hidden="true"
+      >
+        <div class="faq-answer-content opacity-0 -translate-y-2.5 transition-all duration-300">
+          <p class="text-primary leading-relaxed m-0 text-sm md:text-base">{item.answer}</p>
+        </div>
+      </div>
+    </div>
+  ))}
+</div>
+
+<style>
+  .faq-item[data-open="true"] .faq-line-v {
+    opacity: 0;
+    transform: translateX(-50%) rotate(90deg);
+  }
+
+  .faq-item[data-open="true"] .faq-toggle-circle {
+    transform: rotate(45deg);
+  }
+
+  .faq-item[data-open="true"] .faq-answer {
+    max-height: 500px;
+    padding: 0 2.5rem 2.5rem 4.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .faq-item[data-open="true"] .faq-answer {
+      padding: 0 1.5rem 1.5rem 3rem;
+    }
+  }
+
+  .faq-item[data-open="true"] .faq-answer-content {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.1s;
+  }
+</style>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const faqItems = document.querySelectorAll('.faq-item');
+    
+    faqItems.forEach(item => {
+      const button = item.querySelector('.faq-button');
+      const answer = item.querySelector('.faq-answer');
+      
+      if (!button || !answer) return;
+      
+      button.addEventListener('click', () => {
+        const isOpen = item.getAttribute('data-open') === 'true';
+        
+        // Fermer tous les autres items
+        faqItems.forEach(otherItem => {
+          if (otherItem !== item) {
+            otherItem.setAttribute('data-open', 'false');
+            const otherButton = otherItem.querySelector('.faq-button');
+            const otherAnswer = otherItem.querySelector('.faq-answer');
+            if (otherButton) otherButton.setAttribute('aria-expanded', 'false');
+            if (otherAnswer) otherAnswer.setAttribute('aria-hidden', 'true');
+          }
+        });
+        
+        // Toggle l'item actuel
+        item.setAttribute('data-open', isOpen ? 'false' : 'true');
+        button.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+        answer.setAttribute('aria-hidden', isOpen ? 'true' : 'false');
+      });
+    });
+  });
+</script>

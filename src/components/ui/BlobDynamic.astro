@@ -91,6 +91,7 @@ const config = variants[variant];
 const [vbX, vbY, vbWidth, vbHeight] = config.viewBox.split(" ").map(Number);
 
 const uniqueId = `blob-dynamic-${variant}-${Math.random().toString(36).substr(2, 9)}`;
+const hasSlot = Astro.slots.has('default');
 ---
 
 <div 
@@ -112,14 +113,26 @@ const uniqueId = `blob-dynamic-${variant}-${Math.random().toString(36).substr(2,
     xmlns="http://www.w3.org/2000/svg"
   >
     <defs>
-      {hasImage && (
+      {(hasImage || hasSlot) && (
         <clipPath id={`clip-${uniqueId}`}>
           <path id={`blob-path-${uniqueId}`} d={config.path} />
         </clipPath>
       )}
     </defs>
 
-    {imageData ? (
+    {hasSlot ? (
+      <foreignObject
+        x="0"
+        y="0"
+        width={vbWidth}
+        height={vbHeight}
+        clip-path={`url(#clip-${uniqueId})`}
+      >
+        <div class="w-full h-full overflow-hidden">
+          <slot />
+        </div>
+      </foreignObject>
+    ) : imageData ? (
       <foreignObject
         x="0"
         y="0"
