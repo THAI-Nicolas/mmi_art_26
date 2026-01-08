@@ -1,0 +1,43 @@
+---
+import { Image } from "astro:assets";
+
+interface Props {
+  collection: string;    // Nom de la collection
+  record: string;        // ID de l'entrée
+  file: string;          // Nom du fichier image
+  alt: string;           // Description (SEO)
+  width?: number;
+  height?: number;
+  class?: string;        // Pour Tailwind
+  loading?: "lazy" | "eager"; // Contrôle du lazy loading
+}
+
+const { 
+  collection, 
+  record, 
+  file, 
+  alt, 
+  width = 800, 
+  height = 600,  
+  class: className,
+  loading = "lazy"
+} = Astro.props;
+
+// On récupère l'URL de base depuis le .env
+const pbUrl = import.meta.env.POCKETBASE_URL;
+
+// Construction de l'URL PocketBase
+// On ajoute le paramètre ?thumb si nécessaire
+const imageUrl = `${pbUrl}/api/files/${collection}/${record}/${file}?thumb=800x600`;
+---
+
+<Image 
+  src={imageUrl} 
+  alt={alt} 
+  width={width} 
+  height={height} 
+  loading={loading}
+  class={`object-cover ${className}`}
+  format="webp"
+  quality="mid" 
+/>

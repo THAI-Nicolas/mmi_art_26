@@ -7,14 +7,22 @@
  * 
  * @prop variant - Numéro de variante (1-4, défaut: 1)
  * @prop imageUrl - URL de l'image à masquer (optionnel)
+ * @prop imageData - Données pour ImagePB optimisé {collection, record, file} (optionnel)
  * @prop color - Couleur de remplissage si pas d'image (défaut: "#000000")
  * @prop width - Largeur du SVG (optionnel, auto si non fourni)
  * @prop height - Hauteur du SVG (optionnel, auto si non fourni)
  * @prop className - Classes CSS additionnelles
  */
+import ImagePB from '../ImagePB.astro';
+
 interface Props {
   variant?: 1 | 2 | 3 | 4;
   imageUrl?: string;
+  imageData?: {
+    collection: string;
+    record: string;
+    file: string;
+  };
   color?: string;
   width?: number;
   height?: number;
@@ -24,11 +32,14 @@ interface Props {
 const {
   variant = 1,
   imageUrl,
+  imageData,
   color = "#000000",
   width,
   height,
   className = "",
 } = Astro.props;
+
+const hasImage = !!(imageUrl || imageData);
 
 // Configuration des variantes
 const variants = {
@@ -101,14 +112,34 @@ const uniqueId = `blob-dynamic-${variant}-${Math.random().toString(36).substr(2,
     xmlns="http://www.w3.org/2000/svg"
   >
     <defs>
-      {imageUrl && (
+      {hasImage && (
         <clipPath id={`clip-${uniqueId}`}>
           <path id={`blob-path-${uniqueId}`} d={config.path} />
         </clipPath>
       )}
     </defs>
 
-    {imageUrl ? (
+    {imageData ? (
+      <foreignObject
+        x="0"
+        y="0"
+        width={vbWidth}
+        height={vbHeight}
+        clip-path={`url(#clip-${uniqueId})`}
+      >
+        <div class="w-full h-full">
+          <ImagePB 
+            collection={imageData.collection}
+            record={imageData.record}
+            file={imageData.file}
+            alt=""
+            width={vbWidth}
+            height={vbHeight}
+            class="w-full h-full object-cover"
+          />
+        </div>
+      </foreignObject>
+    ) : imageUrl ? (
       <image
         href={imageUrl}
         x="0"

@@ -14,9 +14,9 @@ import IconEmail from "../../assets/icones/email.webp";
 
 
 //Imports des fonctions Backend
-import { GetArtistById, getImageUrl, getSuggestedArtistes } from "../../lib/backend";
-const id = Astro.params.id;
-const artiste = await GetArtistById(id);
+import { GetArtistBySlug, getImageUrl, getSuggestedArtistes } from "../../lib/backend";
+const slug = Astro.params.id;
+const artiste = await GetArtistBySlug(slug);
 
 // Rediriger vers 404 si l'artiste n'existe pas
 if (!artiste) {
@@ -25,13 +25,24 @@ if (!artiste) {
 
 // Récupérer 3 artistes de la même promotion avec tri déterministe SEO
 const autresArtistes = await getSuggestedArtistes(artiste, 3);
+
+// Données pour ImagePB optimisé
+const artisteImageData = artiste.avatar ? {
+  collection: artiste.collectionId,
+  record: artiste.id,
+  file: artiste.avatar
+} : null;
 ---
-<Layout>
+<Layout title={artiste.name + " | MMI Art 26"} description={"Découvrez le profil de " + artiste.name + ", un talentueux artiste de la promotion MMI Art 26. Explorez son parcours, ses œuvres et son univers créatif."}>
     <main class="overflow-hidden">
         <section class="pt-4">
             <header>
                 <div class="w-70 flex mx-auto mb-16">
-                    <BlobDynamic imageUrl={artiste.avatar ? getImageUrl(artiste, artiste.avatar) : null} variant={4} />
+                    <BlobDynamic 
+                      imageUrl={artiste.avatar ? getImageUrl(artiste, artiste.avatar) : null}
+                      imageData={artisteImageData}
+                      variant={4} 
+                    />
                 </div>
                 <div class="flex flex-col">
                     <h1 class="text-center">{artiste.name}</h1>
@@ -43,13 +54,21 @@ const autresArtistes = await getSuggestedArtistes(artiste, 3);
             </div>
             <div class="flex flex-col gap-12 items-center my-12">
                     <div class="flex gap-8">
-                        <img class="w-10" src={IconPinterest.src} alt="Icone Pinterest">
-                        <img class="w-10" src={IconInstagram.src} alt="Icone Instagram">
-                        <img class="w-10" src={IconLinkedin.src} alt="Icone Linkedin">
-                        <img class="w-10" src={IconEmail.src} alt="Icone Email">
+                        <a href="#" aria-label="Pinterest de l'artiste">
+                            <img class="w-10" src={IconPinterest.src} alt="">
+                        </a>
+                        <a href="#" aria-label="Instagram de l'artiste">
+                            <img class="w-10" src={IconInstagram.src} alt="">
+                        </a>
+                        <a href="#" aria-label="LinkedIn de l'artiste">
+                            <img class="w-10" src={IconLinkedin.src} alt="">
+                        </a>
+                        <a href="#" aria-label="Email de l'artiste">
+                            <img class="w-10" src={IconEmail.src} alt="">
+                        </a>
                     </div>
                     <div>
-                        <a href="" class="btn">Portfolio</a>
+                        <a href="#" class="btn" aria-label="Voir le portfolio de l'artiste">Portfolio</a>
                     </div>
                 </div>
             

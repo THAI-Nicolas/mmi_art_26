@@ -91,6 +91,21 @@ import BlobDynamic from "./ui/BlobDynamic.astro";
     document.addEventListener("astro:page-load", () => {
         const openBtn = document.getElementById("open-menu");
         const menu = document.getElementById("menu-overlay");
+        const menuLinks = menu?.querySelectorAll('a');
+
+        // Fonction pour gérer le tabindex des liens
+        const updateTabIndex = (isActive: boolean) => {
+            menuLinks?.forEach(link => {
+                if (isActive) {
+                    link.removeAttribute('tabindex');
+                } else {
+                    link.setAttribute('tabindex', '-1');
+                }
+            });
+        };
+
+        // Initialiser avec tabindex="-1" (menu fermé par défaut)
+        updateTabIndex(false);
 
         openBtn?.addEventListener('click', () => {
             const isActive = menu?.classList.toggle('menu-active');
@@ -98,6 +113,9 @@ import BlobDynamic from "./ui/BlobDynamic.astro";
             menu?.setAttribute('aria-hidden', String(!isActive));
             openBtn?.setAttribute('aria-expanded', String(isActive));
             openBtn?.classList.toggle('menu-open');
+            
+            // Mettre à jour le tabindex
+            updateTabIndex(isActive ?? false);
         });
     });
 </script>

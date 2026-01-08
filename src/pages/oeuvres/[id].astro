@@ -3,12 +3,13 @@
 import Layout from "../../layouts/Layout.astro";
 import BlobTransition from "../../components/ui/BlobTransition.astro";
 import CardArtisteEtOeuvre from "../../components/ui/CardArtisteEtOeuvre.astro";
+import ImagePB from "../../components/ImagePB.astro";
 
 
 //Imports des fonctions backend
-import { getOneOeuvre, getImageUrl, getOeuvresByArtistId, getSuggestedOeuvres } from "../../lib/backend";
-const id = Astro.params.id ;
-const oeuvres = await getOneOeuvre(id);
+import { getOneOeuvreBySlug, getImageUrl, getOeuvresByArtistId, getSuggestedOeuvres } from "../../lib/backend";
+const slug = Astro.params.id;
+const oeuvres = await getOneOeuvreBySlug(slug);
 
 // Rediriger vers 404 si l'œuvre n'existe pas
 if (!oeuvres) {
@@ -20,19 +21,29 @@ const UrlImage = getImageUrl(imageRecord, imageRecord.images[0]);
 
 // Récupérer les autres oeuvres du même artiste
 const artistId = oeuvres?.expand?.artiste_id?.id;
-const autresOeuvres = artistId ? await getOeuvresByArtistId(artistId, id) : [];
+const autresOeuvres = artistId ? await getOeuvresByArtistId(artistId, oeuvres.id) : [];
 
 //Récupérer 3 suggestions d'œuvres avec stratégie SEO (Catégorie → Promotion MMI → Récentes)
-const excludeIds = [id, ...autresOeuvres.map(o => o.id)];
+const excludeIds = [oeuvres.id, ...autresOeuvres.map(o => o.id)];
 const oeuvresSuggestions = await getSuggestedOeuvres(oeuvres, excludeIds, 3);
 
 ---
 
-<Layout>
+<Layout title={oeuvres.title + " - " + oeuvres.expand.artiste_id.name + " | MMI Art 26"} description={"Découvrez l'œuvre " + oeuvres.title + " de " + oeuvres.expand.artiste_id.name + ", présentée dans l'exposition MMI Art 26. Plongez dans l'univers créatif de nos artistes talentueux."}>
     <main class="overflow-hidden">
         
-        
-        <img class="w-[80%] mx-auto h-auto object-contain relative" src={UrlImage} alt={oeuvres.title}>
+        <div class="w-[80%] mx-auto relative">
+            <ImagePB 
+                collection={imageRecord.collectionId}
+                record={imageRecord.id}
+                file={imageRecord.images[0]}
+                alt={oeuvres.title}
+                width={1200}
+                height={1200}
+                loading="eager"
+                class="w-full h-auto object-contain"
+            />
+        </div>
         
         <div class="relative -z-10 -mt-44">
             <BlobTransition position="top" color="#111111" deformStrength={0.3} />

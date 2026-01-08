@@ -10,6 +10,9 @@ export default defineConfig({
   },
   site: "https://mmi-art-26.fr",
   output: "server",
+  image: {
+    domains: ["127.0.0.1", "localhost"],
+  },
   adapter: node({
     mode: "standalone",
   }),

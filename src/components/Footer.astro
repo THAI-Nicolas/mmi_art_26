@@ -23,9 +23,8 @@ import LogoMmi from "../assets/icones/logo_mmi.webp";
             <div class="flex flex-col items-center md:items-start">
                 <a href="/" class="mb-6">
                     <div class="text-white">
-                        <Logo class="h-16 md:h-20 w-auto brightness-0 invert" />
-                    </div>
-                    
+                        <img class="h-16 md:h-20 w-auto brightness-0 invert" src={Logo.src} alt="Logo MMI" />
+                    </div> 
                 </a>
                 <p class="text-secondary text-sm text-center md:text-left opacity-70">
                     Exposition Artistiques des créations des étudiants MMI Montbéliard
@@ -35,7 +34,7 @@ import LogoMmi from "../assets/icones/logo_mmi.webp";
             <!-- Colonne 2 : Navigation légale -->
             <div class="flex flex-col items-center justify-center">
                 <h3 class="text-secondary mb-8 text-sm">Informations</h3>
-                <nav class="flex flex-col gap-8 text-center">
+                <nav class="flex flex-col gap-4 text-center">
                     <a href="/exposition" class="text-secondary text-sm lg:text-lg hover:opacity-70 transition-opacity">
                         L'exposition
                     </a>
@@ -60,18 +59,18 @@ import LogoMmi from "../assets/icones/logo_mmi.webp";
                         target="_blank" 
                         rel="noopener noreferrer"
                         class="hover:opacity-70 transition-opacity"
-                        aria-label="Notre Instagram"
+                        aria-label="Suivez-nous sur Instagram"
                     >
-                        <img src={IconInstagram.src} alt="Instagram" class="h-10 w-10 brightness-0 invert" />
+                        <img src={IconInstagram.src} alt="" class="h-8 w-8 md:h-12 md:w-12 brightness-0 invert" />
                     </a>
                 </div>
 
                 <!-- Partenaires -->
                 <div class="flex flex-col items-center md:items-end">
-                    <h3 class="text-secondary mb-3 text-sm">Nos partenaires</h3>
+                    <h3 class="text-secondary mb-6 text-sm">Nos partenaires</h3>
                     <div class="flex gap-4 items-center">
                         <img src={LogoGba.src} alt="Grand Belfort Agglomération" class="h-12 w-auto object-contain" />
-                        <img src={LogoUmlp.src} alt="Université de Montbéliard" class="h-12 w-auto object-contain" />
+                        <img src={LogoUmlp.src} alt="Université de Montbéliard" class="h-6 w-auto object-contain" />
                         <img src={LogoMmi.src} alt="MMI Montbéliard" class="h-12 w-auto object-contain" />
                     </div>
                 </div>

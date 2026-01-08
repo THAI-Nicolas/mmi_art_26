@@ -13,8 +13,27 @@ export async function getAllArtistes() {
   }
 }
 
-//Fonction pour récupérer un artiste en fonction de son ID
+//Fonction pour récupérer un artiste en fonction de son slug
+export async function GetArtistBySlug(slug) {
+  try {
+    const record = await pb
+      .collection("artistes")
+      .getFirstListItem(`slug = "${slug}"`, {
+        expand: "oeuvres_id.oeuvres_images,canaux_id",
+      });
 
+    return record;
+  } catch (error) {
+    console.error(
+      "Erreur lors de la récupération de l'artiste",
+      error.status,
+      error.message
+    );
+    return null;
+  }
+}
+
+// Fonction pour récupérer un artiste par ID (pour compatibilité interne)
 export async function GetArtistById(id) {
   try {
     const record = await pb
@@ -46,7 +65,22 @@ export async function getAllOeuvres() {
   }
 }
 
-//Fonction pour récupérer une oeuvre en fonction de son ID
+//Fonction pour récupérer une oeuvre en fonction de son slug
+export async function getOneOeuvreBySlug(slug) {
+  try {
+    const record = await pb
+      .collection("oeuvres")
+      .getFirstListItem(`slug = "${slug}"`, {
+        expand: "artiste_id,oeuvres_images",
+      });
+    return record;
+  } catch (error) {
+    console.error("Erreur lors de la récupération de l'œuvre");
+    return null;
+  }
+}
+
+// Fonction pour récupérer une oeuvre par ID (pour compatibilité interne)
 export async function getOneOeuvre(id) {
   try {
     const record = await pb

@@ -12,6 +12,7 @@ import ContactCTA from '../components/ui/ContactCTA.astro';
 
 import { getImageUrl, getOneOeuvre, GetArtistById } from '../lib/backend';
 import CardArtisteEtOeuvre from '../components/ui/CardArtisteEtOeuvre.astro';
+import ImagePB from '../components/ImagePB.astro';
 
 const projectIds = [
 	"sohru0uj4e8ppd7",
@@ -97,9 +98,13 @@ const artistes = await Promise.all(
 				<ul class="flex justify-start items-center mt-12 gap-0 pl-6">
 					{oeuvres.map((oeuvre, index) => (
 						<li class="w-96 md:w-70 lg:w-87.5 xl:w-120 shrink-0" data-index={index}>
-							<img 
-								src={getImageUrl(oeuvre.expand.oeuvres_images[0], oeuvre.expand.oeuvres_images[0].images[0])} 
+							<ImagePB 
+								collection={oeuvre.expand.oeuvres_images[0].collectionId}
+								record={oeuvre.expand.oeuvres_images[0].id}
+								file={oeuvre.expand.oeuvres_images[0].images[0]}
 								alt={oeuvre.title}
+								width={800}
+								height={800}
 								class="w-96 h-96 md:w-70 md:h-70 lg:w-87.5 lg:h-87.5 xl:w-120 xl:h-120 object-cover"
 							/>
 							<h3 class="bg-primary text-secondary text-center border-secondary border-x text-sm!">{oeuvre.expand.artiste_id.name}</h3>
