@@ -194,8 +194,10 @@
       });
     }
 
-    // Toujours jouer l'animation d'intro au chargement
-    playIntroAnimation();
+    // Toujours jouer l'animation d'intro au chargement SEULEMENT si on est sur une page majeure
+    if (isMajorPage(window.location.href)) {
+      playIntroAnimation();
+    }
 
     // Animation de transition avant la navigation
     async function playTransitionOut() {
@@ -237,6 +239,22 @@
     };
   }
 
+  // Fonction pour déterminer si c'est une page majeure
+  function isMajorPage(url: string): boolean {
+    const pathname = new URL(url, window.location.origin).pathname;
+    
+    // Pages principales qui méritent une transition liquid
+    const majorPages = [
+      '/',                    // Accueil
+      '/exposition',          // Exposition
+      '/artistes',            // Liste des artistes
+      '/visite-virtuelle',    // Visite virtuelle
+      '/contact'              // Contact
+    ];
+    
+    return majorPages.includes(pathname);
+  }
+
   // Initialisation
   initTransition();
 
@@ -244,6 +262,18 @@
   document.addEventListener("astro:before-preparation", async (event) => {
     // Empêcher les appels multiples avec flag global
     if (globalIsTransitioning) {
+      return;
+    }
+    
+    // Vérifier si la destination est une page majeure
+    const targetUrl = (event as any).to;
+    const sourceUrl = window.location.href;
+    
+    // Jouer la transition uniquement si on va vers ou depuis une page majeure
+    const shouldPlayTransition = isMajorPage(targetUrl) || isMajorPage(sourceUrl);
+    
+    if (!shouldPlayTransition) {
+      // Laisser Astro gérer la transition par défaut (View Transitions natives)
       return;
     }
     
@@ -272,13 +302,18 @@
 
   document.addEventListener("astro:after-swap", () => {
     globalIsTransitioning = false;
-    // Réinitialiser et relancer l'intro
-    initTransition();
+    // Réinitialiser et relancer l'intro SEULEMENT si on arrive sur une page majeure
+    if (isMajorPage(window.location.href)) {
+      initTransition();
+    }
   });
 
   // Réinitialiser sur chaque chargement de page (View Transitions)
   document.addEventListener("astro:page-load", () => {
     globalIsTransitioning = false;
-    initTransition();
+    // Jouer l'intro SEULEMENT si on est sur une page majeure
+    if (isMajorPage(window.location.href)) {
+      initTransition();
+    }
   });
 </script>
