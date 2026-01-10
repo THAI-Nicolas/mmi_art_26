@@ -13,10 +13,10 @@ const { className = "" } = Astro.props;
 ---
 
 <div class={`timer-container ${className}`}>
-    <p class="font-uni-sans text-2xl text-right">
-        <span id="days">--</span> J 
-        <span id="hours">--</span> H 
-        <span id="minutes">--</span> M
+    <p class="font-uni-sans text-2xl text-right lg:text-5xl 2xl:text-8xl flex justify-end gap-2 lg:gap-10 2xl:gap-18">
+        <span><span id="days">--</span> J</span>
+        <span><span id="hours">--</span> H</span>
+        <span><span id="minutes">--</span> M</span>
     </p>
 </div>
 

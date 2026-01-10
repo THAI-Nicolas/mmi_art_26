@@ -27,30 +27,33 @@
     @apply overflow-hidden;
   }
   h1 {
-    font-size: clamp(2rem, 4.19vw + 0.97rem, 6rem);
-    letter-spacing: 2px;
+    font-size: clamp(2rem, 1.5vw + 1.5rem, 7rem);
+    letter-spacing: clamp(1px, 0.15vw, 3px);
     line-height: normal;
     @apply font-uni-sans uppercase;
   }
   h2 {
-    font-size: clamp(1.5rem, 3.67vw + 0.6rem, 5rem);
-    letter-spacing: 2px;
+    font-size: clamp(1.5rem, 1.2vw + 1.2rem, 5.5rem);
+    letter-spacing: clamp(1px, 0.15vw, 3px);
     line-height: normal;
     @apply font-uni-sans uppercase;
   }
 
   h3 {
-    font-size: clamp(1rem, 1.31vw + 0.68rem, 2.25rem);
+    font-size: clamp(1rem, 0.8vw + 0.8rem, 2.5rem);
     @apply uppercase;
   }
 
   p {
-    font-size: clamp(0.81rem, 0.46vw + 0.7rem, 1.25rem);
+    font-size: clamp(0.875rem, 0.5vw + 0.75rem, 1.25rem);
+    line-height: clamp(1.4, 0.1vw + 1.35, 1.6);
   }
 
   .btn {
-    font-size: clamp(0.75rem, 0.66vw + 0.59rem, 1.38rem);
-    @apply uppercase text-secondary bg-primary py-3 px-6 rounded-4xl duration-300 transition border border-transparent;
+    font-size: clamp(0.875rem, 0.4vw + 0.75rem, 1.5rem);
+    padding: clamp(0.75rem, 0.5vw + 0.5rem, 1rem)
+      clamp(1.5rem, 1vw + 1rem, 3rem);
+    @apply uppercase text-secondary bg-primary rounded-4xl duration-300 transition border border-transparent;
   }
 
   .btn:hover {
@@ -59,30 +62,41 @@
 
   nav,
   .header-text {
-    font-size: clamp(1.2rem, 1.6vw, 1.8rem);
+    font-size: clamp(1.2rem, 0.8vw + 1rem, 2rem);
     font-weight: 250;
     @apply uppercase text-center;
   }
+
   section {
-    font-size: clamp(0.75rem, 0.66vw + 0.59rem, 1.38rem);
-    @apply px-12 pt-20;
+    font-size: clamp(0.875rem, 0.4vw + 0.75rem, 1.5rem);
+    @apply px-8 md:px-12 lg:px-20 2xl:px-32 pt-12 md:pt-16 lg:pt-20 2xl:pt-24;
   }
+
   .black-section {
-    @apply bg-primary text-secondary py-20 relative;
+    @apply bg-primary text-secondary relative px-8 md:px-12 lg:px-20 2xl:px-32;
   }
+
   .text-content {
-    @apply flex flex-col space-y-4 mt-10;
+    @apply flex flex-col mt-10 gap-4 md:gap-6 lg:gap-8 2xl:gap-10;
   }
+
   .btn-wrapper {
-    @apply flex justify-center my-8;
+    @apply flex justify-center my-12 md:my-16 lg:my-20 2xl:my-28;
   }
+
   .ul-flex {
-    @apply flex flex-col items-center my-12 gap-12 md:flex-row md:flex-wrap md:justify-center;
+    @apply flex flex-col items-center md:flex-row md:flex-wrap md:justify-center;
+    @apply my-8 md:my-12 lg:my-16 2xl:my-24;
+    @apply gap-12 md:gap-10 lg:gap-10 2xl:gap-32;
   }
+
   .btn-white {
-    font-size: clamp(0.75rem, 0.66vw + 0.59rem, 1.38rem);
-    @apply uppercase text-primary bg-secondary py-3 px-6 rounded-4xl duration-300 transition border border-transparent;
+    font-size: clamp(0.875rem, 0.4vw + 0.75rem, 1.5rem);
+    padding: clamp(0.75rem, 0.5vw + 0.5rem, 1.25rem)
+      clamp(1.5rem, 1vw + 1rem, 3rem);
+    @apply uppercase text-primary bg-secondary rounded-4xl duration-300 transition border border-transparent;
   }
+
   .btn-white:hover {
     @apply bg-primary text-secondary border border-secondary;
   }

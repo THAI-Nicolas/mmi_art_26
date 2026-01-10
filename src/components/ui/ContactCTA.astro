@@ -3,12 +3,16 @@ import BlobDynamic from '../ui/BlobDynamic.astro';
 ---
 
 <div class="flex flex-col justify-center items-center py-20 ">
-	<div class="w-44 mx-auto">
-		<BlobDynamic color="#000000" variant={1} />
+	<div class="w-44 md:w-50 lg:w-60 2xl:w-90 mx-auto">
+		<BlobDynamic color="#000000" variant={1}>
+			<div class="w-full h-full flex items-center justify-center bg-black">
+				<p class="text-white text-center font-bold px-4 text-4xl font-uni-sans">D'autres <br> questions ?</p>
+			</div>
+		</BlobDynamic>
 	</div>
 				
 	<p class="text-center font-semibold mt-6">Contactez-nous via notre formulaire</p>
-	<div class="btn-wrapper">
-		<a href="/contact" class="btn text-center px-4">Nous contacter</a>
+	<div class="my-8 md:my-10 lg:my-12 btn-wrapper">
+		<a href="/contact" class="btn">Nous contacter</a>
 	</div>
 </div>

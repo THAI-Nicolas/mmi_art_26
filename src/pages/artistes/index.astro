@@ -24,26 +24,26 @@ const yearOptions = [
 
         <section class="py-10">
             <header>
-                <h1 class="text-center">Artistes</h1>
+                <h1 class="text-center md:mt-6 lg:mt-8 2xl:mt-12">Artistes</h1>
             </header>
             
             {/* Filtres */}
-            <div class="flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between my-8 max-w-[1200px] mx-auto px-4">
+            <div class="flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between mt-8 md:mt-14 lg:mt-16 2xl:mt-20 mx-auto px-14 lg:px-6 2xl:px-40">
                 {/* Barre de recherche */}
-                <div class="flex-1 md:max-w-[400px]">
+                <div class="flex-1 md:max-w-100">
                     <input 
                         type="text" 
                         id="search-input"
                         placeholder="Rechercher un artiste..." 
-                        class="w-full px-4 py-3 border-2 border-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-primary placeholder:text-primary/50"
+                        class="w-full px-4 py-3 border rounded-sm border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all text-primary/50 placeholder:text-primary/50 placeholder:text-xs md:placeholder:text-sm lg:placeholder:text-md 2xl:placeholder::text-lg"
                     />
                 </div>
                 
                 {/* Menu déroulant année */}
-                <div class="md:min-w-[200px]">
+                <div class="md:min-w-100">
                     <select 
                         id="year-select"
-                        class="w-full px-4 py-3 border-2 border-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-primary font-bold uppercase bg-secondary cursor-pointer"
+                        class="w-full px-4 py-3 border rounded-sm border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all text-primary/70 font-bold uppercase bg-secondary cursor-pointer"
                     >
                         {yearOptions.map(option => (
                             <option value={option.value} selected={option.value === 'TOUT'}>
@@ -54,7 +54,7 @@ const yearOptions = [
                 </div>
             </div>
             
-            <ul id="artistes-list" class="ul-flex py-6">
+            <ul id="artistes-list" class="ul-flex py-6 mt-0 md:mt-6 lg:mt-8 2xl:mt-10">
                 {
                     artistes.map((artiste, index) => (
                         <li data-artiste-name={artiste.name.toLowerCase()} data-artiste-year={artiste.mmi_year}>

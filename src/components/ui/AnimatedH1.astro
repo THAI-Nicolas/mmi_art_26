@@ -143,6 +143,14 @@ const config = variants[variant];
     height: auto;
   }
 
+  /* Réduire la taille uniquement pour lg (laptops) */
+  @media (min-width: 1024px) and (max-width: 1535px) {
+    .h1-svg {
+      transform: scale(0.75);
+      transform-origin: center;
+    }
+  }
+
   .h1-path {
     transition: all 0.2s ease-out;
   }

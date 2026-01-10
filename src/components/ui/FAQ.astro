@@ -28,32 +28,32 @@ const faqItems = [
 ];
 ---
 
-<div class="flex flex-col gap-6 w-full max-w-[800px] mx-auto">
+<div class="flex flex-col gap-4 md:gap-6 w-full mx-auto">
   {faqItems.map((item, index) => (
-    <div class="faq-item bg-secondary rounded-lg shadow-[0_35px_47px_-21px_rgba(148,148,148,0.25)] transition-all duration-300 hover:shadow-[0_38px_50px_-18px_rgba(148,148,148,0.3)]" data-faq-index={index}>
+    <div class="faq-item bg-secondary rounded-lg shadow-[0_10px_25px_3px_rgba(0,0,0,0.06)] transition-all duration-300 hover:shadow-[0_15px_30px_5px_rgba(0,0,0,0.08)]" data-faq-index={index}>
       <button 
-        class="faq-button w-full flex items-center gap-4 md:gap-6 p-6 md:p-10 bg-transparent border-none cursor-pointer text-left transition-all duration-300" 
+        class="faq-button w-full flex items-center gap-3 md:gap-5 p-4 md:p-6 lg:p-8 bg-transparent border-none cursor-pointer text-left transition-all duration-300" 
         aria-expanded="false"
         aria-controls={`faq-answer-${index}`}
       >
-        <div class="relative w-5 h-5 md:w-[26px] md:h-[26px] shrink-0">
-          <span class="faq-line-h absolute bg-primary rounded-full transition-all duration-300 w-5 h-[3px] md:w-[26px] md:h-1 top-1/2 left-0 -translate-y-1/2"></span>
-          <span class="faq-line-v absolute bg-primary rounded-full transition-all duration-300 w-[3px] h-5 md:w-1 md:h-[26px] left-1/2 top-0 -translate-x-1/2"></span>
+        <div class="relative w-4 h-4 md:w-5 md:h-5 shrink-0">
+          <span class="faq-line-h absolute bg-primary rounded-full transition-all duration-300 w-4 h-0.5 md:w-5 md:h-0.5 top-1/2 left-0 -translate-y-1/2"></span>
+          <span class="faq-line-v absolute bg-primary rounded-full transition-all duration-300 w-0.5 h-4 md:w-0.5 md:h-5 left-1/2 top-0 -translate-x-1/2"></span>
         </div>
-        <span class="flex-1 text-sm md:text-base lg:text-lg font-bold uppercase text-primary leading-tight">{item.question}</span>
+        <span class="flex-1 text-xs md:text-sm lg:text-base font-bold uppercase text-primary leading-snug">{item.question}</span>
         <div class="shrink-0">
-          <div class="faq-toggle-circle w-7 h-7 md:w-[34px] md:h-[34px] bg-primary rounded-full flex items-center justify-center transition-all duration-300">
-            <span class="text-secondary text-2xl md:text-[1.75rem] font-light leading-none">+</span>
+          <div class="faq-toggle-circle w-6 h-6 md:w-7 md:h-7 bg-primary rounded-full flex items-center justify-center transition-all duration-300">
+            <span class="text-secondary text-lg md:text-xl font-semibold leading-none translate-y-[-1px]">+</span>
           </div>
         </div>
       </button>
       <div 
-        class="faq-answer max-h-0 overflow-hidden transition-all duration-[400ms] ease-out" 
+        class="faq-answer max-h-0 overflow-hidden transition-all duration-400 ease-out" 
         id={`faq-answer-${index}`}
         aria-hidden="true"
       >
-        <div class="faq-answer-content opacity-0 -translate-y-2.5 transition-all duration-300">
-          <p class="text-primary leading-relaxed m-0 text-sm md:text-base">{item.answer}</p>
+        <div class="faq-answer-content opacity-0 transition-all duration-300">
+          <p class="text-primary leading-relaxed m-0 text-xs md:text-sm lg:text-base">{item.answer}</p>
         </div>
       </div>
     </div>
@@ -72,18 +72,23 @@ const faqItems = [
 
   .faq-item[data-open="true"] .faq-answer {
     max-height: 500px;
-    padding: 0 2.5rem 2.5rem 4.5rem;
+    padding: 0.5rem 1.5rem 1.5rem 2.75rem;
   }
 
-  @media (max-width: 768px) {
+  @media (min-width: 768px) {
     .faq-item[data-open="true"] .faq-answer {
-      padding: 0 1.5rem 1.5rem 3rem;
+      padding: 0.75rem 2rem 2rem 3.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .faq-item[data-open="true"] .faq-answer {
+      padding: 1rem 2.5rem 2.5rem 4rem;
     }
   }
 
   .faq-item[data-open="true"] .faq-answer-content {
     opacity: 1;
-    transform: translateY(0);
     transition-delay: 0.1s;
   }
 </style>

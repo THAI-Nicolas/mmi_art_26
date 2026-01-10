@@ -16,61 +16,71 @@ import ContactForm from "../components/ui/ContactForm.astro";
         </div>
         
         <section class="black-section">
-            
             <header class="flex flex-col justify-center items-center">
-                <h2 class="py-6">Besoin d'aide ?</h2>
-                <p class="text-center">Nous vous répondons généralement sous 48 h pour toute question liée à l’exposition, aux artistes ou à votre visite. </p>
+                <h1 class="py-6">Besoin d'aide ?</h1>
+                <p class="text-center">Nous vous répondons généralement sous 48 h pour toute question liée à l'exposition, aux artistes ou à votre visite. </p>
             </header>
+        </section>
+        
+        <div class="flex flex-col lg:flex-row lg:gap-0 lg:items-center">
+        <section class="black-section lg:flex-[2] lg:min-h-screen lg:py-12 lg:px-12">
             <ContactForm />
         </section>
-        <div>
+        <div class="lg:hidden">
             <BlobTransition position="bottom" color="#111111" deformStrength={0.3} ></BlobTransition>
         </div>
         
-        <section>
+        <section class="lg:flex-[1] lg:bg-primary lg:text-secondary lg:min-h-screen lg:py-8 lg:px-8">
             <header>
-                <h2>Infos pratiques</h2>
+                <h2 class="lg:text-lg">Infos pratiques</h2>
             </header>
-            <div class="py-8">
-                <p class="text-center">Le MMI Art 26 se déroule sur 3 jours de suite !</p>
-                <div class="mt-4">
-                    <p><b>22 janvier</b>: 12h - 13h30 </p>
-                    <p><b>23 janvier</b> : 12h - 13h30</p>
-                    <p><b>24 janvier</b> : 9h - 17h</p>
-                </div>
-                
-                <div class="py-4">
-                    <h3 class="font-bold py-2">Adresse</h3>
-                    <a href="https://maps.app.goo.gl/REjZ4KDKDzUNUv8i7" target="_blank" rel="noopener noreferrer" class="underline" aria-label="Voir l'adresse sur Google Maps">4 Pl. Lucien Tharradin, 25200 Montbéliard</a>
-                    <div class="flex justify-center my-6">
-                        <BlobDynamic variant={2} className="w-full max-w-125">
-                            <iframe 
-                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d21565.716814373303!2d6.786224842071536!3d47.49547292805217!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4792172655793f9f%3A0x1b3b0f76560084ad!2sD%C3%A9partement%20MMI%20de%20Montb%C3%A9liard!5e0!3m2!1sfr!2sfr!4v1767894018694!5m2!1sfr!2sfr" 
-                                class="w-full h-full min-h-100"
-                                style="border:0;" 
-                                allowfullscreen="" 
-                                loading="lazy" 
-                                referrerpolicy="no-referrer-when-downgrade"
-                            ></iframe>
-                        </BlobDynamic>
-                    </div>
-                </div>
-                <div class="py-4">
-                    <h3 class="font-bold py-2">Lieu</h3>Bâtiment Amphithéâtre Salle 007
-                </div>
-                <div class="py-4">
-                    <h3 class="font-bold ">Autres moyens de contact</h3>
-                    <div class="flex justify-center items-center gap-8 py-6">
-                        <a href="mailto:expommi2026@gmail.com"></a>
-                            <img class="w-10" src={IconEmail.src} alt="Email">
-                        </a>
-                        <a href="https://www.instagram.com/expommi2026/" target="_blank">
-                            <img class="w-10" src={IconInstagram.src} alt="Instagram">
-                            </a>
+            <div class="py-8 lg:py-4">
+                <div>
+                    <p class="text-center lg:text-left lg:text-xs">Le MMI Art 26 se déroule sur 3 jours de suite !</p>
+                    <div class="mt-4 lg:mt-2 lg:text-xs">
+                        <p><b>22 janvier</b>: 12h - 13h30 </p>
+                        <p><b>23 janvier</b> : 12h - 13h30</p>
+                        <p><b>24 janvier</b> : 9h - 17h</p>
                     </div>
                     
+                    <div class="py-4 lg:py-2">
+                        <h3 class="font-bold py-2 lg:py-1 lg:text-sm">Lieu</h3><span class="lg:text-xs">Bâtiment Amphithéâtre Salle 007</span>
+                    </div>
+                    <div class="py-4 lg:py-2">
+                        <h3 class="font-bold lg:text-sm">Autres moyens de contact</h3>
+                        <div class="flex justify-center lg:justify-start items-center gap-8 lg:gap-4 py-6 lg:py-3">
+                            <a href="mailto:expommi2026@gmail.com">
+                                <img class="w-10 lg:w-6 lg:invert" src={IconEmail.src} alt="Email">
+                            </a>
+                            <a href="https://www.instagram.com/expommi2026/" target="_blank">
+                                <img class="w-10 lg:w-6 lg:invert" src={IconInstagram.src} alt="Instagram">
+                            </a>
+                        </div>
+                    </div>
+                
+                    <div class="py-4 lg:py-2">
+                        <h3 class="font-bold py-2 lg:py-1 lg:text-sm">Adresse</h3>
+                        <a href="https://maps.app.goo.gl/REjZ4KDKDzUNUv8i7" target="_blank" rel="noopener noreferrer" class="underline lg:text-xs" aria-label="Voir l'adresse sur Google Maps">4 Pl. Lucien Tharradin, 25200 Montbéliard</a>
+                        <div class="flex justify-center my-6 lg:my-3 lg:w-full">
+                            <BlobDynamic variant={2} className="w-full max-w-125 lg:w-60 lg:max-w-60">
+                                <iframe 
+                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d21565.716814373303!2d6.786224842071536!3d47.49547292805217!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4792172655793f9f%3A0x1b3b0f76560084ad!2sD%C3%A9partement%20MMI%20de%20Montb%C3%A9liard!5e0!3m2!1sfr!2sfr!4v1767894018694!5m2!1sfr!2sfr" 
+                                    class="w-full h-full min-h-100"
+                                    style="border:0;" 
+                                    allowfullscreen="" 
+                                    loading="lazy" 
+                                    referrerpolicy="no-referrer-when-downgrade"
+                                ></iframe>
+                            </BlobDynamic>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
+        </div>
+        
+        <div class="hidden lg:block">
+            <BlobTransition position="bottom" color="#111111" deformStrength={0.3} ></BlobTransition>
+        </div>
     </main>
 </Layout>

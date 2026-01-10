@@ -41,50 +41,96 @@ const artistes = await Promise.all(
 
 <Layout>
 	<main class="overflow-hidden">
-		<section class="mb-12">
-			<header>
+		<section class="mb-12 lg:pt-8 lg:pb-15 lg:mb-0 2xl:pt-15 2xl:pb-30 2xl:mb-0">
+			<div class="hidden lg:block absolute top-0 left-0 lg:mt-26 lg:ml-2 lg:w-75 lg:h-75 2xl:mt-24 2xl:ml-4 2xl:w-116 2xl:h-116">
+				<img src={Oeuvre1.src} alt="Oeuvre">
+			</div>
+			<header class="lg:flex lg:flex-col lg:justify-center lg:items-center lg:ml-46 2xl:ml-40">
 				<AnimatedH1 variant="accueil" text="Bienvenue à MMI ART 26" />
-				<p class="mt-12">
+				<p class="mt-12 lg:text-sm 2xl:text-lg lg:mt-2 lg:w-2/4 lg:ml-16 2xl:mt-14 2xl:ml-50">
 					Découvrez l'exposition d'art des étudiants en MMI de 2026, un parcours créatif qui met en avant les projets numériques, installations interactives et expériences visuelles conçus en formation Multimédia et Internet. 
 				</p>
+				
 			</header>
-			<div>
-				<div class="flex justify-end mt-6 ">
+			<div class="flex justify-end mt-6 lg:mr-52 2xl:mr-70">
 					<a href="/exposition" class="btn">L'exposition</a>
 				</div>
-
-				<div class="flex flex-col mt-12 gap-2">
-					<p class="font-uni-sans text-lg text-left">L'exposition est <br> dans</p>
+			<div class="hidden lg:block absolute top-0 right-0 lg:mt-22 lg:mr-8 lg:w-45 lg:h-45 2xl:mt-24 2xl:mr-8 2xl:w-70 2xl:h-70">
+				<img src={Oeuvre2.src} alt="Oeuvre">
+			</div>
+			<div class="absolute top-30 right-12 lg:static lg:mt-20 lg:text-center 2xl:mt-30">
+				<span class="lg:text-xl 2xl:text-2xl font-semibold text-xs">22 au 24 janvier 2026</span>
+			</div>
+			
+			<div class="lg:mt-12 lg:flex lg:justify-end lg:items-center 2xl:mt-34">
+				<div class="flex flex-col mt-12 gap-2 lg:gap-10 lg:mr-12 2xl:gap-16 2xl:mr-24">
+					<p class="font-uni-sans text-lg text-left lg:text-3xl 2xl:text-4xl">L'exposition est dans</p>
 					<TimeBeforeDate />
 				</div>
 			</div>
-			<span class="absolute top-30 right-12 font-semibold text-xs">22 au 24 janvier 2026</span>
+			<div class="hidden lg:block absolute lg:-bottom-60 lg:left-35 2xl:-bottom-95 2xl:left-58 mb-20 ml-4 lg:w-40 lg:h-40 2xl:w-63.5 2xl:h-63.5">
+				<img src={Oeuvre3.src} alt="Oeuvre">
+			</div>
+			
 		</section>
 
 		<BlobTransition position="top" color="#111111" deformStrength={0.3} />
 
 		{/* Section avec fond noir */}
 		<section class="black-section">
-			<header>
-				<h2 class="text-secondary">MMI Art 26</h2>
-			</header>
-			<div class="flex flex-col justify-center mx-auto">
-				<div class="w-50 mt-10 mx-auto">
-					<BlobDynamic imageUrl={ImgExpo.src} variant={1} />
+			<div>
+				{/* Layout desktop : 2 colonnes */}
+				<div class="flex flex-col lg:flex-row lg:gap-12 xl:gap-20 items-center justify-center">
+					{/* Colonne gauche : Titre + Textes */}
+					<div class="flex-1">
+						<header>
+							<h2 class="text-secondary">MMI Art 26</h2>
+						</header>
+						<div class="text-content mt-6 lg:mt-10">
+							<p>
+								Le programme est pensé pour les futurs étudiants MMI, les visiteurs de la JPO et toutes les personnes curieuses de découvrir concrètement les projets réalisés en formation multimédia. 
+							</p>
+							<p>
+								Entre visites guidées, démonstrations de projets et temps d'échanges avec les étudiants, chaque créneau vous permet d'explorer l'univers MMI et de poser toutes vos questions sur la formation.
+							</p>
+						</div>
+					</div>
+					
+					{/* Colonne droite : Image */}
+					<div class="flex-1 flex justify-center items-center mt-10 lg:mt-0">
+						<div class="w-60 md:w-70 lg:w-90 2xl:w-125 justify-center mx-auto items-center">
+							<BlobDynamic imageUrl={ImgExpo.src} variant={1} />
+						</div>
+					</div>
 				</div>
-			<div class="text-content">
-				<p>
-					Le programme est pensé pour les futurs étudiants MMI, les visiteurs de la JPO et toutes les personnes curieuses de découvrir concrètement les projets réalisés en formation multimédia. 
-				</p>
-					<p>
-						Entre visites guidées, démonstrations de projets et temps d'échanges avec les étudiants, chaque créneau vous permet d'explorer l'univers MMI et de poser toutes vos questions sur la formation.
-					</p>
-				</div>
-				<ul class="flex mt-12 flex-col gap-8 items-center">
-					<li class="w-36"><BlobDynamic color='#FAFAFA' variant={1} /></li>
-					<li class="w-36"><BlobDynamic color='#FAFAFA' variant={2} /></li>
-					<li class="w-36"><BlobDynamic color='#FAFAFA' variant={3} /></li>
+			
+				{/* Blobs d'informations */}
+				<ul class="flex mt-12 flex-col gap-8 items-center md:flex-row md:justify-center md:flex-wrap md:gap-12 lg:gap-28 2xl:gap-40 lg:mt-24 2xl:mt-32">
+					<li class="w-50 lg:w-46 2xl:w-76">
+						<BlobDynamic color='#FAFAFA' variant={1}>
+							<div class="w-full h-full flex items-center justify-center bg-white">
+								<p class="text-black text-center font-bold px-4 text-4xl font-uni-sans">22 au 24 Janvier <br> 2026</p>
+							</div>
+						</BlobDynamic>
+					</li>
+					<li class="w-50 lg:w-46 2xl:w-76">
+						<BlobDynamic color='#FAFAFA' variant={3}>
+							<div class="w-full h-full flex items-center justify-center bg-white">
+								<p class="text-black text-center font-bold px-4 text-5xl font-uni-sans">3 jours pour l'art</p>
+							</div>
+						</BlobDynamic>
+					</li>
+					<li class="w-50 lg:w-46 2xl:w-76">
+						<BlobDynamic color='#FAFAFA' variant={4}>
+							<div class="w-full h-full flex items-center justify-center bg-white">
+								<p class="text-black text-center font-bold px-4 text-2xl font-uni-sans">22 & 23 jan : 12h - 13h30 <br> 24 jan : 9h - 17h</p>
+							</div>
+						</BlobDynamic>
+					</li>
 				</ul>
+				<div class="btn-wrapper">
+					<a href="/exposition" class="btn-white">Voir l'exposition</a>
+				</div>
 			</div>
 		</section>
 
@@ -92,7 +138,7 @@ const artistes = await Promise.all(
 		<BlobTransition position="bottom" color="#111111" deformStrength={0.3} />
 
 		<section class="px-0">
-			<header class="ml-12.5">
+			<header class="ml-9 md:ml-12 lg:ml-20 2xl:ml-30">
 				<h2>Les oeuvres</h2>
 			</header>
 			<div class="overflow-x-auto scrollbar-hide" id="carousel-container">
@@ -137,33 +183,42 @@ const artistes = await Promise.all(
 		</section>
 
 		<section class="">
-			<header>
-				<h2 class="">Impossible de venir ?</h2>
-			</header>
-			<div>
-				<div class="text-content">
-					<p>Impossible de venir à l'exposition MMI sur place ? Découvrez la visite virtuelle 360° de l'expo et explorez les projets d'art numérique des étudiants comme si vous étiez dans la salle.</p>
-					<p>Plongez au cœur des œuvres interactives, installations et créations des étudiants MMI grâce à une expérience de visite en ligne accessible depuis n'importe où.</p>
+		<div class="flex flex-col md:flex-row justify-center items-center">
+			<div class="flex-1 md:w-[50%]">
+				<header>
+					<h2 class="">Impossible de venir ?</h2>
+				</header>
+				<div>
+					<div class="text-content">
+						<p>Impossible de venir à l'exposition MMI sur place ? Découvrez la visite virtuelle 360° de l'expo et explorez les projets d'art numérique des étudiants comme si vous étiez dans la salle.</p>
+						<p>Plongez au cœur des œuvres interactives, installations et créations des étudiants MMI grâce à une expérience de visite en ligne accessible depuis n'importe où.</p>
+					</div>
 				</div>
-				<div class="w-70 mt-10 mx-auto">
+			</div>
+			
+			<div class="flex-1 flex justify-center items-center mt-10 md:mt-0">
+				<div class="w-60 md:w-70 lg:w-90 2xl:w-125">
 					<BlobDynamic imageUrl={ImgExpo.src} variant={2} />
 				</div>
 			</div>
+		</div>
 			<div class="btn-wrapper">
 				<a href="/visite-virtuelle" class="btn">Visite 360°</a>
 			</div>
 		</section>
 
-		<section class="">
+		<section class="lg:mb-20 2xl:mb-40">
 			<header>
-				<h2 class="text-center">Faq</h2>
+				<h2 class="text-center md:mb-10 ">Faq</h2>
 			</header>
-			<div class="flex flex-col justify-center items-center lg:flex-row lg:gap-12">	
+			<div class="flex flex-col justify-center items-center lg:flex-row lg:gap-4 lg:items-center">	
 					
-				<div class="flex flex-col items-center mt-12 gap-12 md:flex-row md:flex-wrap md:justify-center">
+				<div class="w-full lg:w-1/2 flex flex-col items-center mt-12 lg:mt-12">
 					<FAQ />
 				</div>
-				<ContactCTA />
+				<div class="w-full lg:w-1/2 flex justify-center items-center mt-12 lg:mt-12">
+					<ContactCTA />
+				</div>
 			</div>
 			
 		</section>
