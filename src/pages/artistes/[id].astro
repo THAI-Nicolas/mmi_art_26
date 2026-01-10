@@ -65,54 +65,62 @@ const getAriaLabel = (platform) => {
 ---
 <Layout title={artiste.name + " | MMI Art 26"} description={"Découvrez le profil de " + artiste.name + ", un talentueux artiste de la promotion MMI Art 26. Explorez son parcours, ses œuvres et son univers créatif."}>
     <main class="overflow-hidden">
-        <section class="pt-4">
-            <header>
-                <div class="w-70 flex mx-auto mb-16">
-                    <BlobDynamic 
-                      imageUrl={artiste.avatar ? getImageUrl(artiste, artiste.avatar) : null}
-                      imageData={artisteImageData}
-                      variant={4} 
-                    />
-                </div>
-                <div class="flex flex-col">
-                    <h1 class="text-center">{artiste.name}</h1>
-                    <span class="uppercase text-right">{artiste.mmi_year}</span>
-                </div>
-            </header>
-            <div class="my-8">
-                <p>{artiste.bio}</p>
-            </div>
-            <div class="flex flex-col gap-12 items-center my-12">
-                <div class="flex gap-8 flex-wrap justify-center items-center">
-                    {/* Réseaux sociaux dynamiques */}
-                    {reseauxSociaux.map((canal) => {
-                        const platformKey = canal.platform?.toLowerCase();
-                        const icon = iconMap[platformKey];
-                        if (icon) {
-                            return (
-                                <a href={canal.link} target="_blank" rel="noopener noreferrer" aria-label={`${getAriaLabel(canal.platform)} de ${artiste.name}`}>
-                                    <img class="w-10" src={icon.src} alt="">
-                                </a>
-                            );
-                        }
-                    })}
-                    
-                    {/* Email (obligatoire) */}
-                    {artiste.email && (
-                        <a href={`mailto:${artiste.email}`} aria-label={`Envoyer un email à ${artiste.name}`}>
-                            <img class="w-10" src={IconEmail.src} alt="">
-                        </a>
-                    )}
-                </div>
-                
-                {/* Portfolio (bouton si disponible) */}
-                {portfolio && (
-                    <div>
-                        <a href={portfolio.link} target="_blank" rel="noopener noreferrer" class="btn" aria-label={`Voir le portfolio de ${artiste.name}`}>Portfolio</a>
+        <section class="pt-4 lg:pt-20 lg:pb-20 2xl:pt-32 2xl:pb-30">
+            <div class="flex flex-col lg:flex-row lg:gap-8 2xl:gap-16 lg:items-center">
+                {/* Colonne gauche : Avatar */}
+                <div class="lg:w-[40%] lg:flex lg:justify-center">
+                    <div class="w-70 flex mx-auto mb-16 lg:mb-0 lg:w-90 lg:mx-0 2xl:w-140">
+                        <BlobDynamic 
+                          imageUrl={artiste.avatar ? getImageUrl(artiste, artiste.avatar) : null}
+                          imageData={artisteImageData}
+                          variant={3} 
+                        />
                     </div>
-                )}
+                </div>
+
+                {/* Colonne droite : Informations */}
+                <div class="lg:w-[60%]">
+                    <header>
+                        <div class="flex flex-col ">
+                            <h1 class="text-center lg:text-left ">{artiste.name}</h1>
+                            <span class="uppercase text-right lg:text-left lg:text-lg">{artiste.mmi_year}</span>
+                        </div>
+                    </header>
+                    <div class="my-8">
+                        <p>{artiste.bio}</p>
+                    </div>
+                    <div class="flex flex-col gap-12 items-center lg:items-start lg:flex-row lg:justify-between my-12">
+                        <div class="flex gap-8 flex-wrap justify-center lg:justify-start items-center">
+                            {/* Réseaux sociaux dynamiques */}
+                            {reseauxSociaux.map((canal) => {
+                                const platformKey = canal.platform?.toLowerCase();
+                                const icon = iconMap[platformKey];
+                                if (icon) {
+                                    return (
+                                        <a href={canal.link} target="_blank" rel="noopener noreferrer" aria-label={`${getAriaLabel(canal.platform)} de ${artiste.name}`}>
+                                            <img class="w-10" src={icon.src} alt="">
+                                        </a>
+                                    );
+                                }
+                            })}
+                            
+                            {/* Email (obligatoire) */}
+                            {artiste.email && (
+                                <a href={`mailto:${artiste.email}`} aria-label={`Envoyer un email à ${artiste.name}`}>
+                                    <img class="w-10" src={IconEmail.src} alt="">
+                                </a>
+                            )}
+                        </div>
+                        
+                        {/* Portfolio (bouton si disponible) */}
+                        {portfolio && (
+                            <div class="2xl:mr-8">
+                                <a href={portfolio.link} target="_blank" rel="noopener noreferrer" class="btn" aria-label={`Voir le portfolio de ${artiste.name}`}>Portfolio</a>
+                            </div>
+                        )}
+                    </div>
+                </div>
             </div>
-            
         </section>
 
         <BlobTransition position="top" color="#111111" deformStrength={0.3} />
