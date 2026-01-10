@@ -32,7 +32,7 @@ const oeuvresSuggestions = await getSuggestedOeuvres(oeuvres, excludeIds, 3);
 <Layout title={oeuvres.title + " - " + oeuvres.expand.artiste_id.name + " | MMI Art 26"} description={"Découvrez l'œuvre " + oeuvres.title + " de " + oeuvres.expand.artiste_id.name + ", présentée dans l'exposition MMI Art 26. Plongez dans l'univers créatif de nos artistes talentueux."}>
     <main class="overflow-hidden">
         
-        <div class="w-[80%] mx-auto relative">
+        <div class="w-[80%] lg:w-[50%] 2xl:w-[45%] mx-auto relative lg:mt-10 2xl:mt-10">
             <ImagePB 
                 collection={imageRecord.collectionId}
                 record={imageRecord.id}
@@ -45,30 +45,55 @@ const oeuvresSuggestions = await getSuggestedOeuvres(oeuvres, excludeIds, 3);
             />
         </div>
         
-        <div class="relative -z-10 -mt-44">
+        <div class="relative -z-10 -mt-44 lg:-mt-60 2xl:-mt-100">
             <BlobTransition position="top" color="#111111" deformStrength={0.3} />
         </div>
         
-        <section class="black-section -z-10">
+        <section class="black-section relative">
             <header class="flex flex-col items-center gap-2">
                 <h1 class="text-center uppercase">{oeuvres.title}, {oeuvres.year}</h1>
                 <span class="">{oeuvres.category}</span>
             </header>
-            <div class="mt-8">
-                <h3 class="font-bold">Description</h3>
-                <p class="mt-4">
-                    {oeuvres.description}
-                </p>
-            </div>
-            <div class="mt-8">
-                <h3 class="font-bold">Techniques utilisées</h3>
-                <p class="mt-4">
-                    {oeuvres.technique}
-                </p>
+            
+            <div class="mt-8 lg:mt-16 flex flex-col lg:flex-row lg:gap-12 2xl:gap-20">
+                {/* Colonne gauche : Artiste */}
+                <a href={`/artistes/${oeuvres.expand.artiste_id.slug}`} class="lg:w-[35%] 2xl:w-[30%] flex flex-col items-center gap-4 hover:opacity-80 transition-opacity mb-8 lg:mb-0">
+                    <div class="w-32 lg:w-40 2xl:w-50 aspect-square rounded-full overflow-hidden">
+                        <ImagePB 
+                            collection={oeuvres.expand.artiste_id.collectionId}
+                            record={oeuvres.expand.artiste_id.id}
+                            file={oeuvres.expand.artiste_id.avatar}
+                            alt={oeuvres.expand.artiste_id.name}
+                            width={400}
+                            height={400}
+                            class="w-full h-full object-cover"
+                        />
+                    </div>
+                    <div class="text-center">
+                        <h3 class="font-bold text-base lg:text-xl 2xl:text-2xl text-secondary">{oeuvres.expand.artiste_id.name}</h3>
+                        <p class="text-xs lg:text-sm 2xl:text-base text-secondary mt-2">{oeuvres.expand.artiste_id.mmi_year}</p>
+                    </div>
+                </a>
+
+                {/* Colonne droite : Description et techniques */}
+                <div class="lg:w-[65%] 2xl:w-[70%]">
+                    <div>
+                        <h3 class="font-bold">Description</h3>
+                        <p class="mt-4">
+                            {oeuvres.description}
+                        </p>
+                    </div>
+                    <div class="mt-8">
+                        <h3 class="font-bold">Techniques utilisées</h3>
+                        <p class="mt-4">
+                            {oeuvres.technique}
+                        </p>
+                    </div>
+                </div>
             </div>
         </section>
 
-        <section class="pt-0 -mt-2 black-section">
+        <section class="pt-10 lg:pt-16 2xl:pt-20 black-section lg:pb-20 pb-12">
             <header>
                 <h2>Du même artiste</h2>
             </header>
