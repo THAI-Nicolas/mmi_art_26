@@ -11,76 +11,85 @@ import ContactForm from "../components/ui/ContactForm.astro";
 <Layout title="Contact | MMI Art 26" description="Contactez l'équipe de MMI Art 26 pour toute question ou information concernant l'exposition et les artistes. Nous sommes là pour vous aider !">
     <main class="overflow-hidden">
 
-        <div class="">
+        <div class="mt-2 lg:mt-8 2xl:mt-10">
             <BlobTransition position="top" color="#111111" deformStrength={0.3} >
         </div>
         
         <section class="black-section">
             <header class="flex flex-col justify-center items-center">
-                <h1 class="py-6">Besoin d'aide ?</h1>
-                <p class="text-center">Nous vous répondons généralement sous 48 h pour toute question liée à l'exposition, aux artistes ou à votre visite. </p>
+                <h1 class="py-6 lg:py-8 2xl:py-10">Besoin d'aide ?</h1>
+                <p class="text-center lg:text-lg 2xl:text-xl lg:max-w-4xl">Nous vous répondons généralement sous 48 h pour toute question liée à l'exposition, aux artistes ou à votre visite. </p>
             </header>
         </section>
         
-        <div class="flex flex-col lg:flex-row lg:gap-0 lg:items-center">
-        <section class="black-section lg:flex-[2] lg:min-h-screen lg:py-12 lg:px-12">
-            <ContactForm />
-        </section>
-        <div class="lg:hidden">
-            <BlobTransition position="bottom" color="#111111" deformStrength={0.3} ></BlobTransition>
-        </div>
-        
-        <section class="lg:flex-[1] lg:bg-primary lg:text-secondary lg:min-h-screen lg:py-8 lg:px-8">
-            <header>
-                <h2 class="lg:text-lg">Infos pratiques</h2>
-            </header>
-            <div class="py-8 lg:py-4">
+        <!-- Layout mobile : vertical / Desktop : horizontal -->
+        <div class="lg:flex lg:flex-row lg:bg-primary">
+            <!-- Section formulaire -->
+            <section class="black-section pb-16 lg:w-3/5 lg:py-16 2xl:py-24 lg:px-20 2xl:px-32 lg:bg-primary">
+                <ContactForm />
+            </section>
+            
+            <!-- BlobTransition seulement sur mobile -->
+            <div class="lg:hidden">
+                <BlobTransition position="bottom" color="#111111" deformStrength={0.3} ></BlobTransition>
+            </div>
+            
+            <!-- Section infos pratiques -->
+            <section class="pb-16 px-8 py-8 lg:w-2/5 lg:bg-primary lg:text-secondary lg:py-16 2xl:py-24 lg:px-12 2xl:px-16 lg:border-l lg:border-secondary/20">
+                <header>
+                    <h2 class="font-bold mb-6 lg:text-2xl 2xl:text-3xl lg:mb-8 2xl:mb-10">Infos pratiques</h2>
+                </header>
                 <div>
-                    <p class="text-center lg:text-left lg:text-xs">Le MMI Art 26 se déroule sur 3 jours de suite !</p>
-                    <div class="mt-4 lg:mt-2 lg:text-xs">
-                        <p><b>22 janvier</b>: 12h - 13h30 </p>
+                    <p class="text-center mb-4 lg:text-left lg:text-base 2xl:text-lg lg:mb-6">Le MMI Art 26 se déroule sur 3 jours de suite !</p>
+                    <div class="mt-4 space-y-1 lg:space-y-2 lg:text-base 2xl:text-lg">
+                        <p><b>22 janvier</b> : 12h - 13h30</p>
                         <p><b>23 janvier</b> : 12h - 13h30</p>
                         <p><b>24 janvier</b> : 9h - 17h</p>
                     </div>
                     
-                    <div class="py-4 lg:py-2">
-                        <h3 class="font-bold py-2 lg:py-1 lg:text-sm">Lieu</h3><span class="lg:text-xs">Bâtiment Amphithéâtre Salle 007</span>
+                    <div class="py-4 lg:py-8 2xl:py-10">
+                        <h3 class="font-bold py-2 lg:text-lg 2xl:text-xl lg:mb-2">Lieu</h3>
+                        <span class="lg:text-base 2xl:text-lg">Bâtiment Amphithéâtre Salle 007</span>
                     </div>
-                    <div class="py-4 lg:py-2">
-                        <h3 class="font-bold lg:text-sm">Autres moyens de contact</h3>
-                        <div class="flex justify-center lg:justify-start items-center gap-8 lg:gap-4 py-6 lg:py-3">
-                            <a href="mailto:expommi2026@gmail.com">
-                                <img class="w-10 lg:w-6 lg:invert" src={IconEmail.src} alt="Email">
+                    
+                    <div class="py-4 lg:py-8 2xl:py-10">
+                        <h3 class="font-bold mb-3 lg:text-lg 2xl:text-xl lg:mb-4">Autres moyens de contact</h3>
+                        <div class="flex justify-center items-center gap-8 py-6 lg:justify-start lg:gap-6 lg:py-4">
+                            <a href="mailto:expommi2026@gmail.com" class="hover:opacity-70 transition-opacity">
+                                <img class="w-10 lg:w-12 2xl:w-14 lg:brightness-0 lg:invert" src={IconEmail.src} alt="Email">
                             </a>
-                            <a href="https://www.instagram.com/expommi2026/" target="_blank">
-                                <img class="w-10 lg:w-6 lg:invert" src={IconInstagram.src} alt="Instagram">
+                            <a href="https://www.instagram.com/expommi2026/" target="_blank" class="hover:opacity-70 transition-opacity">
+                                <img class="w-10 lg:w-12 2xl:w-14 lg:brightness-0 lg:invert" src={IconInstagram.src} alt="Instagram">
                             </a>
                         </div>
                     </div>
                 
-                    <div class="py-4 lg:py-2">
-                        <h3 class="font-bold py-2 lg:py-1 lg:text-sm">Adresse</h3>
-                        <a href="https://maps.app.goo.gl/REjZ4KDKDzUNUv8i7" target="_blank" rel="noopener noreferrer" class="underline lg:text-xs" aria-label="Voir l'adresse sur Google Maps">4 Pl. Lucien Tharradin, 25200 Montbéliard</a>
-                        <div class="flex justify-center my-6 lg:my-3 lg:w-full">
-                            <BlobDynamic variant={2} className="w-full max-w-125 lg:w-60 lg:max-w-60">
+                    <div class="py-4 lg:py-8 2xl:py-10">
+                        <h3 class="font-bold py-2 lg:text-lg 2xl:text-xl lg:mb-2">Adresse</h3>
+                        <a href="https://maps.app.goo.gl/REjZ4KDKDzUNUv8i7" target="_blank" rel="noopener noreferrer" class="underline hover:opacity-70 transition-opacity lg:text-base 2xl:text-lg" aria-label="Voir l'adresse sur Google Maps">4 Pl. Lucien Tharradin, 25200 Montbéliard</a>
+                        <div class="flex justify-center my-6 lg:mt-6 lg:mb-0">
+                            <div class="w-full max-w-125 lg:w-full overflow-hidden rounded-lg">
                                 <iframe 
                                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d21565.716814373303!2d6.786224842071536!3d47.49547292805217!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4792172655793f9f%3A0x1b3b0f76560084ad!2sD%C3%A9partement%20MMI%20de%20Montb%C3%A9liard!5e0!3m2!1sfr!2sfr!4v1767894018694!5m2!1sfr!2sfr" 
-                                    class="w-full h-full min-h-100"
+                                    class="w-full h-full min-h-100 lg:min-h-75 2xl:min-h-90"
                                     style="border:0;" 
                                     allowfullscreen="" 
                                     loading="lazy" 
                                     referrerpolicy="no-referrer-when-downgrade"
                                 ></iframe>
-                            </BlobDynamic>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
         </div>
         
-        <div class="hidden lg:block">
-            <BlobTransition position="bottom" color="#111111" deformStrength={0.3} ></BlobTransition>
+        <!-- Bloc pour masquer la transition avec le footer sur desktop -->
+        <div class="hidden lg:block absolute 2xl:top-535 w-full bg-primary h-64 2xl:h-60"></div>
+        
+        <!-- BlobTransition du bas seulement sur mobile -->
+        <div class="lg:hidden">
+            <div style="height: 1px; background: #111111;"></div>
         </div>
     </main>
 </Layout>

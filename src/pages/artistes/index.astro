@@ -2,7 +2,8 @@
 //imports des composants
 import Layout from '../../layouts/Layout.astro';
 import CardArtisteEtOeuvre from '../../components/ui/CardArtisteEtOeuvre.astro';
-import BlobDynamic from '../../components/ui/BlobDynamic.astro';
+import IconRecherche from "../../assets/icones/recherche.webp";
+import IconChevron from "../../assets/icones/chevron.webp";
 
 //imports des fonctions backend
 import { getAllArtistes } from '../../lib/backend';
@@ -30,20 +31,21 @@ const yearOptions = [
             {/* Filtres */}
             <div class="flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between mt-8 md:mt-14 lg:mt-16 2xl:mt-20 mx-auto px-14 lg:px-6 2xl:px-40">
                 {/* Barre de recherche */}
-                <div class="flex-1 md:max-w-100">
+                <div class="flex-1 md:max-w-100 relative">
+                    <img src={IconRecherche.src} alt="" class="absolute right-6 top-1/2 -translate-y-1/2 w-3 lg:w-5 pointer-events-none" />
                     <input 
                         type="text" 
                         id="search-input"
                         placeholder="Rechercher un artiste..." 
-                        class="w-full px-4 py-3 border rounded-sm border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all text-primary/50 placeholder:text-primary/50 placeholder:text-xs md:placeholder:text-sm lg:placeholder:text-md 2xl:placeholder::text-lg"
+                        class="w-full pl-6 pr-0 lg:pr-4 py-2 border rounded-sm border-primary focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all text-primary placeholder:text-primary/50 placeholder:text-xs md:placeholder:text-sm lg:placeholder:text-md 2xl:placeholder::text-lg"
                     />
                 </div>
                 
                 {/* Menu déroulant année */}
-                <div class="md:min-w-100">
+                <div class="md:min-w-100 relative">
                     <select 
                         id="year-select"
-                        class="w-full px-4 py-3 border rounded-sm border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all text-primary/70 font-bold uppercase bg-secondary cursor-pointer"
+                        class="w-full pl-4 pr-12 py-2 border rounded-sm border-primary focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all text-primary uppercase bg-secondary cursor-pointer appearance-none"
                     >
                         {yearOptions.map(option => (
                             <option value={option.value} selected={option.value === 'TOUT'}>
@@ -51,6 +53,7 @@ const yearOptions = [
                             </option>
                         ))}
                     </select>
+                    <img src={IconChevron.src} alt="" class="absolute right-6 top-1/2 -translate-y-1/2 w-3 lg:w-4 2xl:w-5  pointer-events-none" />
                 </div>
             </div>
             
