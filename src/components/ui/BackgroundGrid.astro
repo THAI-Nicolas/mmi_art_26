@@ -6,7 +6,8 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 140vh;
+  height: 100%;
+  max-height: 100vh;
   z-index: -1;
   --color: rgba(17, 17, 17, 0.07);
   background-color: transparent;
@@ -17,15 +18,20 @@
   pointer-events: none;
 }
 
-  /* Desktop - grille plus longue */
+  /* Desktop - grille plus longue pour les pages avec contenu */
   @media (min-width: 1025px) {
-    .background-grid {
+    body:not(:has(main.overflow-y-hidden)) .background-grid {
       height: 200vh;
+      max-height: none;
     }
   }
 
-  /* Tablette */
+  /* Pour les pages sans overflow-y-hidden en mobile */
   @media (max-width: 1024px) {
+    body:not(:has(main.overflow-y-hidden)) .background-grid {
+      height: 140vh;
+      max-height: none;
+    }
     .background-grid {
       background-size: 180px 180px;
     }

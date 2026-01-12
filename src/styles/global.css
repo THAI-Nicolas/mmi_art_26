@@ -101,3 +101,9 @@
     @apply bg-primary text-secondary border border-secondary;
   }
 }
+
+/* Fix pour la page visite virtuelle - empêche le scroll causé par le BackgroundGrid */
+body:has(main.overflow-y-hidden) {
+  max-height: 100vh;
+  overflow-y: auto;
+}

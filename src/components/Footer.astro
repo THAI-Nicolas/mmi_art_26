@@ -1,10 +1,11 @@
 ---
-import Logo from "../assets/icones/logo.svg";
+import LogoWhite from "../assets/icones/logo_white.webp";
 import LiquidWave from "../assets/svgs/liquidwave_footer.svg";
 import IconInstagram from "../assets/icones/instagram_footer.webp";
 import LogoGba from "../assets/icones/logo_gba.webp";
 import LogoUmlp from "../assets/icones/logo_umlp.webp";
 import LogoMmi from "../assets/icones/logo_mmi.webp";
+import LogoPma from "../assets/icones/logo_pma.webp";
 
 ---
 <div class="w-full md:-mb-22 -mb-32 overflow-x-hidden relative">
@@ -13,7 +14,7 @@ import LogoMmi from "../assets/icones/logo_mmi.webp";
     </div>
 </div>
 
-<footer class="bg-primary pt-4 lg:pt-0 pb-20 px-12">
+<footer class="bg-primary pt-20 md:pt-8 lg:pt-10 pb-20 px-12">
     <div class="max-w-7xl mx-auto px-6 md:px-12">
         
         <!-- Contenu principal du footer -->
@@ -23,7 +24,7 @@ import LogoMmi from "../assets/icones/logo_mmi.webp";
             <div class="flex flex-col items-center md:items-start">
                 <a href="/" class="mb-6">
                     <div class="text-white">
-                        <img class="h-16 md:h-20 w-auto brightness-0 invert" src={Logo.src} alt="Logo MMI" />
+                        <img class="h-16 md:h-20 w-auto " src={LogoWhite.src} alt="Logo MMI" />
                     </div> 
                 </a>
                 <p class="text-secondary text-sm text-center md:text-left opacity-70">
@@ -69,6 +70,9 @@ import LogoMmi from "../assets/icones/logo_mmi.webp";
                 <div class="flex flex-col items-center md:items-end">
                     <h3 class="text-secondary mb-6 text-sm">Nos partenaires</h3>
                     <div class="flex gap-4 items-center">
+                        <a href="https://www.agglo-montbeliard.fr/" target="_blank" rel="noopener noreferrer">
+                            <img src={LogoPma.src} alt="MMI Art 26" class="h-6 w-auto object-contain" />
+                        </a>
                         <a href="https://www.geant-beaux-arts.fr/" target="_blank" rel="noopener noreferrer">
                             <img src={LogoGba.src} alt="Grand Belfort Agglomération" class="h-12 w-auto object-contain" />
                         </a>
