@@ -13,7 +13,18 @@ export default defineConfig({
   site: "https://mmi-art-26.fr",
   output: "server",
   image: {
-    domains: ["127.0.0.1", "localhost", "pb-expo.nicolas-thai.fr"],
+    // Désactiver l'optimisation d'images pour les domaines PocketBase
+    // Cela évite la double transformation qui cause les timeouts
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "pb-expo.nicolas-thai.fr",
+      },
+    ],
+    domains: ["127.0.0.1", "localhost"],
   },
-  adapter: netlify(),
+  adapter: netlify({
+    // Améliorer le cache des images
+    imageCDN: false, // Désactiver le CDN Netlify pour éviter les timeouts
+  }),
 });

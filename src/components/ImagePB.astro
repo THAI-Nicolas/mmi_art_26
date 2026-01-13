@@ -1,6 +1,4 @@
 ---
-import { Image } from "astro:assets";
-
 interface Props {
   collection: string;    // Nom de la collection
   record: string;        // ID de l'entrée
@@ -10,6 +8,8 @@ interface Props {
   height?: number;
   class?: string;        // Pour Tailwind
   loading?: "lazy" | "eager"; // Contrôle du lazy loading
+  thumb?: string;        // Taille du thumbnail PocketBase (ex: "400x300", "800x600")
+  quality?: number;      // Qualité de l'image (1-100)
 }
 
 const { 
@@ -20,24 +20,34 @@ const {
   width = 800, 
   height = 600,  
   class: className,
-  loading = "eager"
+  loading = "lazy",
+  thumb,
+  quality = 80
 } = Astro.props;
 
 // On récupère l'URL de base depuis le .env
 const pbUrl = import.meta.env.POCKETBASE_URL;
 
-// Construction de l'URL PocketBase
-// On ajoute le paramètre ?thumb si nécessaire
-const imageUrl = `${pbUrl}/api/files/${collection}/${record}/${file}?thumb=800x600`;
+// Construction de l'URL PocketBase optimisée
+// Si thumb est spécifié, on utilise le thumbnail de PocketBase
+// Sinon, on charge l'image originale (plus rapide, pas de traitement serveur)
+const imageUrl = thumb 
+  ? `${pbUrl}/api/files/${collection}/${record}/${file}?thumb=${thumb}`
+  : `${pbUrl}/api/files/${collection}/${record}/${file}`;
 ---
 
-<Image 
-  src={imageUrl} 
-  alt={alt} 
-  width={width} 
-  height={height} 
+<!-- 
+  Utilisation de <img> natif au lieu de <Image> d'Astro
+  Cela évite la double transformation (PocketBase + Netlify Image CDN)
+  et réduit drastiquement les temps de chargement
+-->
+<img 
+  src={imageUrl}
+  alt={alt}
+  width={width}
+  height={height}
   loading={loading}
+  decoding="async"
   class={`object-cover ${className}`}
-  format="webp"
-  quality="mid" 
+  style={`aspect-ratio: ${width} / ${height};`}
 />

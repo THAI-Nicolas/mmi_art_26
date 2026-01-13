@@ -248,11 +248,21 @@
       '/',                    // Accueil
       '/exposition',          // Exposition
       '/artistes',            // Liste des artistes
+      '/oeuvres',             // Liste des oeuvres
       '/visite-virtuelle',    // Visite virtuelle
-      '/contact'              // Contact
+      '/contact',             // Contact
+      '/mentions-legales'     // Mentions légales
     ];
     
     return majorPages.includes(pathname);
+  }
+
+  // Fonction pour déterminer si c'est une page ID (artiste ou oeuvre)
+  function isIDPage(url: string): boolean {
+    const pathname = new URL(url, window.location.origin).pathname;
+    
+    // Pages ID : /artistes/[slug] ou /oeuvres/[slug]
+    return pathname.startsWith('/artistes/') || pathname.startsWith('/oeuvres/');
   }
 
   // Initialisation
@@ -269,8 +279,14 @@
     const targetUrl = (event as any).to;
     const sourceUrl = window.location.href;
     
-    // Jouer la transition uniquement si on va vers ou depuis une page majeure
-    const shouldPlayTransition = isMajorPage(targetUrl) || isMajorPage(sourceUrl);
+    const targetIsMajor = isMajorPage(targetUrl);
+    const sourceIsMajor = isMajorPage(sourceUrl);
+    
+    // Logique simplifiée :
+    // GSAP uniquement pour les transitions entre pages principales
+    // Tout le reste (ID vers ID, ID vers principale, principale vers ID) : ViewTransition uniquement
+    
+    const shouldPlayTransition = sourceIsMajor && targetIsMajor;
     
     if (!shouldPlayTransition) {
       // Laisser Astro gérer la transition par défaut (View Transitions natives)

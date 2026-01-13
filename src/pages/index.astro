@@ -37,9 +37,16 @@ const artistes = await Promise.all(
 	artistsIds.map(id => GetArtistById(id))
 );
 
+// Précharger l'image centrale du carrousel (3ème œuvre, index 2)
+const pbUrl = import.meta.env.POCKETBASE_URL;
+const centralOeuvre = oeuvres[2];
+const centralImageRecord = centralOeuvre?.expand?.oeuvres_images[0];
+const preloadCarouselImage = centralImageRecord 
+	? `${pbUrl}/api/files/${centralImageRecord.collectionId}/${centralImageRecord.id}/${centralImageRecord.images[0]}?thumb=800x800`
+	: null;
 ---
 
-<Layout>
+<Layout preloadImage={preloadCarouselImage}>
 	<main class="overflow-hidden">
 		<section class="mb-12 lg:pt-8 lg:pb-15 lg:mb-0 2xl:pt-15 2xl:pb-30 2xl:mb-0">
 			<div class="hidden lg:block absolute top-0 left-0 lg:mt-26 lg:ml-2 lg:w-75 lg:h-75 2xl:mt-24 2xl:ml-4 2xl:w-116 2xl:h-116">
@@ -152,6 +159,8 @@ const artistes = await Promise.all(
 								alt={oeuvre.title}
 								width={800}
 								height={800}
+								thumb="800x800"
+								loading={index === 2 ? "eager" : "lazy"}
 								class="w-96 h-96 md:w-70 md:h-70 lg:w-87.5 lg:h-87.5 xl:w-120 xl:h-120 object-cover"
 							/>
 							<h3 class="bg-primary text-secondary text-center border-secondary border-x text-sm!">{oeuvre.expand.artiste_id.name}</h3>
