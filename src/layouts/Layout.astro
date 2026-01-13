@@ -27,10 +27,6 @@ const canonicalURL = canonical || new URL(Astro.url.pathname, Astro.site).href
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
 
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
-
 		<!-- Préconnexion au serveur PocketBase pour réduire la latence -->
 		<link rel="preconnect" href="https://pb-expo.nicolas-thai.fr" crossorigin>
 		<link rel="dns-prefetch" href="https://pb-expo.nicolas-thai.fr">
@@ -43,6 +39,11 @@ const canonicalURL = canonical || new URL(Astro.url.pathname, Astro.site).href
 		<meta name="color-scheme" content="light dark" />
 		<meta name="referrer" content="strict-origin-when-cross-origin" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		
+		<!-- Prefetch des pages principales pour navigation rapide -->
+		<link rel="prefetch" href="/exposition">
+		<link rel="prefetch" href="/artistes">
+		<link rel="prefetch" href="/visite-virtuelle">
 		
 		<!-- SEO Meta Tags -->
 		<title>{title}</title>

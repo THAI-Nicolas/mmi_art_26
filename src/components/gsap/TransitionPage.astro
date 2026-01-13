@@ -34,12 +34,23 @@
 </style>
 
 <script>
-  import { gsap } from "gsap";
+  // Import GSAP seulement si on est sur une page principale
+  let gsap: any = null;
+  
+  async function loadGSAP() {
+    if (!gsap) {
+      const gsapModule = await import("gsap");
+      gsap = gsapModule.gsap;
+    }
+    return gsap;
+  }
 
   // Flag global pour éviter les répétitions
   let globalIsTransitioning = false;
 
-  function initTransition() {
+  async function initTransition() {
+    // Charger GSAP si nécessaire
+    const GSAP = await loadGSAP();
     const overlay = document.querySelector(".shape-overlays");
     const paths = document.querySelectorAll(".shape-overlays__path");
 
@@ -86,7 +97,7 @@
 
     // Animation d'intro : révéler le contenu (liquide monte du bas)
     function playIntroAnimation() {
-      const tl = gsap.timeline({
+      const tl = GSAP.timeline({
         onUpdate: render,
         defaults: {
           ease: "power2.inOut",
@@ -124,7 +135,7 @@
     async function playPageTransition() {
       // Étape 1 : Couvrir l'écran (liquide descend de 100 à 0)
       await new Promise<void>((resolve) => {
-        const tl = gsap.timeline({
+        const tl = GSAP.timeline({
           onUpdate: render,
           onComplete: resolve,
           defaults: {
@@ -161,7 +172,7 @@
 
       // Étape 3 : Révéler le nouveau contenu (liquide monte de 0 à 100)
       await new Promise<void>((resolve) => {
-        const tl = gsap.timeline({
+        const tl = GSAP.timeline({
           onUpdate: render,
           onComplete: resolve,
           defaults: {
@@ -203,7 +214,7 @@
     async function playTransitionOut() {
       // Liquide descend pour couvrir l'écran
       await new Promise<void>((resolve) => {
-        const tl = gsap.timeline({
+        const tl = GSAP.timeline({
           onUpdate: render,
           onComplete: resolve,
           defaults: {
@@ -265,8 +276,10 @@
     return pathname.startsWith('/artistes/') || pathname.startsWith('/oeuvres/');
   }
 
-  // Initialisation
-  initTransition();
+  // Initialisation conditionnelle
+  if (isMajorPage(window.location.href)) {
+    initTransition();
+  }
 
   // Intercepter la navigation AVANT qu'elle commence (event listener global, une seule fois)
   document.addEventListener("astro:before-preparation", async (event) => {

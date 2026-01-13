@@ -161,6 +161,7 @@ const preloadCarouselImage = centralImageRecord
 								height={800}
 								thumb="800x800"
 								loading={index === 2 ? "eager" : "lazy"}
+								fetchpriority={index === 2 ? "high" : "auto"}
 								class="w-96 h-96 md:w-70 md:h-70 lg:w-87.5 lg:h-87.5 xl:w-120 xl:h-120 object-cover"
 							/>
 							<h3 class="bg-primary text-secondary text-center border-secondary border-x text-sm!">{oeuvre.expand.artiste_id.name}</h3>

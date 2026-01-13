@@ -1,3 +1,4 @@
+/* Import des fonts locales optimisées */
 @font-face {
   font-family: "Uni Sans";
   src: url("/fonts/uni-sans.woff2") format("woff2");
@@ -5,6 +6,14 @@
   font-style: normal;
   font-display: swap;
 }
+
+/* Import IBM Plex Mono en local (seulement les poids utilisés) */
+@import "@fontsource/ibm-plex-mono/200.css"; /* Extra-light */
+@import "@fontsource/ibm-plex-mono/300.css"; /* Light */
+@import "@fontsource/ibm-plex-mono/400.css"; /* Normal */
+@import "@fontsource/ibm-plex-mono/500.css"; /* Medium */
+@import "@fontsource/ibm-plex-mono/600.css"; /* Semi-bold */
+@import "@fontsource/ibm-plex-mono/700.css"; /* Bold */
 
 @import "tailwindcss";
 

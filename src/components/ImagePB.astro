@@ -10,6 +10,7 @@ interface Props {
   loading?: "lazy" | "eager"; // Contrôle du lazy loading
   thumb?: string;        // Taille du thumbnail PocketBase (ex: "400x300", "800x600")
   quality?: number;      // Qualité de l'image (1-100)
+  fetchpriority?: "high" | "low" | "auto"; // Priorité de chargement
 }
 
 const { 
@@ -22,7 +23,8 @@ const {
   class: className,
   loading = "lazy",
   thumb,
-  quality = 80
+  quality = 80,
+  fetchpriority = "auto"
 } = Astro.props;
 
 // On récupère l'URL de base depuis le .env
@@ -47,6 +49,7 @@ const imageUrl = thumb
   width={width}
   height={height}
   loading={loading}
+  fetchpriority={fetchpriority}
   decoding="async"
   class={`object-cover ${className}`}
   style={`aspect-ratio: ${width} / ${height};`}
