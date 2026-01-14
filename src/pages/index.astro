@@ -148,23 +148,68 @@ const preloadCarouselImage = centralImageRecord
 			<header class="ml-9 md:ml-12 lg:ml-20 2xl:ml-30">
 				<h2>Les oeuvres</h2>
 			</header>
-			<div class="overflow-x-auto scrollbar-hide" id="carousel-container">
-				<ul class="flex justify-start items-center mt-12 gap-0 pl-6">
+			<div id="carousel-container">
+				<ul class="flex justify-start items-center mt-12 gap-0" id="carousel-track">
+					{/* Premier set d'oeuvres */}
 					{oeuvres.map((oeuvre, index) => (
-						<li class="w-96 md:w-70 lg:w-87.5 xl:w-120 shrink-0" data-index={index}>
-							<ImagePB 
-								collection={oeuvre.expand.oeuvres_images[0].collectionId}
-								record={oeuvre.expand.oeuvres_images[0].id}
-								file={oeuvre.expand.oeuvres_images[0].images[0]}
-								alt={oeuvre.title}
-								width={800}
-								height={800}
-								thumb="800x800"
-								loading={index === 2 ? "eager" : "lazy"}
-								fetchpriority={index === 2 ? "high" : "auto"}
-								class="w-96 h-96 md:w-70 md:h-70 lg:w-87.5 lg:h-87.5 xl:w-120 xl:h-120 object-cover"
-							/>
-							<h3 class="bg-primary text-secondary text-center border-secondary border-x text-sm!">{oeuvre.expand.artiste_id.name}</h3>
+						<li 
+							class="carousel-item w-96 md:w-70 lg:w-87.5 xl:w-120 shrink-0 transition-all duration-500 ease-out"
+							data-index={index}
+						>
+							<a 
+								href={`/oeuvres/${oeuvre.slug}`}
+								class="block group cursor-pointer"
+								aria-label={`Voir l'œuvre ${oeuvre.title}`}
+							>
+								<div class="relative overflow-hidden">
+									<ImagePB 
+										collection={oeuvre.expand.oeuvres_images[0].collectionId}
+										record={oeuvre.expand.oeuvres_images[0].id}
+										file={oeuvre.expand.oeuvres_images[0].images[0]}
+										alt={oeuvre.title}
+										width={800}
+										height={800}
+										thumb="800x800"
+										loading={index === 2 ? "eager" : "lazy"}
+										fetchpriority={index === 2 ? "high" : "auto"}
+										class="w-96 h-96 md:w-70 md:h-70 lg:w-87.5 lg:h-87.5 xl:w-120 xl:h-120 object-cover"
+									/>
+								</div>
+								<h3 class="bg-primary text-secondary text-center border-secondary border-x text-sm! transition-all duration-300 group-hover:bg-secondary group-hover:text-primary py-2">
+									{oeuvre.expand.artiste_id.name}
+								</h3>
+							</a>
+						</li>
+					))}
+					{/* Dupliquer pour l'effet infini */}
+					{oeuvres.map((oeuvre, index) => (
+						<li 
+							class="carousel-item w-96 md:w-70 lg:w-87.5 xl:w-120 shrink-0 transition-all duration-500 ease-out"
+							data-index={index + oeuvres.length}
+							data-duplicate="true"
+						>
+							<a 
+								href={`/oeuvres/${oeuvre.slug}`}
+								class="block group cursor-pointer"
+								aria-label={`Voir l'œuvre ${oeuvre.title}`}
+							>
+								<div class="relative overflow-hidden">
+									<ImagePB 
+										collection={oeuvre.expand.oeuvres_images[0].collectionId}
+										record={oeuvre.expand.oeuvres_images[0].id}
+										file={oeuvre.expand.oeuvres_images[0].images[0]}
+										alt={oeuvre.title}
+										width={800}
+										height={800}
+										thumb="800x800"
+										loading="lazy"
+										class="w-96 h-96 md:w-70 md:h-70 lg:w-87.5 lg:h-87.5 xl:w-120 xl:h-120 object-cover"
+									/>
+								</div>
+								<h3 class="bg-primary text-secondary text-center border-secondary border-x text-sm! transition-all duration-300 group-hover:bg-secondary group-hover:text-primary py-2">
+									{oeuvre.expand.artiste_id.name}
+								</h3>
+							</a>
 						</li>
 					))}
 				</ul>
@@ -237,28 +282,144 @@ const preloadCarouselImage = centralImageRecord
 </Layout>
 
 <style>
-	.scrollbar-hide::-webkit-scrollbar {
-		display: none;
+	/* Carrousel infini automatique */
+	#carousel-container {
+		overflow: hidden;
+		position: relative;
+		width: 100%;
 	}
-	.scrollbar-hide {
-		-ms-overflow-style: none;
-		scrollbar-width: none;
+	
+	/* Gradient fade sur les bords */
+	#carousel-container::before,
+	#carousel-container::after {
+		content: "";
+		position: absolute;
+		top: 0;
+		height: 100%;
+		width: 200px;
+		z-index: 20;
+		pointer-events: none;
+	}
+	
+	#carousel-container::before {
+		left: 0;
+		background: linear-gradient(to right, rgb(250 250 250) 0%, rgba(250, 250, 250, 0) 100%);
+	}
+	
+	#carousel-container::after {
+		right: 0;
+		background: linear-gradient(to left, rgb(250 250 250) 0%, rgba(250, 250, 250, 0) 100%);
+	}
+	
+	/* Animation de scroll infini */
+	@keyframes infiniteScroll {
+		0% {
+			transform: translateX(0);
+		}
+		100% {
+			transform: translateX(calc(-384px * 5)); /* -w-96 * 5 items */
+		}
+	}
+	
+	@media (min-width: 768px) {
+		@keyframes infiniteScroll {
+			0% {
+				transform: translateX(0);
+			}
+			100% {
+				transform: translateX(calc(-280px * 5)); /* -w-70 * 5 items */
+			}
+		}
+	}
+	
+	@media (min-width: 1024px) {
+		@keyframes infiniteScroll {
+			0% {
+				transform: translateX(0);
+			}
+			100% {
+				transform: translateX(calc(-350px * 5)); /* -w-87.5 * 5 items */
+			}
+		}
+	}
+	
+	@media (min-width: 1280px) {
+		@keyframes infiniteScroll {
+			0% {
+				transform: translateX(0);
+			}
+			100% {
+				transform: translateX(calc(-480px * 5)); /* -w-120 * 5 items */
+			}
+		}
+	}
+	
+	#carousel-track {
+		animation: infiniteScroll 30s linear infinite;
+		will-change: transform;
+	}
+	
+	/* Effet de perspective sur les items */
+	.carousel-item {
+		opacity: 0.7;
+		transform: scale(0.95);
+		transition: all 0.3s ease;
+	}
+	
+	.carousel-item:hover,
+	.carousel-item.is-featured {
+		opacity: 1;
+		transform: scale(1);
+		z-index: 10;
+	}
+	
+	/* Quand on survole un item, tous les autres (y compris is-featured) redeviennent normaux */
+	#carousel-track:has(.carousel-item:hover) .carousel-item:not(:hover) {
+		opacity: 0.7;
+		transform: scale(0.95);
 	}
 </style>
 
 <script>
 	document.addEventListener('astro:page-load', () => {
 		const container = document.getElementById('carousel-container');
-		const thirdItem = container?.querySelector('[data-index="2"]') as HTMLElement;
+		const items = document.querySelectorAll('.carousel-item');
 		
-		if (container && thirdItem) {
-			const containerWidth = container.offsetWidth;
-			const itemLeft = thirdItem.offsetLeft;
-			const itemWidth = thirdItem.offsetWidth;
+		if (!container || !items.length) return;
+		
+		// Fonction pour trouver l'œuvre la plus proche du centre
+		function updateCenteredItem() {
+			const containerRect = container.getBoundingClientRect();
+			const containerCenter = containerRect.left + containerRect.width / 2;
 			
-			// Centrer le 3ème élément
-			const scrollPosition = itemLeft - (containerWidth / 2) + (itemWidth / 2);
-			container.scrollLeft = scrollPosition;
+			let closestItem: HTMLElement | null = null;
+			let closestDistance = Infinity;
+			
+			items.forEach((item) => {
+				const itemRect = item.getBoundingClientRect();
+				const itemCenter = itemRect.left + itemRect.width / 2;
+				const distance = Math.abs(containerCenter - itemCenter);
+				
+				if (distance < closestDistance) {
+					closestDistance = distance;
+					closestItem = item as HTMLElement;
+				}
+			});
+			
+			// Retirer is-featured de tous les items et l'ajouter au plus proche
+			items.forEach((item) => {
+				if (item === closestItem) {
+					item.classList.add('is-featured');
+				} else {
+					item.classList.remove('is-featured');
+				}
+			});
 		}
+		
+		// Mettre à jour toutes les 100ms pendant l'animation
+		setInterval(updateCenteredItem, 100);
+		
+		// Initialiser
+		updateCenteredItem();
 	});
 </script>
