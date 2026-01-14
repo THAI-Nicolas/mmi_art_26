@@ -11,6 +11,8 @@ interface Props {
   thumb?: string;        // Taille du thumbnail PocketBase (ex: "400x300", "800x600")
   quality?: number;      // Qualité de l'image (1-100)
   fetchpriority?: "high" | "low" | "auto"; // Priorité de chargement
+  aspectRatio?: boolean; // Activer/désactiver le ratio forcé (défaut: true)
+  objectFit?: "cover" | "contain" | "fill" | "none"; // Mode d'ajustement de l'image
 }
 
 const { 
@@ -24,7 +26,9 @@ const {
   loading = "lazy",
   thumb,
   quality = 80,
-  fetchpriority = "auto"
+  fetchpriority = "auto",
+  aspectRatio = true,
+  objectFit = "cover"
 } = Astro.props;
 
 // On récupère l'URL de base depuis le .env
@@ -51,6 +55,6 @@ const imageUrl = thumb
   loading={loading}
   fetchpriority={fetchpriority}
   decoding="async"
-  class={`object-cover ${className}`}
-  style={`aspect-ratio: ${width} / ${height};`}
+  class={`object-${objectFit} ${className}`}
+  style={aspectRatio ? `aspect-ratio: ${width} / ${height};` : undefined}
 />

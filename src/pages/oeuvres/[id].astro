@@ -45,7 +45,9 @@ const preloadImageUrl = `${pbUrl}/api/files/${imageRecord.collectionId}/${imageR
                 height={1200}
                 loading="eager"
                 fetchpriority="high"
-                class="w-full h-auto object-contain"
+                aspectRatio={false}
+                objectFit="contain"
+                class="w-full h-auto"
             />
         </div>
         
