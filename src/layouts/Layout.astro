@@ -68,8 +68,9 @@ const canonicalURL = canonical || new URL(Astro.url.pathname, Astro.site).href
 		<meta name="twitter:title" content={title} />
 		<meta name="twitter:description" content={description} />
 		<meta name="twitter:image" content={new URL(ogImage, Astro.site).href} /> 
-	<!-- Analytics - Umami -->
-		<script defer src="https://cloud.umami.is/script.js" data-website-id="38dec95c-3287-4ffe-b956-79951ba531c4"></script>	
+
+		<!-- Analytics - Umami (proxyfié pour éviter les bloqueurs) -->
+		<script defer src="/stats/script.js" data-website-id="38dec95c-3287-4ffe-b956-79951ba531c4"></script>	
 	</head>
 	<body>
 		<TransitionPage />

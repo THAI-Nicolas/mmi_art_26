@@ -25,3 +25,16 @@
   for = "/*.js"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+# Proxy pour Umami Analytics (contourner les bloqueurs de pub)
+[[redirects]]
+  from = "/stats/script.js"
+  to = "https://cloud.umami.is/script.js"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/stats/api/send"
+  to = "https://cloud.umami.is/api/send"
+  status = 200
+  force = true
