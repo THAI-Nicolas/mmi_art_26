@@ -4,14 +4,16 @@ import tailwindcss from "@tailwindcss/vite";
 import node from "@astrojs/node";
 
 import netlify from "@astrojs/netlify";
+import sitemap from "@astrojs/sitemap";
 
 // https://astro.build/config
 export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
-  site: "https://mmi-art-26.fr",
+  site: "https://expo.mmimontbeliard.com",
   output: "server",
+  integrations: [sitemap()],
   image: {
     // Désactiver l'optimisation d'images pour les domaines PocketBase
     // Cela évite la double transformation qui cause les timeouts
