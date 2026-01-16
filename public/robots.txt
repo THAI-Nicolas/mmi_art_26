@@ -1,0 +1,8 @@
+# robots.txt pour expo.mmimontbeliard.com
+# Exposition Artistique MMI Art 26
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://expo.mmimontbeliard.com/sitemap-index.xml
