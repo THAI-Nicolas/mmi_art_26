@@ -116,3 +116,15 @@ body:has(main.overflow-y-hidden) {
   max-height: 100vh;
   overflow-y: auto;
 }
+
+/* Support iOS safe area pour PWA en mode standalone */
+@supports (padding: env(safe-area-inset-top)) {
+  @media (display-mode: standalone) {
+    body {
+      padding-top: env(safe-area-inset-top);
+      padding-right: env(safe-area-inset-right);
+      padding-bottom: env(safe-area-inset-bottom);
+      padding-left: env(safe-area-inset-left);
+    }
+  }
+}

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Générateur d'icônes PWA - MMI Art 26</title>
+    <style>
+      body {
+        font-family: system-ui, -apple-system, sans-serif;
+        max-width: 800px;
+        margin: 50px auto;
+        padding: 20px;
+        background: #f5f5f5;
+      }
+      .container {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        color: #111;
+        margin-bottom: 10px;
+      }
+      .info {
+        color: #666;
+        margin-bottom: 30px;
+      }
+      button {
+        background: #111;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        font-size: 16px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-right: 10px;
+      }
+      button:hover {
+        background: #333;
+      }
+      button:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+      }
+      .preview {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 15px;
+        margin-top: 30px;
+      }
+      .preview-item {
+        text-align: center;
+      }
+      .preview-item img {
+        width: 100%;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+      }
+      .preview-item p {
+        margin: 5px 0 0 0;
+        font-size: 12px;
+        color: #666;
+      }
+      .status {
+        margin-top: 20px;
+        padding: 15px;
+        background: #e8f5e9;
+        border-left: 4px solid #4caf50;
+        border-radius: 4px;
+        display: none;
+      }
+      .status.show {
+        display: block;
+      }
+      #uploadArea {
+        border: 2px dashed #ccc;
+        border-radius: 8px;
+        padding: 40px;
+        text-align: center;
+        margin: 20px 0;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+      #uploadArea:hover {
+        border-color: #111;
+        background: #fafafa;
+      }
+      #uploadArea.dragover {
+        border-color: #4caf50;
+        background: #e8f5e9;
+      }
+      input[type="file"] {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🎨 Générateur d'icônes PWA</h1>
+      <p class="info">
+        Uploadez votre logo (SVG ou PNG 1024x1024) pour générer toutes les
+        tailles d'icônes nécessaires.
+      </p>
+
+      <div id="uploadArea">
+        <p>📁 Cliquez ou glissez-déposez votre logo ici</p>
+        <input type="file" id="fileInput" accept="image/svg+xml,image/png" />
+      </div>
+
+      <button id="useFavicon">Utiliser favicon.svg existant</button>
+      <button id="downloadAll" disabled>
+        📥 Télécharger toutes les icônes (ZIP)
+      </button>
+
+      <div id="status" class="status"></div>
+
+      <div id="preview" class="preview"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script>
+      const sizes = [72, 96, 128, 144, 152, 192, 384, 512];
+      let generatedIcons = {};
+
+      const uploadArea = document.getElementById("uploadArea");
+      const fileInput = document.getElementById("fileInput");
+      const useFaviconBtn = document.getElementById("useFavicon");
+      const downloadAllBtn = document.getElementById("downloadAll");
+      const statusDiv = document.getElementById("status");
+      const previewDiv = document.getElementById("preview");
+
+      // Upload area interactions
+      uploadArea.addEventListener("click", () => fileInput.click());
+
+      uploadArea.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        uploadArea.classList.add("dragover");
+      });
+
+      uploadArea.addEventListener("dragleave", () => {
+        uploadArea.classList.remove("dragover");
+      });
+
+      uploadArea.addEventListener("drop", (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove("dragover");
+        const file = e.dataTransfer.files[0];
+        if (file) processFile(file);
+      });
+
+      fileInput.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if (file) processFile(file);
+      });
+
+      useFaviconBtn.addEventListener("click", async () => {
+        try {
+          const response = await fetch("/favicon.svg");
+          const blob = await response.blob();
+          const file = new File([blob], "favicon.svg", {
+            type: "image/svg+xml",
+          });
+          processFile(file);
+        } catch (error) {
+          showStatus(
+            "Erreur: Impossible de charger favicon.svg. Assurez-vous que le serveur est démarré.",
+            "error"
+          );
+        }
+      });
+
+      async function processFile(file) {
+        showStatus("Génération des icônes en cours...", "loading");
+        previewDiv.innerHTML = "";
+        generatedIcons = {};
+
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          const img = new Image();
+          img.onload = () => generateIcons(img);
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+
+      function generateIcons(img) {
+        sizes.forEach((size) => {
+          const canvas = document.createElement("canvas");
+          canvas.width = size;
+          canvas.height = size;
+          const ctx = canvas.getContext("2d");
+
+          // Fond noir
+          ctx.fillStyle = "#000000";
+          ctx.fillRect(0, 0, size, size);
+
+          // Dessiner l'image centrée
+          const scale = Math.min(size / img.width, size / img.height) * 0.8; // 80% de la taille
+          const x = (size - img.width * scale) / 2;
+          const y = (size - img.height * scale) / 2;
+
+          ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
+
+          // Convertir en blob
+          canvas.toBlob((blob) => {
+            generatedIcons[`icon-${size}x${size}.png`] = blob;
+
+            // Preview
+            const previewItem = document.createElement("div");
+            previewItem.className = "preview-item";
+            const imgEl = document.createElement("img");
+            imgEl.src = URL.createObjectURL(blob);
+            const label = document.createElement("p");
+            label.textContent = `${size}x${size}`;
+            previewItem.appendChild(imgEl);
+            previewItem.appendChild(label);
+            previewDiv.appendChild(previewItem);
+
+            if (Object.keys(generatedIcons).length === sizes.length) {
+              downloadAllBtn.disabled = false;
+              showStatus(
+                `✅ ${sizes.length} icônes générées avec succès !`,
+                "success"
+              );
+            }
+          });
+        });
+      }
+
+      downloadAllBtn.addEventListener("click", async () => {
+        const zip = new JSZip();
+        const folder = zip.folder("icons");
+
+        for (const [name, blob] of Object.entries(generatedIcons)) {
+          folder.file(name, blob);
+        }
+
+        const content = await zip.generateAsync({ type: "blob" });
+        const url = URL.createObjectURL(content);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "mmi-art-26-icons.zip";
+        a.click();
+        URL.revokeObjectURL(url);
+
+        showStatus(
+          "✅ Archive téléchargée ! Extrayez les fichiers dans public/icons/",
+          "success"
+        );
+      });
+
+      function showStatus(message, type) {
+        statusDiv.textContent = message;
+        statusDiv.className = "status show";
+        statusDiv.style.background =
+          type === "error"
+            ? "#ffebee"
+            : type === "loading"
+            ? "#fff3e0"
+            : "#e8f5e9";
+        statusDiv.style.borderLeftColor =
+          type === "error"
+            ? "#f44336"
+            : type === "loading"
+            ? "#ff9800"
+            : "#4caf50";
+      }
+    </script>
+  </body>
+</html>

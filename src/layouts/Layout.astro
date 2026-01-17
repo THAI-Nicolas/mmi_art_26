@@ -22,10 +22,23 @@ const canonicalURL = canonical || new URL(Astro.url.pathname, Astro.site).href
 	<head>
 		<ViewTransitions />
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
+
+		<!-- PWA Manifest -->
+		<link rel="manifest" href="/manifest.webmanifest" />
+		
+		<!-- Theme colors -->
+		<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+		<meta name="theme-color" content="#000000" media="(prefers-color-scheme: light)" />
+		
+		<!-- iOS specific meta tags -->
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+		<meta name="apple-mobile-web-app-title" content="MMI Art 26" />
 
 		<!-- Préconnexion au serveur PocketBase pour réduire la latence -->
 		<link rel="preconnect" href="https://pb-expo.nicolas-thai.fr" crossorigin>
@@ -70,7 +83,7 @@ const canonicalURL = canonical || new URL(Astro.url.pathname, Astro.site).href
 		<meta name="twitter:image" content={new URL(ogImage, Astro.site).href} /> 
 
 		<!-- Analytics - Umami (proxyfié pour éviter les bloqueurs) -->
-		<script defer src="/stats/script.js" data-website-id="38dec95c-3287-4ffe-b956-79951ba531c4"></script>	
+		<script defer src="/stats/script.js" data-website-id="38dec95c-3287-4ffe-b956-79951ba531c4"></script>
 	</head>
 	<body>
 		<TransitionPage />
