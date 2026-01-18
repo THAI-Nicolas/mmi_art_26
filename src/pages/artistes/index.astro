@@ -9,7 +9,9 @@ import IconChevron from "../../assets/icones/chevron.webp";
 import { getAllArtistes } from '../../lib/backend';
 
 //Récupération des artistes
-const artistes = await getAllArtistes();
+const artistesData = await getAllArtistes();
+// Tri alphabétique par nom
+const artistes = artistesData.sort((a, b) => a.name.localeCompare(b.name));
 
 // Options pour le filtre année MMI
 const yearOptions = [
@@ -37,7 +39,7 @@ const yearOptions = [
                         type="text" 
                         id="search-input"
                         placeholder="Rechercher un artiste..." 
-                        class="w-full pl-6 pr-0 lg:pr-4 py-2 border rounded-sm border-primary focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all text-primary placeholder:text-primary/50 placeholder:text-xs md:placeholder:text-sm lg:placeholder:text-md 2xl:placeholder::text-lg"
+                        class="w-full pl-6 pr-0 lg:pr-4 py-2 border rounded-sm border-primary focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all text-primary placeholder:text-primary/50 placeholder:text-[0.5rem] md:placeholder:text-sm lg:placeholder:text-md 2xl:placeholder::text-lg"
                     />
                 </div>
                 
@@ -125,5 +127,8 @@ const yearOptions = [
         // Écouter les changements
         searchInput?.addEventListener('input', filterArtistes);
         yearSelect?.addEventListener('change', filterArtistes);
+        
+        // Initialiser l'affichage au chargement
+        filterArtistes();
     });
 </script>

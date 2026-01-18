@@ -83,7 +83,7 @@ const getAriaLabel = (platform) => {
                     <header>
                         <div class="flex flex-col ">
                             <h1 class="text-center lg:text-left ">{artiste.name}</h1>
-                            <span class="uppercase text-right lg:text-left lg:text-lg">{artiste.mmi_year}</span>
+                            <span class="uppercase text-center lg:text-left lg:text-lg">{artiste.mmi_year}</span>
                         </div>
                     </header>
                     <div class="my-8">
@@ -98,7 +98,7 @@ const getAriaLabel = (platform) => {
                                 if (icon) {
                                     return (
                                         <a href={canal.link} target="_blank" rel="noopener noreferrer" aria-label={`${getAriaLabel(canal.platform)} de ${artiste.name}`}>
-                                            <img class="w-10" src={icon.src} alt="">
+                                            <img class="w-10" src={icon.src} alt={`${getAriaLabel(canal.platform)} icon`} />
                                         </a>
                                     );
                                 }

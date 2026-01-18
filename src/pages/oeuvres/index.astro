@@ -1,1 +1,314 @@
+---
+//imports des composants
+import Layout from '../../layouts/Layout.astro';
+import CardArtisteEtOeuvre from '../../components/ui/CardArtisteEtOeuvre.astro';
+import IconRecherche from "../../assets/icones/recherche.webp";
+import IconChevron from "../../assets/icones/chevron.webp";
 
+//imports des fonctions backend
+import { getAllOeuvres } from '../../lib/backend';
+
+//Récupération des oeuvres
+const oeuvresData = await getAllOeuvres();
+// Tri alphabétique par titre
+const oeuvres = oeuvresData.sort((a, b) => a.title.localeCompare(b.title));
+
+// Options pour le filtre année MMI de l'auteur
+const yearOptions = [
+  { value: 'TOUT', label: 'TOUS' },
+  { value: '1e année', label: '1ère année' },
+  { value: '2e année', label: '2ème année' },
+  { value: '3e année', label: '3ème année' },
+  { value: 'ancien étudiant', label: 'Anciens étudiants' }
+];
+---
+<Layout title="Les Oeuvres | MMI Art 26" description="Découvrez les œuvres créatives de MMI Art 26. Explorez les créations de nos artistes talentueux lors de notre exposition annuelle à Montbéliard.">
+    <main class="">
+
+        <section class="py-10">
+            <header>
+                <h1 class="text-center md:mt-6 lg:mt-8 2xl:mt-12">Œuvres</h1>
+            </header>
+            
+            {/* Filtres */}
+            <div class="flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between mt-8 md:mt-14 lg:mt-16 2xl:mt-20 mx-auto px-14 lg:px-6 2xl:px-40">
+                {/* Barre de recherche */}
+                <div class="flex-1 md:max-w-100 relative">
+                    <img src={IconRecherche.src} alt="" class="absolute right-6 top-1/2 -translate-y-1/2 w-3 lg:w-5 pointer-events-none" />
+                    <input 
+                        type="text" 
+                        id="search-input"
+                        placeholder="Rechercher une œuvre..." 
+                        class="w-full pl-6 pr-0 lg:pr-4 py-2 border rounded-sm border-primary focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all text-primary placeholder:text-primary/50 placeholder:text-[0.5rem] md:placeholder:text-sm lg:placeholder:text-md 2xl:placeholder::text-lg"
+                    />
+                </div>
+                
+                {/* Menu déroulant année de l'auteur */}
+                <div class="md:min-w-100 relative">
+                    <select 
+                        id="year-select"
+                        class="w-full pl-4 pr-12 py-2 border rounded-sm border-primary focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all text-primary uppercase bg-secondary cursor-pointer appearance-none"
+                    >
+                        {yearOptions.map(option => (
+                            <option value={option.value} selected={option.value === 'TOUT'}>
+                                {option.label}
+                            </option>
+                        ))}
+                    </select>
+                    <img src={IconChevron.src} alt="" class="absolute right-6 top-1/2 -translate-y-1/2 w-3 lg:w-4 2xl:w-5  pointer-events-none" />
+                </div>
+            </div>
+            
+            <ul id="oeuvres-list" class="ul-flex py-6 mt-0 md:mt-6 lg:mt-8 2xl:mt-10">
+                {
+                    oeuvres.map((oeuvre, index) => (
+                        <li 
+                            data-oeuvre-title={oeuvre.title.toLowerCase()} 
+                            data-artiste-year={oeuvre.expand?.artiste_id?.mmi_year || ''}
+                            data-page="1"
+                        >
+                            <CardArtisteEtOeuvre oeuvre={oeuvre} variant={(index % 3) + 1} />
+                        </li>
+                    ))
+                }
+            </ul>
+            
+            {/* Bouton "Charger plus" pour mobile */}
+            <div id="load-more-container" class="flex flex-col items-center gap-3 mt-8 md:hidden">
+                <button 
+                    id="load-more-btn" 
+                    class="px-10 py-4 bg-primary text-secondary rounded-3xl font-medium hover:bg-primary/80 transition-all active:scale-95 min-w-[240px] text-base"
+                >
+                    Charger plus
+                </button>
+                <button 
+                    id="back-to-top-btn" 
+                    class="px-10 py-4 bg-primary text-secondary rounded-3xl font-medium hover:bg-primary/80 transition-all active:scale-95 min-w-[240px] text-base"
+                    style="display: none;"
+                >
+                    Revenir en haut
+                </button>
+                <p id="items-info" class="text-primary text-sm"></p>
+            </div>
+            
+            {/* Pagination classique pour desktop */}
+            <div id="pagination-container" class="hidden md:flex justify-center items-center gap-3 lg:gap-4 mt-8">
+                <button 
+                    id="prev-page" 
+                    class="px-5 py-2.5 lg:px-6 lg:py-3 bg-primary text-secondary rounded-3xl font-light hover:bg-primary/80 transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-sm lg:text-base"
+                    disabled
+                >
+                    Précédent
+                </button>
+                <div id="page-numbers" class="flex gap-2 cursor-pointer"></div>
+                <button 
+                    id="next-page" 
+                    class="px-5 py-2.5 lg:px-6 lg:py-3 bg-primary text-secondary rounded-3xl font-light hover:bg-primary/80 transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-sm lg:text-base"
+                >
+                    Suivant
+                </button>
+            </div>
+            
+            {/* Message si aucun résultat */}
+            <div id="no-results" class="hidden text-center py-12">
+                <p class="text-primary text-lg font-bold">Aucune œuvre ne correspond à vos critères de recherche.</p>
+            </div>
+        </section>
+        
+    </main>
+</Layout>
+
+<script>
+    document.addEventListener('astro:page-load', () => {
+        const searchInput = document.getElementById('search-input') as HTMLInputElement;
+        const yearSelect = document.getElementById('year-select') as HTMLSelectElement;
+        const oeuvresList = document.getElementById('oeuvres-list');
+        const noResults = document.getElementById('no-results');
+        
+        // Éléments pagination desktop
+        const prevButton = document.getElementById('prev-page') as HTMLButtonElement;
+        const nextButton = document.getElementById('next-page') as HTMLButtonElement;
+        const pageNumbers = document.getElementById('page-numbers');
+        
+        // Éléments "Charger plus" mobile
+        const loadMoreBtn = document.getElementById('load-more-btn') as HTMLButtonElement;
+        const backToTopBtn = document.getElementById('back-to-top-btn') as HTMLButtonElement;
+        const itemsInfo = document.getElementById('items-info');
+        
+        const ITEMS_PER_PAGE_DESKTOP = 12;
+        const ITEMS_PER_PAGE_MOBILE = 9; // 3x3 sur mobile
+        let currentPage = 1;
+        let itemsShownMobile = ITEMS_PER_PAGE_MOBILE;
+        let filteredItems: Element[] = [];
+        let isMobile = window.innerWidth < 768;
+        
+        // Détecter le changement de taille d'écran
+        window.addEventListener('resize', () => {
+            const wasMobile = isMobile;
+            isMobile = window.innerWidth < 768;
+            if (wasMobile !== isMobile) {
+                currentPage = 1;
+                itemsShownMobile = ITEMS_PER_PAGE_MOBILE;
+                updateDisplay();
+            }
+        });
+        
+        function filterOeuvres() {
+            const searchTerm = searchInput?.value.toLowerCase().trim() || '';
+            const selectedYear = yearSelect?.value || 'TOUT';
+            
+            const items = Array.from(oeuvresList?.querySelectorAll('li') || []);
+            filteredItems = [];
+            
+            items.forEach(item => {
+                const oeuvreTitle = item.getAttribute('data-oeuvre-title') || '';
+                const artisteYear = item.getAttribute('data-artiste-year') || '';
+                
+                const matchesSearch = searchTerm === '' || oeuvreTitle.includes(searchTerm);
+                let matchesYear = selectedYear === 'TOUT';
+                if (!matchesYear) {
+                    matchesYear = artisteYear === selectedYear;
+                }
+                
+                if (matchesSearch && matchesYear) {
+                    filteredItems.push(item);
+                }
+            });
+            
+            // Réinitialiser
+            currentPage = 1;
+            itemsShownMobile = ITEMS_PER_PAGE_MOBILE;
+            updateDisplay();
+        }
+        
+        function updateDisplay() {
+            const allItems = oeuvresList?.querySelectorAll('li') || [];
+            
+            if (isMobile) {
+                // Mode mobile : afficher les N premiers items
+                allItems.forEach(item => {
+                    (item as HTMLElement).style.display = 'none';
+                });
+                
+                filteredItems.slice(0, itemsShownMobile).forEach(item => {
+                    (item as HTMLElement).style.display = '';
+                });
+                
+                // Mise à jour du bouton "Charger plus"
+                if (loadMoreBtn && backToTopBtn && itemsInfo) {
+                    if (itemsShownMobile >= filteredItems.length) {
+                        // Toutes les œuvres sont affichées
+                        loadMoreBtn.style.display = 'none';
+                        itemsInfo.textContent = '';
+                        
+                        if (filteredItems.length > ITEMS_PER_PAGE_MOBILE) {
+                            // Afficher le bouton "Revenir en haut"
+                            backToTopBtn.style.display = 'block';
+                        } else {
+                            backToTopBtn.style.display = 'none';
+                        }
+                    } else {
+                        // Il reste des œuvres à charger
+                        loadMoreBtn.style.display = 'block';
+                        backToTopBtn.style.display = 'none';
+                        itemsInfo.textContent = `${itemsShownMobile} / ${filteredItems.length} œuvres`;
+                    }
+                }
+            } else {
+                // Mode desktop : pagination classique
+                const startIndex = (currentPage - 1) * ITEMS_PER_PAGE_DESKTOP;
+                const endIndex = startIndex + ITEMS_PER_PAGE_DESKTOP;
+                const totalPages = Math.ceil(filteredItems.length / ITEMS_PER_PAGE_DESKTOP);
+                
+                allItems.forEach(item => {
+                    (item as HTMLElement).style.display = 'none';
+                });
+                
+                filteredItems.slice(startIndex, endIndex).forEach(item => {
+                    (item as HTMLElement).style.display = '';
+                });
+                
+                // Mise à jour des boutons
+                if (prevButton) {
+                    prevButton.disabled = currentPage === 1;
+                }
+                if (nextButton) {
+                    nextButton.disabled = currentPage >= totalPages || filteredItems.length === 0;
+                }
+                
+                // Création des numéros de page
+                updatePageNumbers(totalPages);
+            }
+            
+            // Message "aucun résultat"
+            if (noResults) {
+                if (filteredItems.length === 0) {
+                    noResults.classList.remove('hidden');
+                } else {
+                    noResults.classList.add('hidden');
+                }
+            }
+        }
+        
+        function updatePageNumbers(totalPages: number) {
+            if (!pageNumbers) return;
+            
+            pageNumbers.innerHTML = '';
+            
+            if (totalPages <= 1) return;
+            
+            // Afficher max 5 numéros de page
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(totalPages, startPage + 4);
+            
+            if (endPage - startPage < 4) {
+                startPage = Math.max(1, endPage - 4);
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.textContent = i.toString();
+                pageBtn.className = `px-3 py-2 lg:px-4 lg:py-2.5 rounded-3xl transition-all text-sm lg:text-base ${
+                    i === currentPage 
+                        ? 'bg-primary text-secondary font-medium' 
+                        : 'bg-secondary text-primary border border-primary hover:bg-primary/10'
+                }`;
+                pageBtn.addEventListener('click', () => goToPage(i));
+                pageNumbers.appendChild(pageBtn);
+            }
+        }
+        
+        function goToPage(page: number) {
+            const totalPages = Math.ceil(filteredItems.length / ITEMS_PER_PAGE_DESKTOP);
+            if (page >= 1 && page <= totalPages) {
+                currentPage = page;
+                updateDisplay();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+        
+        function loadMore() {
+            itemsShownMobile += ITEMS_PER_PAGE_MOBILE;
+            updateDisplay();
+        }
+        
+        // Écouter les changements de filtres
+        searchInput?.addEventListener('input', filterOeuvres);
+        yearSelect?.addEventListener('change', filterOeuvres);
+        
+        // Écouter les clics sur les boutons desktop
+        prevButton?.addEventListener('click', () => goToPage(currentPage - 1));
+        nextButton?.addEventListener('click', () => goToPage(currentPage + 1));
+        
+        // Écouter le clic sur "Charger plus" mobile
+        loadMoreBtn?.addEventListener('click', loadMore);
+        
+        // Écouter le clic sur "Revenir en haut" mobile
+        backToTopBtn?.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        
+        // Initialiser l'affichage
+        filterOeuvres();
+    });
+</script>
