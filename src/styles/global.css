@@ -31,7 +31,20 @@
     @apply bg-secondary text-primary font-ibm-plex-mono tracking-[2px];
     width: 100%;
     overflow-x: hidden;
+    /* Fix pour les PWA iOS */
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
   }
+
+  /* Bloquer le scroll quand le menu est ouvert */
+  body.overflow-hidden {
+    overflow: hidden !important;
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    height: -webkit-fill-available;
+  }
+
   main {
     @apply overflow-hidden;
   }

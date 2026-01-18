@@ -52,6 +52,19 @@ import BlobDynamic from "./ui/BlobDynamic.astro";
 </header>
 
 <style>
+    /* Support des safe-areas iOS pour PWA */
+    header {
+        padding-top: max(1.25rem, env(safe-area-inset-top));
+        padding-left: max(2rem, env(safe-area-inset-left));
+        padding-right: max(2rem, env(safe-area-inset-right));
+    }
+    
+    /* Menu overlay avec support PWA */
+    #menu-overlay {
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+    
     /* Blobs décalés en fonction de la hauteur de l'écran */
     .blob-top {
         top: -18%;
