@@ -28,7 +28,7 @@ import BlobDynamic from "./ui/BlobDynamic.astro";
 
     <!-- Menu mobile overlay -->
     <nav id="menu-overlay" class="lg:hidden fixed inset-0 bg-secondary pointer-events-none " aria-hidden="true" aria-label="Menu de navigation mobile">
-        <div class="absolute top-[-10%] left-[-20%] md:top-[-20%] md:left-[-15%] w-62.5 md:w-87.5">
+        <div class="blob-top absolute w-62.5 md:w-87.5">
             <BlobDynamic variant={1} />
         </div>
         <div class="flex flex-col items-center justify-center gap-16 h-full">
@@ -44,7 +44,7 @@ import BlobDynamic from "./ui/BlobDynamic.astro";
             </a>
 
         </div>
-        <div class="absolute bottom-[-8%] right-[-24%] md:bottom-[-18%] md:right-[-15%] w-62.5 md:w-87.5">
+        <div class="blob-bottom absolute w-62.5 md:w-87.5">
             <BlobDynamic variant={1} />
         </div>
     </nav>
@@ -52,6 +52,43 @@ import BlobDynamic from "./ui/BlobDynamic.astro";
 </header>
 
 <style>
+    /* Blobs décalés en fonction de la hauteur de l'écran */
+    .blob-top {
+        top: -18%;
+        left: -22%;
+    }
+    
+    .blob-bottom {
+        bottom: -15%;
+        right: -26%;
+    }
+    
+    /* Sur les écrans plus hauts, on peut les rapprocher un peu */
+    @media (min-height: 700px) {
+        .blob-top {
+            top: -12%;
+            left: -18%;
+        }
+        
+        .blob-bottom {
+            bottom: -10%;
+            right: -22%;
+        }
+    }
+    
+    /* Sur md, ajuster aussi */
+    @media (min-width: 768px) {
+        .blob-top {
+            top: -20%;
+            left: -15%;
+        }
+        
+        .blob-bottom {
+            bottom: -18%;
+            right: -15%;
+        }
+    }
+    
     /* Optimisation GPU pour le menu */
     #menu-overlay {
         will-change: transform;
