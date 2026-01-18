@@ -86,9 +86,7 @@ const preloadImageUrl = `${pbUrl}/api/files/${imageRecord.collectionId}/${imageR
                 <div class="lg:w-[65%] 2xl:w-[70%]">
                     <div>
                         <h3 class="font-bold">Description</h3>
-                        <p class="mt-4">
-                            {oeuvres.description}
-                        </p>
+                        <div class="mt-4" set:html={oeuvres.description} />
                     </div>
                     <div class="mt-8">
                         <h3 class="font-bold">Techniques utilisées</h3>
