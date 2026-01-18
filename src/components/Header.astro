@@ -27,11 +27,11 @@ import BlobDynamic from "./ui/BlobDynamic.astro";
     
 
     <!-- Menu mobile overlay -->
-    <nav id="menu-overlay" class="lg:hidden fixed inset-0 bg-secondary pointer-events-none " aria-hidden="true" aria-label="Menu de navigation mobile">
+    <nav id="menu-overlay" class="lg:hidden fixed inset-0 bg-secondary pointer-events-none overflow-hidden" aria-hidden="true" aria-label="Menu de navigation mobile">
         <div class="blob-top absolute w-62.5 md:w-87.5">
             <BlobDynamic variant={1} />
         </div>
-        <div class="flex flex-col items-center justify-center gap-16 h-full">
+        <div class="flex flex-col items-center justify-center gap-16 h-full mt-8 md:mt-0">
             <ul class="flex flex-col gap-10">
                 <li><a href="/exposition" aria-label="Lien vers la page de l'exposition" class="font-medium" >L'exposition</a></li>
                 <li><a href="/artistes" aria-label="Lien vers la page des artistes" class="font-medium" >Artistes</a></li>
