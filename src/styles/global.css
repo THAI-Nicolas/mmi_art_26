@@ -109,7 +109,7 @@
   .ul-flex {
     @apply flex flex-col items-center md:flex-row md:flex-wrap md:justify-center;
     @apply my-8 md:my-12 lg:my-16 2xl:my-24;
-    @apply gap-12 md:gap-10 lg:gap-10 2xl:gap-32;
+    @apply gap-12 md:gap-16 lg:gap-16 2xl:gap-32;
   }
 
   .btn-white {
