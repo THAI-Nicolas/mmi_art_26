@@ -448,6 +448,31 @@ import BlobDynamic from "./ui/BlobDynamic.astro";
                     return;
                 }
                 
+                // Vérifier si on est sur une page artiste/oeuvre (pas d'animation sur ces pages)
+                const pathname = window.location.pathname;
+                const isIDPage = pathname.startsWith('/artistes/') || pathname.startsWith('/oeuvres/');
+                
+                if (isIDPage) {
+                    // Sur les pages ID, fermer le menu sans animation
+                    newMenu.classList.remove('menu-closing');
+                    newMenu.classList.remove('menu-active');
+                    newMenu.classList.remove('navigating');
+                    newMenu.setAttribute('aria-hidden', 'true');
+                    newMenu.style.visibility = '';
+                    document.body.classList.remove('overflow-hidden');
+                    
+                    if (newOpenBtn) {
+                        newOpenBtn.classList.remove('menu-open');
+                        newOpenBtn.setAttribute('aria-expanded', 'false');
+                    }
+                    
+                    isNavigatingFromMenu = false;
+                    setTimeout(() => {
+                        delete (window as any).__disablePageTransition;
+                    }, 100);
+                    return;
+                }
+                
                 // Rendre le menu visible pour l'animation
                 newMenu.classList.add('menu-closing');
                 newMenu.style.visibility = 'visible';
