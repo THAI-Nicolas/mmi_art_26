@@ -417,8 +417,7 @@ import BlobDynamic from "./ui/BlobDynamic.astro";
             // Le menu est ouvert, on navigue depuis le menu mobile
             isNavigatingFromMenu = true;
             
-            // Activer l'overlay noir pour masquer le contenu
-            menu?.classList.add('navigating');
+            // Le menu reste visible pendant le chargement (pas d'overlay noir)
 
             // Désactiver l'animation TransitionPage avec un flag global
             (window as any).__disablePageTransition = true;
