@@ -55,6 +55,13 @@
       return;
     }
 
+    // Ne pas jouer l'animation sur les pages artistes/oeuvres (pages ID)
+    const pathname = window.location.pathname;
+    const isIDPage = pathname.startsWith('/artistes/') || pathname.startsWith('/oeuvres/');
+    if (isIDPage) {
+      return;
+    }
+
     // Charger GSAP si nécessaire
     const GSAP = await loadGSAP();
     const overlay = document.querySelector(".shape-overlays-mobile");
