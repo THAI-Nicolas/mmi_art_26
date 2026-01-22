@@ -27,25 +27,30 @@ import BlobDynamic from "./ui/BlobDynamic.astro";
     
 
     <!-- Menu mobile overlay -->
-    <nav id="menu-overlay" class="lg:hidden fixed inset-0 bg-secondary pointer-events-none overflow-hidden" aria-hidden="true" aria-label="Menu de navigation mobile">
-        <div class="blob-top absolute w-62.5 md:w-87.5">
-            <BlobDynamic variant={1} />
-        </div>
-        <div class="flex flex-col items-center justify-center gap-16 h-full mt-8 md:mt-0">
-            <ul class="flex flex-col gap-10">
-                <li><a href="/exposition" aria-label="Lien vers la page de l'exposition" class="font-medium" >L'exposition</a></li>
-                <li><a href="/artistes" aria-label="Lien vers la page des artistes" class="font-medium" >Artistes</a></li>
-                <li><a href="/oeuvres" aria-label="Lien vers la page des oeuvres" class="font-medium">Les oeuvres</a></li>
-                <li><a href="/contact" aria-label="Lien vers la page de contact" class="font-medium">Contact</a></li>
-            </ul>
+    <nav id="menu-overlay" class="lg:hidden fixed inset-0 pointer-events-none overflow-hidden" aria-hidden="true" aria-label="Menu de navigation mobile">
+        <!-- SVG Liquid Wave -->
+        <svg class="menu-liquid-wave" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <path class="menu-liquid-wave__path" fill="#111111"></path>
+            <path class="menu-liquid-wave__path" fill="#111111"></path>
+        </svg>
+        
+        <!-- Overlay noir pour masquer le contenu pendant la navigation -->
+        <div class="menu-navigation-overlay"></div>
+        
+        <div class="menu-content">
+            <div class="flex flex-col items-center justify-center gap-16 h-full mt-8 md:mt-0">
+                <ul class="flex flex-col gap-10">
+                    <li><a href="/exposition" aria-label="Lien vers la page de l'exposition" class="font-medium text-white" >L'exposition</a></li>
+                    <li><a href="/artistes" aria-label="Lien vers la page des artistes" class="font-medium text-white" >Artistes</a></li>
+                    <li><a href="/oeuvres" aria-label="Lien vers la page des oeuvres" class="font-medium text-white">Les oeuvres</a></li>
+                    <li><a href="/contact" aria-label="Lien vers la page de contact" class="font-medium text-white">Contact</a></li>
+                </ul>
 
-            <a href="/" aria-label="Retour à l'accueil">
-                <Logo class="w-20"/>
-            </a>
+                <a href="/" aria-label="Retour à l'accueil">
+                    <Logo class="w-20 menu-logo-white"/>
+                </a>
 
-        </div>
-        <div class="blob-bottom absolute w-62.5 md:w-87.5">
-            <BlobDynamic variant={1} />
+            </div>
         </div>
     </nav>
 
@@ -63,6 +68,64 @@ import BlobDynamic from "./ui/BlobDynamic.astro";
     #menu-overlay {
         padding-top: env(safe-area-inset-top);
         padding-bottom: env(safe-area-inset-bottom);
+        visibility: hidden;
+    }
+    
+    /* Menu ouvert - devient visible pour permettre l'interaction */
+    #menu-overlay.menu-active,
+    #menu-overlay.menu-closing {
+        visibility: visible;
+    }
+    
+    #menu-overlay.menu-active {
+        pointer-events: auto;
+    }
+    
+    /* Contenu du menu */
+    .menu-content {
+        opacity: 0;
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        height: 100%;
+    }
+    
+    /* Le contenu apparaît progressivement après que la vague ait commencé */
+    #menu-overlay.menu-active .menu-content {
+        opacity: 1;
+        transition: opacity 0.5s ease-in-out 0.5s;
+    }
+    
+    /* Le contenu disparaît immédiatement quand on commence à fermer */
+    #menu-overlay.menu-closing .menu-content {
+        opacity: 0;
+        transition: opacity 0.2s ease-in-out 0s;
+    }
+    
+    /* Styles pour les éléments blancs du menu mobile */
+    .menu-blob-white :global(svg path) {
+        fill: white !important;
+    }
+    
+    .menu-logo-white {
+        filter: brightness(0) invert(1);
+    }
+    
+    /* SVG Liquid Wave */
+    .menu-liquid-wave {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 0;
+        will-change: transform;
+        transform: translateZ(0);
+        backface-visibility: hidden;
+    }
+    
+    .menu-liquid-wave__path {
+        will-change: d;
     }
     
     /* Blobs décalés en fonction de la hauteur de l'écran */
@@ -101,19 +164,6 @@ import BlobDynamic from "./ui/BlobDynamic.astro";
             right: -15%;
         }
     }
-    
-    /* Optimisation GPU pour le menu */
-    #menu-overlay {
-        will-change: transform;
-        transform: translateX(100%);
-        transition: transform 0.5s ease-in-out;
-    }
-    
-    /* Menu ouvert : slide in depuis le haut */
-    #menu-overlay.menu-active {
-        transform: translateY(0);
-        pointer-events: auto;
-    }
    
     /* Animation du burger vers croix */
     #open-menu.menu-open .burger-line-1 {
@@ -130,16 +180,183 @@ import BlobDynamic from "./ui/BlobDynamic.astro";
         transform: rotate(-45deg) translateY(-11px) translateX(4px);
         width: 1.5rem; /* w-6 */
     }
+    
+    /* Burger devient blanc quand le menu est ouvert */
+    #open-menu.menu-open .burger-line {
+        border-color: white;
+    }
+    
     #open-menu.menu-open {
         transform: translateY(0);
+    }
+    
+    /* Overlay noir pendant la navigation */
+    .menu-navigation-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #111111;
+        opacity: 0;
+        pointer-events: none;
+        z-index: 3; /* Entre le menu content (z-1) et au-dessus */
+        transition: none;
+    }
+    
+    #menu-overlay.navigating .menu-navigation-overlay {
+        opacity: 1;
     }
 </style>
 
 <script>
-    document.addEventListener("astro:page-load", () => {
+    // Import GSAP
+    let gsap: any = null;
+    
+    async function loadGSAP() {
+        if (!gsap) {
+            const gsapModule = await import("gsap");
+            gsap = gsapModule.gsap;
+        }
+        return gsap;
+    }
+
+    document.addEventListener("astro:page-load", async () => {
+        const GSAP = await loadGSAP();
         const openBtn = document.getElementById("open-menu");
         const menu = document.getElementById("menu-overlay");
         const menuLinks = menu?.querySelectorAll('a');
+        const paths = document.querySelectorAll('.menu-liquid-wave__path');
+
+        if (!menu || !paths.length) return;
+
+        // Configuration de l'animation liquid
+        const numPoints = 10;
+        const numPaths = paths.length;
+        const delayPointsMax = 0.3;
+        const delayPerPath = 0.15;
+        const duration = 0.6;
+        let allPoints: number[][] = [];
+
+        // Délais fixes pour une animation reproductible
+        const fixedDelays = [0, 0.05, 0.15, 0.08, 0.22, 0.12, 0.18, 0.03, 0.25, 0.1];
+
+        // Initialiser les points pour chaque path (depuis la droite)
+        for (let i = 0; i < numPaths; i++) {
+            let points: number[] = [];
+            allPoints.push(points);
+            for (let j = 0; j < numPoints; j++) {
+                points.push(100); // Position de départ (droite, invisible)
+            }
+        }
+
+        // Fonction de rendu des paths (vagues horizontales de droite à gauche)
+        function render() {
+            for (let i = 0; i < numPaths; i++) {
+                let path = paths[i] as SVGPathElement;
+                let points = allPoints[i];
+
+                // Commencer en haut à droite et tracer une ligne horizontale jusqu'au premier point
+                let d = `M 100 0 H ${points[0]} C`;
+
+                // Créer des courbes de Bézier horizontales
+                for (let j = 0; j < numPoints - 1; j++) {
+                    let p = ((j + 1) / (numPoints - 1)) * 100; // Position Y (verticale)
+                    let cp = p - (1 / (numPoints - 1) * 100) / 2; // Point de contrôle Y
+                    
+                    // Les courbes se déplacent horizontalement (X = points[j]) à différentes hauteurs (Y = p)
+                    d += ` ${points[j]} ${cp} ${points[j + 1]} ${cp} ${points[j + 1]} ${p}`;
+                }
+
+                // Fermer le path : aller à droite, descendre, revenir en haut à droite
+                d += ` H 100 V 0`;
+                path.setAttribute("d", d);
+            }
+        }
+
+        // Animation d'ouverture (de droite vers gauche)
+        function openMenu() {
+            const tl = GSAP.timeline({
+                onUpdate: render,
+                defaults: {
+                    ease: "power2.inOut",
+                    duration: duration
+                }
+            });
+
+            // Les points vont de 100 (droite) vers 0 (gauche) pour couvrir l'écran
+            for (let i = 0; i < numPaths; i++) {
+                let points = allPoints[i];
+                let pathDelay = delayPerPath * (numPaths - i - 1);
+
+                for (let j = 0; j < numPoints; j++) {
+                    let delay = fixedDelays[j];
+                    tl.to(
+                        points,
+                        {
+                            [j]: 0
+                        },
+                        delay + pathDelay
+                    );
+                }
+            }
+        }
+
+        // Animation de fermeture (de gauche vers droite - pour révéler)
+        function closeMenuToReveal() {
+            return new Promise<void>((resolve) => {
+                const tl = GSAP.timeline({
+                    onUpdate: render,
+                    onComplete: resolve,
+                    defaults: {
+                        ease: "power2.inOut",
+                        duration: duration
+                    }
+                });
+
+                // Les points vont de 0 (gauche) vers 100 (droite) pour révéler
+                for (let i = 0; i < numPaths; i++) {
+                    let points = allPoints[i];
+                    let pathDelay = delayPerPath * i;
+
+                    for (let j = 0; j < numPoints; j++) {
+                        let delay = fixedDelays[j];
+                        tl.to(
+                            points,
+                            {
+                                [j]: 100
+                            },
+                            delay + pathDelay
+                        );
+                    }
+                }
+            });
+        }
+
+        // Animation de transition complète (fermeture du menu → reste noir → révèle nouveau contenu)
+        async function playMenuTransition() {
+            // Ne rien faire ici - on garde le menu visible pendant le chargement
+            // L'animation se jouera après le swap dans astro:after-swap
+            return;
+        }
+
+        // Fonction pour fermer le menu et révéler le nouveau contenu
+        async function closeMenuAndReveal() {
+            // Étape 1 : Faire disparaître le contenu du menu
+            menu?.classList.add('menu-closing');
+            menu?.classList.remove('menu-active');
+            updateTabIndex(false);
+            
+            await new Promise(resolve => setTimeout(resolve, 200));
+            
+            // Étape 2 : Animer le SVG de gauche (0) vers droite (100) pour révéler
+            await closeMenuToReveal();
+            
+            // Nettoyer les états
+            menu?.classList.remove('menu-closing');
+            menu?.setAttribute('aria-hidden', 'true');
+            document.body.classList.remove('overflow-hidden');
+        }
 
         // Fonction pour gérer le tabindex des liens
         const updateTabIndex = (isActive: boolean) => {
@@ -154,16 +371,175 @@ import BlobDynamic from "./ui/BlobDynamic.astro";
 
         // Initialiser avec tabindex="-1" (menu fermé par défaut)
         updateTabIndex(false);
+        render(); // Rendu initial
 
-        openBtn?.addEventListener('click', () => {
-            const isActive = menu?.classList.toggle('menu-active');
-            document.body.classList.toggle('overflow-hidden', isActive);
-            menu?.setAttribute('aria-hidden', String(!isActive));
-            openBtn?.setAttribute('aria-expanded', String(isActive));
-            openBtn?.classList.toggle('menu-open');
+        // Flag pour savoir si on navigue depuis le menu mobile
+        let isNavigatingFromMenu = false;
+
+        // Gestion du clic sur le bouton burger
+        openBtn?.addEventListener('click', async () => {
+            const isCurrentlyActive = menu?.classList.contains('menu-active');
             
-            // Mettre à jour le tabindex
-            updateTabIndex(isActive ?? false);
+            if (isCurrentlyActive) {
+                // Fermeture du menu avec animation
+                menu?.classList.add('menu-closing');
+                menu?.classList.remove('menu-active');
+                document.body.classList.remove('overflow-hidden');
+                openBtn?.setAttribute('aria-expanded', 'false');
+                openBtn?.classList.remove('menu-open');
+                updateTabIndex(false);
+                
+                // Attendre la fin de l'animation avant de cacher complètement
+                await closeMenuToReveal();
+                menu?.classList.remove('menu-closing');
+                menu?.setAttribute('aria-hidden', 'true');
+            } else {
+                // Ouverture du menu
+                menu?.classList.add('menu-active');
+                document.body.classList.add('overflow-hidden');
+                menu?.setAttribute('aria-hidden', 'false');
+                openBtn?.setAttribute('aria-expanded', 'true');
+                openBtn?.classList.add('menu-open');
+                updateTabIndex(true);
+                openMenu();
+            }
+        });
+
+        // Intercepter la navigation AVANT qu'elle commence
+        document.addEventListener("astro:before-preparation", async (event) => {
+            // Vérifier si le menu est ouvert
+            const isMenuOpen = menu?.classList.contains('menu-active');
+            
+            if (!isMenuOpen) {
+                return; // Pas de menu ouvert, laisser la transition normale
+            }
+
+            // Le menu est ouvert, on navigue depuis le menu mobile
+            isNavigatingFromMenu = true;
+            
+            // Activer l'overlay noir pour masquer le contenu
+            menu?.classList.add('navigating');
+
+            // Désactiver l'animation TransitionPage avec un flag global
+            (window as any).__disablePageTransition = true;
+
+            // Intercepter le loader
+            const originalLoader = (event as any).loader;
+            
+            (event as any).loader = async () => {
+                // Ne pas jouer d'animation ici, juste charger la page
+                // Le menu reste visible pendant le chargement
+                const result = await originalLoader();
+                
+                return result;
+            };
+        });
+
+        // Après le swap de la page, fermer le menu et révéler le nouveau contenu
+        document.addEventListener("astro:after-swap", async () => {
+            if (isNavigatingFromMenu) {
+                // Récupérer les nouveaux éléments après le swap
+                const newMenu = document.getElementById("menu-overlay");
+                const newOpenBtn = document.getElementById("open-menu");
+                const newPaths = document.querySelectorAll('.menu-liquid-wave__path');
+                
+                if (!newMenu || !newPaths.length) {
+                    isNavigatingFromMenu = false;
+                    delete (window as any).__disablePageTransition;
+                    return;
+                }
+                
+                // Rendre le menu visible pour l'animation
+                newMenu.classList.add('menu-closing');
+                newMenu.style.visibility = 'visible';
+                
+                // Créer un nouveau tableau de points pour l'animation de fermeture
+                let closingPoints: number[][] = [];
+                for (let i = 0; i < numPaths; i++) {
+                    let points: number[] = [];
+                    closingPoints.push(points);
+                    for (let j = 0; j < numPoints; j++) {
+                        points.push(0); // Position de départ (gauche, écran couvert)
+                    }
+                }
+                
+                // Fonction de rendu pour la fermeture avec les nouveaux paths
+                function renderClosing() {
+                    for (let i = 0; i < numPaths; i++) {
+                        let path = newPaths[i] as SVGPathElement;
+                        let points = closingPoints[i];
+
+                        let d = `M 100 0 H ${points[0]} C`;
+
+                        for (let j = 0; j < numPoints - 1; j++) {
+                            let p = ((j + 1) / (numPoints - 1)) * 100;
+                            let cp = p - (1 / (numPoints - 1) * 100) / 2;
+                            d += ` ${points[j]} ${cp} ${points[j + 1]} ${cp} ${points[j + 1]} ${p}`;
+                        }
+
+                        d += ` H 100 V 0`;
+                        path.setAttribute("d", d);
+                    }
+                }
+                
+                // Rendu initial avec écran couvert (points à 0)
+                renderClosing();
+                
+                // Petit délai pour s'assurer que le rendu est appliqué
+                await new Promise(resolve => setTimeout(resolve, 50));
+                
+                // Animation horizontale de fermeture (de gauche 0 vers droite 100)
+                await new Promise<void>((resolve) => {
+                    const tl = GSAP.timeline({
+                        onUpdate: renderClosing,
+                        onComplete: resolve,
+                        defaults: {
+                            ease: "power2.inOut",
+                            duration: duration
+                        }
+                    });
+
+                    // Les points vont de 0 (gauche) vers 100 (droite) pour révéler
+                    for (let i = 0; i < numPaths; i++) {
+                        let points = closingPoints[i];
+                        let pathDelay = delayPerPath * i;
+
+                        for (let j = 0; j < numPoints; j++) {
+                            let delay = fixedDelays[j];
+                            tl.to(
+                                points,
+                                {
+                                    [j]: 100
+                                },
+                                delay + pathDelay
+                            );
+                        }
+                    }
+                });
+                
+                // Nettoyer les états
+                newMenu.classList.remove('menu-closing');
+                newMenu.classList.remove('menu-active');
+                newMenu.classList.remove('navigating');
+                newMenu.setAttribute('aria-hidden', 'true');
+                newMenu.style.visibility = '';
+                document.body.classList.remove('overflow-hidden');
+                
+                // Réinitialiser le flag
+                isNavigatingFromMenu = false;
+                
+                // S'assurer que le burger est réinitialisé
+                if (newOpenBtn) {
+                    newOpenBtn.classList.remove('menu-open');
+                    newOpenBtn.setAttribute('aria-expanded', 'false');
+                }
+                
+                // Réactiver TransitionPage pour les prochaines navigations
+                // Délai pour s'assurer que tous les event listeners ont fini
+                setTimeout(() => {
+                    delete (window as any).__disablePageTransition;
+                }, 100);
+            }
         });
     });
 </script>

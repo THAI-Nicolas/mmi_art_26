@@ -1,0 +1,146 @@
+---
+/**
+ * Composant TransitionPageMobile - Transition liquid morphism horizontale pour mobile au premier chargement
+ * 
+ * Utilise GSAP pour animer des SVG paths en forme de vagues liquides horizontales
+ * S'active uniquement sur mobile (<1024px) et au premier chargement de la page
+ */
+---
+
+<svg class="shape-overlays-mobile" viewBox="0 0 100 100" preserveAspectRatio="none">
+  <path class="shape-overlays-mobile__path" fill="#111111"></path>
+  <path class="shape-overlays-mobile__path" fill="#111111"></path>
+</svg>
+
+<style>
+  .shape-overlays-mobile {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    /* Optimisations GPU */
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+  
+  .shape-overlays-mobile__path {
+    /* Optimisation pour les modifications fréquentes */
+    will-change: d;
+  }
+</style>
+
+<script>
+  // Import GSAP
+  let gsap: any = null;
+  
+  async function loadGSAP() {
+    if (!gsap) {
+      const gsapModule = await import("gsap");
+      gsap = gsapModule.gsap;
+    }
+    return gsap;
+  }
+
+  async function initMobileTransition() {
+    // Vérifier si on est sur mobile
+    const isMobile = window.innerWidth < 1024;
+    if (!isMobile) return;
+
+    // Ne pas jouer l'animation si on navigue depuis le menu
+    if ((window as any).__disablePageTransition) {
+      return;
+    }
+
+    // Charger GSAP si nécessaire
+    const GSAP = await loadGSAP();
+    const overlay = document.querySelector(".shape-overlays-mobile");
+    const paths = document.querySelectorAll(".shape-overlays-mobile__path");
+
+    if (!overlay || !paths.length) return;
+
+    const numPoints = 10;
+    const numPaths = paths.length;
+    const delayPerPath = 0.15;
+    const introDuration = 0.8;
+    let allPoints: number[][] = [];
+
+    // Délais fixes pour une animation reproductible
+    const fixedDelays = [0, 0.05, 0.15, 0.08, 0.22, 0.12, 0.18, 0.03, 0.25, 0.1];
+
+    // Initialiser les points pour chaque path (commencer à 0 = écran couvert à gauche)
+    for (let i = 0; i < numPaths; i++) {
+      let points: number[] = [];
+      allPoints.push(points);
+      for (let j = 0; j < numPoints; j++) {
+        points.push(0); // Position de départ (gauche, couvre l'écran)
+      }
+    }
+
+    // Fonction de rendu des paths (vagues horizontales de gauche à droite)
+    function render() {
+      for (let i = 0; i < numPaths; i++) {
+        let path = paths[i] as SVGPathElement;
+        let points = allPoints[i];
+
+        // Commencer en haut à gauche et tracer une ligne verticale jusqu'au premier point
+        let d = `M 0 0 V ${points[0]} C`;
+
+        // Créer des courbes de Bézier qui se déplacent horizontalement (Y = points[j])
+        for (let j = 0; j < numPoints - 1; j++) {
+          let p = ((j + 1) / (numPoints - 1)) * 100; // Position X (horizontale)
+          let cp = p - (1 / (numPoints - 1) * 100) / 2; // Point de contrôle X
+          
+          // Les courbes se déplacent verticalement (Y = points[j]) à différentes positions horizontales (X = p)
+          d += ` ${cp} ${points[j]} ${cp} ${points[j + 1]} ${p} ${points[j + 1]}`;
+        }
+
+        // Fermer le path : descendre, aller à gauche, remonter
+        d += ` V 100 H 0 V 0`;
+        path.setAttribute("d", d);
+      }
+    }
+
+    // Animation d'intro : révéler le contenu (liquide se rétracte de gauche vers la droite)
+    function playIntroAnimation() {
+      const tl = GSAP.timeline({
+        onUpdate: render,
+        defaults: {
+          ease: "power2.inOut",
+          duration: introDuration
+        }
+      });
+
+      // Rendu initial avec écran couvert (points à 0)
+      render();
+
+      // Animer vers 100 (liquide se rétracte vers la droite pour révéler)
+      for (let i = 0; i < numPaths; i++) {
+        let points = allPoints[i];
+        let pathDelay = delayPerPath * i;
+
+        for (let j = 0; j < numPoints; j++) {
+          let delay = fixedDelays[j];
+          tl.to(
+            points,
+            {
+              [j]: 100 // Aller vers 100 (droite) pour révéler le contenu
+            },
+            delay + pathDelay
+          );
+        }
+      }
+    }
+
+    // Jouer l'animation d'intro
+    playIntroAnimation();
+  }
+
+  // Lancer l'animation au chargement de la page
+  document.addEventListener("astro:page-load", async () => {
+    await initMobileTransition();
+  });
+</script>

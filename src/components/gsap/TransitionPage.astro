@@ -27,6 +27,13 @@
     backface-visibility: hidden;
   }
   
+  /* Cacher complètement TransitionPage sur mobile */
+  @media (max-width: 1023px) {
+    .shape-overlays {
+      display: none !important;
+    }
+  }
+  
   .shape-overlays__path {
     /* Optimisation pour les modifications fréquentes */
     will-change: d;
@@ -34,8 +41,14 @@
 </style>
 
 <script>
-  // Import GSAP seulement si on est sur une page principale
-  let gsap: any = null;
+  // VÉRIFICATION MOBILE : Ne jamais exécuter TransitionPage sur mobile
+  const isMobileDevice = window.innerWidth < 1024;
+  
+  if (!isMobileDevice) {
+    // Tout le code de TransitionPage s'exécute uniquement sur desktop
+    
+    // Import GSAP seulement si on est sur une page principale
+    let gsap: any = null;
   
   async function loadGSAP() {
     if (!gsap) {
@@ -278,12 +291,24 @@
   }
 
   // Initialisation conditionnelle
-  if (isMajorPage(window.location.href)) {
+  const isMobile = window.innerWidth < 1024;
+  if (!isMobile && isMajorPage(window.location.href)) {
     initTransition();
   }
 
   // Intercepter la navigation AVANT qu'elle commence (event listener global, une seule fois)
   document.addEventListener("astro:before-preparation", async (event) => {
+    // Vérifier si on est sur mobile (< 1024px = lg breakpoint)
+    const isMobile = window.innerWidth < 1024;
+    if (isMobile) {
+      return; // Pas de TransitionPage sur mobile, seulement sur desktop
+    }
+    
+    // Vérifier si le menu mobile a désactivé les transitions
+    if ((window as any).__disablePageTransition) {
+      return; // Laisser le menu mobile gérer la transition
+    }
+    
     // Empêcher les appels multiples avec flag global
     if (globalIsTransitioning) {
       return;
@@ -331,6 +356,19 @@
   });
 
   document.addEventListener("astro:after-swap", () => {
+    // Vérifier d'abord si le menu mobile gère la transition
+    if ((window as any).__disablePageTransition) {
+      globalIsTransitioning = false;
+      return;
+    }
+    
+    // Vérifier si on est sur mobile
+    const isMobile = window.innerWidth < 1024;
+    if (isMobile) {
+      globalIsTransitioning = false;
+      return; // Pas de TransitionPage sur mobile
+    }
+    
     globalIsTransitioning = false;
     // Réinitialiser et relancer l'intro SEULEMENT si on arrive sur une page majeure
     if (isMajorPage(window.location.href)) {
@@ -340,10 +378,30 @@
 
   // Réinitialiser sur chaque chargement de page (View Transitions)
   document.addEventListener("astro:page-load", () => {
+    // Vérifier d'abord si le menu mobile gère la transition
+    if ((window as any).__disablePageTransition) {
+      globalIsTransitioning = false;
+      return;
+    }
+    
+    // Vérifier si on est sur mobile
+    const isMobile = window.innerWidth < 1024;
+    if (isMobile) {
+      globalIsTransitioning = false;
+      return; // Pas de TransitionPage sur mobile
+    }
+    
+    // Ne pas réinitialiser si le menu mobile gère la transition
+    if ((window as any).__disablePageTransition) {
+      return;
+    }
+    
     globalIsTransitioning = false;
     // Jouer l'intro SEULEMENT si on est sur une page majeure
     if (isMajorPage(window.location.href)) {
       initTransition();
     }
   });
+  
+  } // Fin du bloc if (!isMobileDevice)
 </script>

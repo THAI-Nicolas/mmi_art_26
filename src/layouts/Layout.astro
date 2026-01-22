@@ -2,6 +2,7 @@
 import { ViewTransitions } from 'astro:transitions';
 import '../styles/global.css';
 import TransitionPage from '../components/gsap/TransitionPage.astro';
+import TransitionPageMobile from '../components/gsap/TransitionPageMobile.astro';
 import BackgroundGrid from '../components/ui/BackgroundGrid.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
@@ -87,6 +88,7 @@ const canonicalURL = canonical || new URL(Astro.url.pathname, Astro.site).href
 	</head>
 	<body>
 		<TransitionPage />
+		<TransitionPageMobile />
 		<Header />
 		<BackgroundGrid />
 		<slot />
