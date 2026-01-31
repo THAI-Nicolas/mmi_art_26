@@ -43,6 +43,16 @@ import Layout from '../layouts/Layout.astro';
 		</div>
 	</div>
 
+	<!-- Écran de chargement -->
+	<div id="loading-screen" class="fixed inset-0 z-110 flex flex-col items-center justify-center bg-primary opacity-0 pointer-events-none transition-opacity duration-300">
+		<div class="flex flex-col items-center gap-6">
+			<p id="loading-text" class="text-secondary text-sm uppercase tracking-widest font-ibm-plex-mono">Chargement de l'exposition</p>
+			<div class="w-48 h-1 bg-secondary/20 rounded-full overflow-hidden">
+				<div id="loading-bar" class="h-full bg-secondary rounded-full transition-all duration-300" style="width: 0%"></div>
+			</div>
+		</div>
+	</div>
+
 	<!-- Conteneur Pannellum (caché au départ) -->
 	<div id="panorama-wrapper" class="fixed inset-0 z-99 opacity-0 pointer-events-none transition-opacity duration-500">
 		<div id="panorama" class="w-full h-full">
@@ -70,17 +80,50 @@ import Layout from '../layouts/Layout.astro';
 <link rel="stylesheet" href="/pannellum.css" />
 <script is:inline src="/pannellum.js"></script>
 
+<!-- Masquer immédiatement les éléments indésirables -->
+<script is:inline>
+	// Masquer immédiatement la liquid wave et autres éléments
+	(function() {
+		var style = document.createElement('style');
+		style.textContent = 'header, footer, .background-grid, .menu-liquid-wave { display: none !important; }';
+		document.head.appendChild(style);
+	})();
+</script>
+
 <!-- Styles Pannellum - CSS obligatoire pour les éléments Pannellum -->
 <style is:global>
-	/* Masquer header/footer en mode immersif */
+	/* Masquer header/footer/wave sur toute la page visite-virtuelle */
+	body:has(#intro-screen) header,
+	body:has(#intro-screen) footer,
+	body:has(#intro-screen) .background-grid,
+	body:has(#intro-screen) .menu-liquid-wave,
+	body:has(#panorama-wrapper) header,
+	body:has(#panorama-wrapper) footer,
+	body:has(#panorama-wrapper) .background-grid,
+	body:has(#panorama-wrapper) .menu-liquid-wave {
+		display: none !important;
+	}
+	
+	/* Masquer header/footer en mode immersif (fallback) */
 	body.immersive-mode header,
 	body.immersive-mode footer,
-	body.immersive-mode .background-grid {
+	body.immersive-mode .background-grid,
+	body.immersive-mode .menu-liquid-wave {
 		display: none !important;
 	}
 	
 	body.immersive-mode {
 		overflow: hidden;
+	}
+	
+	/* Fond noir pour le conteneur Pannellum pendant le chargement */
+	#panorama {
+		background-color: var(--color-primary) !important;
+	}
+	
+	.pnlm-container {
+		background-color: var(--color-primary) !important;
+		background-image: none !important;
 	}
 
 	/* Bloquer le scroll sur la page visite-virtuelle */
@@ -189,11 +232,15 @@ import Layout from '../layouts/Layout.astro';
 	document.addEventListener('astro:page-load', () => {
 		const introScreen = document.getElementById('intro-screen');
 		const panoramaWrapper = document.getElementById('panorama-wrapper');
+		const loadingScreen = document.getElementById('loading-screen');
+		const loadingBar = document.getElementById('loading-bar');
+		const loadingText = document.getElementById('loading-text');
 		const enterBtn = document.getElementById('enter-btn');
 		const exitBtn = document.getElementById('exit-btn');
 		const currentSceneName = document.getElementById('current-scene-name');
 		
 		let viewer = null;
+		let isLoading = false;
 		
 		// Configuration des scènes
 		const sceneNames = {
@@ -292,39 +339,117 @@ import Layout from '../layouts/Layout.astro';
 			});
 		}
 		
+		// Afficher l'écran de chargement
+		function showLoading(message) {
+			if (loadingText) loadingText.textContent = message || "Chargement de l'exposition";
+			if (loadingBar) loadingBar.style.width = '0%';
+			if (loadingScreen) {
+				loadingScreen.style.opacity = '1';
+				loadingScreen.style.pointerEvents = 'auto';
+			}
+			// Animation de la barre de chargement
+			let progress = 0;
+			const interval = setInterval(() => {
+				progress += Math.random() * 15;
+				if (progress > 90) progress = 90; // Ne pas dépasser 90% avant le vrai chargement
+				if (loadingBar) loadingBar.style.width = progress + '%';
+			}, 100);
+			return interval;
+		}
+		
+		// Masquer l'écran de chargement
+		function hideLoading(interval) {
+			if (interval) clearInterval(interval);
+			if (loadingBar) loadingBar.style.width = '100%';
+			setTimeout(() => {
+				if (loadingScreen) {
+					loadingScreen.style.opacity = '0';
+					loadingScreen.style.pointerEvents = 'none';
+				}
+			}, 300);
+		}
+		
 		// Entrer dans le mode immersif
 		function enterImmersiveMode() {
-			document.body.classList.add('immersive-mode');
+			if (isLoading) return;
+			isLoading = true;
 			
-			if (introScreen) {
-				introScreen.style.opacity = '0';
-				introScreen.style.pointerEvents = 'none';
-			}
+			// Afficher le chargement AVANT tout
+			const loadingInterval = showLoading("Chargement de l'exposition");
+			const startTime = Date.now();
+			const minLoadingTime = 1500;
 			
-			if (panoramaWrapper) {
-				panoramaWrapper.style.opacity = '1';
-				panoramaWrapper.style.pointerEvents = 'auto';
-			}
-			
-			// Initialiser Pannellum si pas encore fait
-			if (!viewer) {
-				setTimeout(initPannellum, 100);
-			}
+			// Attendre que le loading soit visible, puis masquer l'intro
+			setTimeout(() => {
+				document.body.classList.add('immersive-mode');
+				
+				if (introScreen) {
+					introScreen.style.opacity = '0';
+					introScreen.style.pointerEvents = 'none';
+				}
+				
+				// Initialiser Pannellum si pas encore fait
+				if (!viewer) {
+					setTimeout(() => {
+						initPannellum();
+						// Attendre que Pannellum soit prêt ET que le temps minimum soit écoulé
+						const checkReady = setInterval(() => {
+							const elapsedTime = Date.now() - startTime;
+							const pannellumReady = viewer && viewer.isLoaded();
+							
+							if (pannellumReady && elapsedTime >= minLoadingTime) {
+								clearInterval(checkReady);
+								hideLoading(loadingInterval);
+								if (panoramaWrapper) {
+									panoramaWrapper.style.opacity = '1';
+									panoramaWrapper.style.pointerEvents = 'auto';
+								}
+								isLoading = false;
+							}
+						}, 100);
+					}, 50);
+				} else {
+					const remainingTime = Math.max(0, minLoadingTime - (Date.now() - startTime));
+					setTimeout(() => {
+						hideLoading(loadingInterval);
+						if (panoramaWrapper) {
+							panoramaWrapper.style.opacity = '1';
+							panoramaWrapper.style.pointerEvents = 'auto';
+						}
+						isLoading = false;
+					}, remainingTime);
+				}
+			}, 50); // Petit délai pour que le loading apparaisse d'abord
 		}
 		
 		// Quitter le mode immersif
 		function exitImmersiveMode() {
-			document.body.classList.remove('immersive-mode');
+			if (isLoading) return;
+			isLoading = true;
 			
-			if (introScreen) {
-				introScreen.style.opacity = '1';
-				introScreen.style.pointerEvents = 'auto';
-			}
+			const minLoadingTime = 1000;
+			const loadingInterval = showLoading('Sortie de la visite virtuelle');
+			const startTime = Date.now();
 			
+			// Masquer le panorama
 			if (panoramaWrapper) {
 				panoramaWrapper.style.opacity = '0';
 				panoramaWrapper.style.pointerEvents = 'none';
 			}
+			
+			// Attendre le temps minimum puis afficher l'intro
+			setTimeout(() => {
+				document.body.classList.remove('immersive-mode');
+				
+				hideLoading(loadingInterval);
+				
+				if (introScreen) {
+					introScreen.style.opacity = '1';
+					introScreen.style.pointerEvents = 'auto';
+				}
+				
+				isLoading = false;
+			}, minLoadingTime);
 		}
 		
 		// Event listeners
