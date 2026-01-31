@@ -13,6 +13,27 @@ export async function getAllArtistes() {
   }
 }
 
+//Fonction pour récupérer toutes les photos de la galerie
+export async function getAllImagesGalerie() {
+  try {
+    const record = await pb.collection("galerie").getFullList({});
+    return record;
+  } catch (error) {
+    console.error("Erreur lors de la récupération des images de la galerie");
+    return [];
+  }
+}
+
+export async function getImageGalerieById(id) {
+  try {
+    const record = await pb.collection("galerie").getOne(id);
+    return record;
+  } catch (error) {
+    console.error("Erreur lors de la récupération de l'image de la galerie");
+    return null;
+  }
+}
+
 //Fonction pour récupérer un artiste en fonction de son slug
 export async function GetArtistBySlug(slug) {
   try {
@@ -27,7 +48,7 @@ export async function GetArtistBySlug(slug) {
     console.error(
       "Erreur lors de la récupération de l'artiste",
       error.status,
-      error.message
+      error.message,
     );
     return null;
   }
@@ -45,7 +66,7 @@ export async function GetArtistById(id) {
     console.error(
       "Erreur lors de la récupération de l'artiste",
       error.status,
-      error.message
+      error.message,
     );
     return null;
   }
@@ -208,7 +229,7 @@ export async function getSuggestedArtistes(currentArtiste, limit = 3) {
 export async function getSuggestedOeuvres(
   currentOeuvre,
   excludeIds = [],
-  limit = 3
+  limit = 3,
 ) {
   try {
     const suggestions = [];

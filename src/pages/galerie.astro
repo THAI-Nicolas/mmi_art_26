@@ -1,0 +1,79 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { getAllImagesGalerie, getImageGalerieById } from "../lib/backend.js";
+
+const ImagesGalerie = await getAllImagesGalerie();
+
+
+
+---
+<Layout titre="Galerie Photos" description="Galerie photos de l'exposition artistique des étudiants MMI Montbéliard 2026">
+    <main>
+        <section>
+            <header>
+                <h1 class="text-center">Galerie Photos</h1>
+            </header>
+
+            <ul class="ul-flex gap-20 py-6 mt-0 md:mt-6 lg:mt-8 2xl:mt-10">
+                {
+                    ImagesGalerie.map((imageGalerie) => (
+                    <li>
+                        <a href={`/${imageGalerie.id}`}>
+                        <img
+                            class="w-86 h-86 object-cover"
+                            src={`${import.meta.env.POCKETBASE_URL}/api/files/galerie/${imageGalerie.id}/${imageGalerie.image}`}
+                            alt={imageGalerie.title || "Image galerie"}
+                            loading="lazy"
+                        />
+                        </a>
+                    </li>
+                    ))
+                }
+            </ul>
+
+            {/* Bouton "Charger plus" pour mobile */}
+            <div id="load-more-container" class="flex flex-col items-center gap-3 mt-8 md:hidden">
+                <button 
+                    id="load-more-btn" 
+                    class="px-10 py-4 bg-primary text-secondary rounded-3xl font-medium hover:bg-primary/80 transition-all active:scale-95 min-w-60 text-base"
+                >
+                    Charger plus
+                </button>
+                <button 
+                    id="back-to-top-btn" 
+                    class="px-10 py-4 bg-primary text-secondary rounded-3xl font-medium hover:bg-primary/80 transition-all active:scale-95 min-w-60 text-base"
+                    style="display: none;"
+                >
+                    Revenir en haut
+                </button>
+                <p id="items-info" class="text-primary text-sm"></p>
+            </div>
+            
+            {/* Pagination classique pour desktop */}
+            <div id="pagination-container" class="hidden md:flex justify-center items-center gap-3 lg:gap-4 mt-8">
+                <button 
+                    id="prev-page" 
+                    class="px-5 py-2.5 lg:px-6 lg:py-3 bg-primary text-secondary rounded-3xl font-light hover:bg-primary/80 transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-sm lg:text-base"
+                    disabled
+                >
+                    Précédent
+                </button>
+                <div id="page-numbers" class="flex gap-2 cursor-pointer"></div>
+                <button 
+                    id="next-page" 
+                    class="px-5 py-2.5 lg:px-6 lg:py-3 bg-primary text-secondary rounded-3xl font-light hover:bg-primary/80 transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-sm lg:text-base"
+                >
+                    Suivant
+                </button>
+            </div>
+            
+            {/* Message si aucun résultat */}
+            <div id="no-results" class="hidden text-center py-12">
+                <p class="text-primary text-lg font-bold">Aucune œuvre ne correspond à vos critères de recherche.</p>
+            </div>
+        </section>
+        
+    </main>
+    
+    
+</Layout>

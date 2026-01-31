@@ -1,51 +1,370 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import BlobDynamic from "../components/ui/BlobDynamic.astro";
-import TimeBeforeDate from "../components/ui/TimeBeforeDate.astro";
+import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout 
-    title="Visite Virtuelle - Bientôt Disponible | MMI Art 26"
-    description="La visite virtuelle de l'exposition MMI Art 26 sera disponible après l'exposition du 22 au 24 janvier 2026. Découvrez nos œuvres et artistes en attendant."
+	title="Visite Virtuelle 360° | MMI Art 26"
+	description="Explorez l'exposition MMI Art 26 en immersion totale grâce à notre visite virtuelle 360°. Naviguez dans les différents espaces et découvrez les oeuvres des étudiants."
 >
-    <main class="overflow-hidden overflow-y-hidden min-h-screen flex items-center justify-center px-4 pb-8 md:pb-12 lg:pb-16 2xl:pb-20">
-        <section class="pt-10 md:pt-0 lg:pt-8 2xl:pt-30 elative flex flex-col items-center justify-center gap-6 md:gap-8 text-center max-w-5xl w-full">
-            <!-- Blob décoratif en arrière-plan -->
-            <div class="absolute -z-10 opacity-20 scale-140 md:scale-125 lg:scale-110 lg:top-40 top-36 md:top-0">
-                <BlobDynamic variant={1} imageUrl={null} />
-            </div>
+	<!-- Écran d'introduction -->
+	<div id="intro-screen" class="fixed inset-0 z-100 flex flex-col items-center justify-center bg-primary overflow-hidden">
+		<!-- Image de fond avec overlay -->
+		<div class="absolute inset-0">
+			<img 
+				src="/360/img-1-360.jpg" 
+				alt="" 
+				class="w-full h-full object-cover opacity-30 blur-sm"
+				loading="eager"
+			/>
+			<div class="absolute inset-0 bg-primary/60"></div>
+		</div>
+		
+		<!-- Contenu centré -->
+		<div class="relative z-10 flex flex-col items-center text-center px-8 max-w-2xl">
+			<h1 class="text-secondary text-4xl md:text-5xl lg:text-6xl font-uni-sans uppercase tracking-wide">
+				Visite Virtuelle
+			</h1>
+			<p class="text-secondary/80 mt-6 md:mt-8 text-sm md:text-base lg:text-lg leading-relaxed">
+				Explorez l'exposition MMI Art 26 comme si vous y étiez. 
+				Naviguez dans l'espace en cliquant et glissant, et déplacez-vous 
+				entre les différents points de vue pour découvrir les oeuvres.
+			</p>
+			<div class="mt-8 md:mt-12 flex flex-col sm:flex-row gap-4">
+				<button id="enter-btn" class="btn-white">
+					Entrer dans l'exposition
+				</button>
+				<a href="/" class="btn-white border border-secondary/30 hover:border-transparent">
+					Retour à l'accueil
+				</a>
+			</div>
+			<p class="text-secondary/50 mt-8 text-xs">
+				Utilisez votre souris ou votre doigt pour regarder autour de vous
+			</p>
+		</div>
+	</div>
 
-            <!-- Titre principal -->
-            <div class="mb-4 md:mb-8">
-                <h1 class="text-[clamp(3rem,10vw,8rem)] leading-none">Visite Virtuelle</h1>
-            </div>
-
-            <!-- Message principal -->
-            <div class="flex flex-col gap-3 md:gap-4 max-w-3xl lg:max-w-4xl">
-                <h2 class="text-center">Bientôt disponible</h2>
-                <div class="space-y-2 md:space-y-4  mt-4">
-                    <p class="text-center px-4">
-                        La visite virtuelle de notre exposition sera accessible après l'événement, 
-                        du <strong>22 au 24 janvier 2026</strong>.
-                    </p>
-                    <p class="text-center px-4">
-                        Revenez quelques semaines après pour explorer l'exposition de façon immersive et découvrir 
-                        toutes les créations de nos artistes MMI.
-                    </p>
-                </div>
-            </div>
-
-            <!-- Boutons de navigation -->
-            <div class="flex flex-col sm:flex-row gap-4 mt-6 md:mt-8 w-full max-w-3xl justify-center px-4">
-                <a href="/" class="btn whitespace-nowrap">Retour à l'accueil</a>
-                <a href="/artistes" class="btn-white border-primary whitespace-nowrap">Voir les artistes</a>
-                <a href="/exposition" class="btn-white border-primary whitespace-nowrap">Teaser des oeuvres</a>
-            </div>
-
-            <!-- Message additionnel -->
-            <p class="mt-8 md:mt-12 text-sm opacity-70 px-4">
-                En attendant, explorez dès maintenant les profils de nos artistes et leurs créations !
-            </p>
-        </section>
-    </main>
+	<!-- Conteneur Pannellum (caché au départ) -->
+	<div id="panorama-wrapper" class="fixed inset-0 z-99 opacity-0 pointer-events-none transition-opacity duration-500">
+		<div id="panorama" class="w-full h-full">
+			<!-- Bouton fullscreen personnalisé (dans le panorama pour rester visible en fullscreen) -->
+			<button id="fullscreen-btn" class="absolute z-9999 bg-secondary text-primary p-1.5 rounded-md hover:opacity-70 transition-opacity cursor-pointer" style="bottom: 44px; left: 4px;" title="Plein écran">
+				<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+					<path d="m15 15 6 6"/><path d="m15 9 6-6"/><path d="M21 16v5h-5"/><path d="M21 8V3h-5"/><path d="M3 16v5h5"/><path d="m3 21 6-6"/><path d="M3 8V3h5"/><path d="M9 9 3 3"/>
+				</svg>
+			</button>
+		</div>
+		
+		<!-- Bouton quitter -->
+		<button id="exit-btn" class="fixed top-6 left-6 z-50 btn-white text-sm px-4 py-2">
+			Quitter la visite
+		</button>
+		
+		<!-- Indicateur de position -->
+		<div id="position-indicator" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-primary/80 text-secondary px-4 py-2 rounded-full text-xs uppercase tracking-wider">
+			<span id="current-scene-name">Entrée de l'exposition</span>
+		</div>
+	</div>
 </Layout>
+
+<!-- Chargement de Pannellum depuis public -->
+<link rel="stylesheet" href="/pannellum.css" />
+<script is:inline src="/pannellum.js"></script>
+
+<!-- Styles Pannellum - CSS obligatoire pour les éléments Pannellum -->
+<style is:global>
+	/* Masquer header/footer en mode immersif */
+	body.immersive-mode header,
+	body.immersive-mode footer,
+	body.immersive-mode .background-grid {
+		display: none !important;
+	}
+	
+	body.immersive-mode {
+		overflow: hidden;
+	}
+
+	/* Bloquer le scroll sur la page visite-virtuelle */
+	body:has(#intro-screen) {
+		overflow: hidden;
+	}
+	
+	/* Personnalisation des contrôles Pannellum */
+	.pnlm-controls-container {
+		bottom: 76px !important;
+		top: auto !important;
+		left: 4px !important;
+	}
+	
+	.pnlm-controls {
+		background: transparent !important;
+		border: none !important;
+		border-radius: 8px !important;
+		overflow: visible !important;
+	}
+	
+	.pnlm-zoom-in,
+	.pnlm-zoom-out {
+		background-color: var(--color-secondary) !important;
+		border: none !important;
+		border-radius: 6px !important;
+		margin: 2px !important;
+		width: 26px !important;
+		height: 26px !important;
+		filter: invert(1) !important;
+	}
+	
+	.pnlm-zoom-in:hover,
+	.pnlm-zoom-out:hover {
+		opacity: 0.7;
+	}
+	
+	/* Bouton fullscreen visible même en mode plein écran */
+	#panorama:fullscreen #fullscreen-btn,
+	#panorama:-webkit-full-screen #fullscreen-btn {
+		display: block !important;
+	}
+	
+	/* Hotspots personnalisés */
+	.pnlm-hotspot {
+		width: auto !important;
+		height: auto !important;
+	}
+	
+	.pnlm-hotspot-base {
+		background: none !important;
+		border: none !important;
+	}
+	
+	.custom-hotspot {
+		background: var(--color-primary);
+		color: var(--color-secondary);
+		font-family: var(--font-ibm-plex-mono);
+		font-size: 12px;
+		text-transform: uppercase;
+		letter-spacing: 1px;
+		padding: 10px 16px;
+		border-radius: 9999px;
+		border: 1px solid var(--color-secondary);
+		cursor: pointer;
+		transition: all 0.3s ease;
+		white-space: nowrap;
+	}
+	
+	.custom-hotspot:hover {
+		background: var(--color-secondary);
+		color: var(--color-primary);
+	}
+	
+	/* Tooltip Pannellum */
+	.pnlm-tooltip {
+		background: var(--color-primary) !important;
+		color: var(--color-secondary) !important;
+		font-family: var(--font-ibm-plex-mono) !important;
+		border-radius: 8px !important;
+		padding: 8px 12px !important;
+		font-size: 12px !important;
+	}
+	
+	.pnlm-tooltip::before {
+		border-top-color: var(--color-primary) !important;
+	}
+	
+	/* Masquer le logo Pannellum */
+	.pnlm-about-msg,
+	.pnlm-load-box {
+		display: none !important;
+	}
+	
+	/* Loader personnalisé */
+	.pnlm-lbar {
+		background: var(--color-secondary) !important;
+	}
+	
+	.pnlm-lbar-fill {
+		background: var(--color-primary) !important;
+	}
+</style>
+
+<script is:inline>
+	document.addEventListener('astro:page-load', () => {
+		const introScreen = document.getElementById('intro-screen');
+		const panoramaWrapper = document.getElementById('panorama-wrapper');
+		const enterBtn = document.getElementById('enter-btn');
+		const exitBtn = document.getElementById('exit-btn');
+		const currentSceneName = document.getElementById('current-scene-name');
+		
+		let viewer = null;
+		
+		// Configuration des scènes
+		const sceneNames = {
+			'scene1': "Entrée de l'exposition",
+			'scene2': 'Point de vue 2'
+		};
+		
+		// Fonction pour créer un hotspot personnalisé
+		function createHotspotElement(text) {
+			const div = document.createElement('div');
+			div.classList.add('custom-hotspot');
+			div.innerText = text;
+			return div;
+		}
+		
+		// Initialisation de Pannellum
+		function initPannellum() {
+			if (typeof pannellum === 'undefined') {
+				console.error('Pannellum not loaded');
+				return;
+			}
+			
+			viewer = pannellum.viewer('panorama', {
+				default: {
+					firstScene: 'scene1',
+					author: 'MMI Art 26',
+					sceneFadeDuration: 1000,
+					autoLoad: true,
+					autoRotate: -1,
+					autoRotateInactivityDelay: 3000,
+					compass: false,
+					showControls: true,
+					showFullscreenCtrl: false,
+					mouseZoom: true,
+					keyboardZoom: true,
+					draggable: true,
+					friction: 0.15,
+					hfov: 100,
+					minHfov: 50,
+					maxHfov: 120,
+					hotSpotDebug: true // Activer pour debug, désactiver en prod
+				},
+				scenes: {
+					scene1: {
+						type: 'equirectangular',
+						panorama: '/360/img-1-360.jpg',
+						pitch: 0,
+						yaw: 0,
+						hotSpots: [
+							{
+								pitch: -5,
+								yaw: 120,
+								type: 'scene',
+								text: 'Aller au point de vue 2',
+								sceneId: 'scene2',
+								targetPitch: 0,
+								targetYaw: -90,
+								createTooltipFunc: function(hotSpotDiv) {
+									const span = createHotspotElement('Avancer');
+									hotSpotDiv.appendChild(span);
+								},
+								createTooltipArgs: 'Avancer'
+							}
+						]
+					},
+					scene2: {
+						type: 'equirectangular',
+						panorama: '/360/img-2-360.jpg',
+						pitch: 0,
+						yaw: 0,
+						hotSpots: [
+							{
+								pitch: -5,
+								yaw: -60,
+								type: 'scene',
+								text: 'Retour au point de vue 1',
+								sceneId: 'scene1',
+								targetPitch: 0,
+								targetYaw: 120,
+								createTooltipFunc: function(hotSpotDiv) {
+									const span = createHotspotElement('Retour');
+									hotSpotDiv.appendChild(span);
+								},
+								createTooltipArgs: 'Retour'
+							}
+						]
+					}
+				}
+			});
+			
+			// Écouter les changements de scène
+			viewer.on('scenechange', function(sceneId) {
+				if (currentSceneName && sceneNames[sceneId]) {
+					currentSceneName.textContent = sceneNames[sceneId];
+				}
+			});
+		}
+		
+		// Entrer dans le mode immersif
+		function enterImmersiveMode() {
+			document.body.classList.add('immersive-mode');
+			
+			if (introScreen) {
+				introScreen.style.opacity = '0';
+				introScreen.style.pointerEvents = 'none';
+			}
+			
+			if (panoramaWrapper) {
+				panoramaWrapper.style.opacity = '1';
+				panoramaWrapper.style.pointerEvents = 'auto';
+			}
+			
+			// Initialiser Pannellum si pas encore fait
+			if (!viewer) {
+				setTimeout(initPannellum, 100);
+			}
+		}
+		
+		// Quitter le mode immersif
+		function exitImmersiveMode() {
+			document.body.classList.remove('immersive-mode');
+			
+			if (introScreen) {
+				introScreen.style.opacity = '1';
+				introScreen.style.pointerEvents = 'auto';
+			}
+			
+			if (panoramaWrapper) {
+				panoramaWrapper.style.opacity = '0';
+				panoramaWrapper.style.pointerEvents = 'none';
+			}
+		}
+		
+		// Event listeners
+		if (enterBtn) {
+			enterBtn.addEventListener('click', enterImmersiveMode);
+		}
+		if (exitBtn) {
+			exitBtn.addEventListener('click', exitImmersiveMode);
+		}
+		
+		// Bouton fullscreen personnalisé
+		const fullscreenBtn = document.getElementById('fullscreen-btn');
+		if (fullscreenBtn) {
+			fullscreenBtn.addEventListener('click', function() {
+				const panoramaEl = document.getElementById('panorama');
+				if (!document.fullscreenElement) {
+					if (panoramaEl.requestFullscreen) {
+						panoramaEl.requestFullscreen();
+					} else if (panoramaEl.webkitRequestFullscreen) {
+						panoramaEl.webkitRequestFullscreen();
+					} else if (panoramaEl.msRequestFullscreen) {
+						panoramaEl.msRequestFullscreen();
+					}
+				} else {
+					if (document.exitFullscreen) {
+						document.exitFullscreen();
+					} else if (document.webkitExitFullscreen) {
+						document.webkitExitFullscreen();
+					} else if (document.msExitFullscreen) {
+						document.msExitFullscreen();
+					}
+				}
+			});
+		}
+		
+		// Touche Escape pour quitter
+		document.addEventListener('keydown', function(e) {
+			if (e.key === 'Escape' && document.body.classList.contains('immersive-mode')) {
+				exitImmersiveMode();
+			}
+		});
+	});
+</script>
