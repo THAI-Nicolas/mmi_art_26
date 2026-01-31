@@ -198,7 +198,7 @@ import Layout from '../layouts/Layout.astro';
 		// Configuration des scènes
 		const sceneNames = {
 			'scene1': "Entrée de l'exposition",
-			'scene2': 'Point de vue 2'
+			'scene2': 'Dany Galmiche'
 		};
 		
 		// Fonction pour créer un hotspot personnalisé
@@ -231,7 +231,7 @@ import Layout from '../layouts/Layout.astro';
 					keyboardZoom: true,
 					draggable: true,
 					friction: 0.15,
-					hfov: 100,
+					hfov: 120,
 					minHfov: 50,
 					maxHfov: 120,
 					hotSpotDebug: true // Activer pour debug, désactiver en prod
@@ -240,19 +240,19 @@ import Layout from '../layouts/Layout.astro';
 					scene1: {
 						type: 'equirectangular',
 						panorama: '/360/img-1-360.jpg',
-						pitch: 0,
-						yaw: 0,
+						pitch: -6,
+						yaw: -64,
 						hotSpots: [
 							{
-								pitch: -5,
-								yaw: 120,
+								pitch: -8,
+								yaw: -5,
 								type: 'scene',
 								text: 'Aller au point de vue 2',
 								sceneId: 'scene2',
-								targetPitch: 0,
-								targetYaw: -90,
+								targetPitch: 4,
+								targetYaw: 90,
 								createTooltipFunc: function(hotSpotDiv) {
-									const span = createHotspotElement('Avancer');
+									const span = createHotspotElement('1');
 									hotSpotDiv.appendChild(span);
 								},
 								createTooltipArgs: 'Avancer'
@@ -262,19 +262,19 @@ import Layout from '../layouts/Layout.astro';
 					scene2: {
 						type: 'equirectangular',
 						panorama: '/360/img-2-360.jpg',
-						pitch: 0,
-						yaw: 0,
+						pitch: 4,
+						yaw: 90,
 						hotSpots: [
 							{
-								pitch: -5,
-								yaw: -60,
+								pitch: -15,
+								yaw: 162,
 								type: 'scene',
 								text: 'Retour au point de vue 1',
 								sceneId: 'scene1',
-								targetPitch: 0,
-								targetYaw: 120,
+								targetPitch: -6,
+								targetYaw: -64,
 								createTooltipFunc: function(hotSpotDiv) {
-									const span = createHotspotElement('Retour');
+									const span = createHotspotElement('0');
 									hotSpotDiv.appendChild(span);
 								},
 								createTooltipArgs: 'Retour'
