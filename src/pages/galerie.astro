@@ -3,77 +3,419 @@ import Layout from "../layouts/Layout.astro";
 import { getAllImagesGalerie, getImageGalerieById } from "../lib/backend.js";
 
 const ImagesGalerie = await getAllImagesGalerie();
-
-
-
+const ITEMS_PER_PAGE_DESKTOP = 12;
+const ITEMS_PER_PAGE_MOBILE = 6;
 ---
 <Layout titre="Galerie Photos" description="Galerie photos de l'exposition artistique des étudiants MMI Montbéliard 2026">
-    <main>
+    <main class="pb-12 md:pb-16">
         <section>
             <header>
                 <h1 class="text-center">Galerie Photos</h1>
             </header>
 
-            <ul class="ul-flex gap-20 py-6 mt-0 md:mt-6 lg:mt-8 2xl:mt-10">
+            <ul id="gallery-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-10 xl:gap-12 py-6 mt-0 md:mt-6 lg:mt-8 2xl:mt-10 px-4 md:px-8 lg:px-12">
                 {
-                    ImagesGalerie.map((imageGalerie) => (
-                    <li>
-                        <a href={`/${imageGalerie.id}`}>
-                        <img
-                            class="w-86 h-86 object-cover"
-                            src={`${import.meta.env.POCKETBASE_URL}/api/files/galerie/${imageGalerie.id}/${imageGalerie.image}`}
-                            alt={imageGalerie.title || "Image galerie"}
-                            loading="lazy"
-                        />
-                        </a>
+                    ImagesGalerie.map((imageGalerie, index) => (
+                    <li class="gallery-item-wrapper group" data-index={index}>
+                        <button 
+                            type="button"
+                            class="gallery-item w-full aspect-square overflow-hidden cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
+                            data-index={index}
+                            data-src={`${import.meta.env.POCKETBASE_URL}/api/files/galerie/${imageGalerie.id}/${imageGalerie.image}`}
+                            data-alt={imageGalerie.title || "Image galerie"}
+                            aria-label={`Voir l'image ${imageGalerie.title || "Image galerie"} en grand`}
+                        >
+                            <img
+                                class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                src={`${import.meta.env.POCKETBASE_URL}/api/files/galerie/${imageGalerie.id}/${imageGalerie.image}`}
+                                alt={imageGalerie.title || "Image galerie"}
+                                loading="lazy"
+                            />
+                        </button>
                     </li>
                     ))
                 }
             </ul>
 
             {/* Bouton "Charger plus" pour mobile */}
-            <div id="load-more-container" class="flex flex-col items-center gap-3 mt-8 md:hidden">
+            <div id="load-more-container" class="flex flex-col items-center gap-3 mt-6 md:hidden px-4">
                 <button 
                     id="load-more-btn" 
-                    class="px-10 py-4 bg-primary text-secondary rounded-3xl font-medium hover:bg-primary/80 transition-all active:scale-95 min-w-60 text-base"
+                    class="w-full max-w-xs px-8 py-3.5 bg-primary text-secondary rounded-full font-medium hover:bg-primary/80 transition-all active:scale-95 text-sm"
                 >
                     Charger plus
                 </button>
-                <button 
-                    id="back-to-top-btn" 
-                    class="px-10 py-4 bg-primary text-secondary rounded-3xl font-medium hover:bg-primary/80 transition-all active:scale-95 min-w-60 text-base"
-                    style="display: none;"
-                >
-                    Revenir en haut
-                </button>
-                <p id="items-info" class="text-primary text-sm"></p>
+                <p id="items-info" class="text-primary/70 text-xs"></p>
             </div>
             
             {/* Pagination classique pour desktop */}
-            <div id="pagination-container" class="hidden md:flex justify-center items-center gap-3 lg:gap-4 mt-8">
+            <div id="pagination-container" class="hidden md:flex justify-center items-center gap-2 lg:gap-3 mt-10">
                 <button 
                     id="prev-page" 
-                    class="px-5 py-2.5 lg:px-6 lg:py-3 bg-primary text-secondary rounded-3xl font-light hover:bg-primary/80 transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-sm lg:text-base"
+                    class="flex items-center justify-center px-4 py-2 lg:px-5 lg:py-2.5 bg-primary text-secondary rounded-full font-light hover:bg-primary/80 transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer text-sm"
                     disabled
+                    aria-label="Page précédente"
                 >
-                    Précédent
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1"><path d="m15 18-6-6 6-6"/></svg>
+                    <span class="hidden lg:inline">Précédent</span>
                 </button>
-                <div id="page-numbers" class="flex gap-2 cursor-pointer"></div>
+                <div id="page-numbers" class="flex gap-1.5"></div>
                 <button 
                     id="next-page" 
-                    class="px-5 py-2.5 lg:px-6 lg:py-3 bg-primary text-secondary rounded-3xl font-light hover:bg-primary/80 transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-sm lg:text-base"
+                    class="flex items-center justify-center px-4 py-2 lg:px-5 lg:py-2.5 bg-primary text-secondary rounded-full font-light hover:bg-primary/80 transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer text-sm"
+                    aria-label="Page suivante"
                 >
-                    Suivant
+                    <span class="hidden lg:inline">Suivant</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-1"><path d="m9 18 6-6-6-6"/></svg>
                 </button>
             </div>
             
             {/* Message si aucun résultat */}
             <div id="no-results" class="hidden text-center py-12">
-                <p class="text-primary text-lg font-bold">Aucune œuvre ne correspond à vos critères de recherche.</p>
+                <p class="text-primary text-lg font-bold">Aucune image disponible.</p>
             </div>
         </section>
-        
     </main>
-    
-    
+
+    <!-- Lightbox Modal -->
+    <div 
+        id="lightbox" 
+        class="fixed inset-0 z-200 bg-primary/95 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Visionneuse d'images"
+    >
+        <!-- Bouton fermer -->
+        <button 
+            id="lightbox-close" 
+            class="absolute top-3 right-3 md:top-5 md:right-5 z-20 p-2.5 text-secondary hover:bg-secondary/10 rounded-full transition-all cursor-pointer"
+            aria-label="Fermer la visionneuse"
+        >
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="md:w-8 md:h-8">
+                <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+            </svg>
+        </button>
+
+        <!-- Navigation précédent -->
+        <button 
+            id="lightbox-prev" 
+            class="absolute left-1 md:left-4 top-1/2 -translate-y-1/2 z-20 p-2.5 md:p-3 bg-secondary/10 hover:bg-secondary/20 active:bg-secondary/30 text-secondary rounded-full transition-all cursor-pointer"
+            aria-label="Image précédente"
+        >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="md:w-7 md:h-7">
+                <path d="m15 18-6-6 6-6"/>
+            </svg>
+        </button>
+
+        <!-- Image container - zone cliquable pour fermer -->
+        <div id="lightbox-backdrop" class="absolute inset-0 flex items-center justify-center p-4 pt-16 pb-14 md:p-12 md:pt-20 md:pb-16 lg:p-16 lg:pt-24 lg:pb-20 cursor-pointer">
+            <img 
+                id="lightbox-image" 
+                src="" 
+                alt="" 
+                class="max-w-full max-h-full object-contain select-none rounded-sm cursor-default"
+                draggable="false"
+            />
+        </div>
+
+        <!-- Navigation suivant -->
+        <button 
+            id="lightbox-next" 
+            class="absolute right-1 md:right-4 top-1/2 -translate-y-1/2 z-20 p-2.5 md:p-3 bg-secondary/10 hover:bg-secondary/20 active:bg-secondary/30 text-secondary rounded-full transition-all cursor-pointer"
+            aria-label="Image suivante"
+        >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="md:w-7 md:h-7">
+                <path d="m9 18 6-6-6-6"/>
+            </svg>
+        </button>
+
+        <!-- Indicateur de position -->
+        <div class="absolute bottom-3 md:bottom-5 left-1/2 -translate-x-1/2 z-20 bg-primary/60 px-3 py-1.5 rounded-full">
+            <span id="lightbox-counter" class="text-secondary/80 text-xs md:text-sm font-ibm-plex-mono">1 / 1</span>
+        </div>
+    </div>
 </Layout>
+
+<script is:inline define:vars={{ ITEMS_PER_PAGE_DESKTOP, ITEMS_PER_PAGE_MOBILE }}>
+document.addEventListener('astro:page-load', () => {
+    // Éléments DOM
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImage = document.getElementById('lightbox-image');
+    const lightboxBackdrop = document.getElementById('lightbox-backdrop');
+    const lightboxClose = document.getElementById('lightbox-close');
+    const lightboxPrev = document.getElementById('lightbox-prev');
+    const lightboxNext = document.getElementById('lightbox-next');
+    const lightboxCounter = document.getElementById('lightbox-counter');
+    const galleryGrid = document.getElementById('gallery-grid');
+    const galleryItemWrappers = document.querySelectorAll('.gallery-item-wrapper');
+    const galleryItems = document.querySelectorAll('.gallery-item');
+    
+    // Pagination éléments
+    const loadMoreBtn = document.getElementById('load-more-btn');
+    const loadMoreContainer = document.getElementById('load-more-container');
+    const itemsInfo = document.getElementById('items-info');
+    const paginationContainer = document.getElementById('pagination-container');
+    const prevPageBtn = document.getElementById('prev-page');
+    const nextPageBtn = document.getElementById('next-page');
+    const pageNumbers = document.getElementById('page-numbers');
+    
+    // État
+    let currentIndex = 0;
+    let images = [];
+    let currentPage = 1;
+    let mobileVisibleCount = ITEMS_PER_PAGE_MOBILE;
+    const totalItems = galleryItemWrappers.length;
+    const totalPagesDesktop = Math.ceil(totalItems / ITEMS_PER_PAGE_DESKTOP);
+    
+    // Collecter toutes les images
+    galleryItems.forEach((item) => {
+        images.push({
+            src: item.dataset.src,
+            alt: item.dataset.alt,
+            index: parseInt(item.dataset.index, 10)
+        });
+    });
+    
+    // ========== PAGINATION DESKTOP ==========
+    function updateDesktopPagination() {
+        // Masquer toutes les images
+        galleryItemWrappers.forEach((wrapper, index) => {
+            const startIndex = (currentPage - 1) * ITEMS_PER_PAGE_DESKTOP;
+            const endIndex = startIndex + ITEMS_PER_PAGE_DESKTOP;
+            
+            if (index >= startIndex && index < endIndex) {
+                wrapper.style.display = '';
+            } else {
+                wrapper.style.display = 'none';
+            }
+        });
+        
+        // Mettre à jour les boutons
+        prevPageBtn.disabled = currentPage === 1;
+        nextPageBtn.disabled = currentPage === totalPagesDesktop;
+        
+        // Générer les numéros de page
+        pageNumbers.innerHTML = '';
+        
+        if (totalPagesDesktop <= 1) {
+            paginationContainer.style.display = 'none';
+            return;
+        }
+        
+        for (let i = 1; i <= totalPagesDesktop; i++) {
+            // Afficher: première page, dernière page, page courante et ses voisines
+            if (i === 1 || i === totalPagesDesktop || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                const btn = document.createElement('button');
+                btn.textContent = i;
+                btn.className = `w-9 h-9 rounded-full text-sm font-medium transition-all cursor-pointer ${
+                    i === currentPage 
+                        ? 'bg-primary text-secondary' 
+                        : 'bg-transparent text-primary hover:bg-primary/10'
+                }`;
+                btn.addEventListener('click', () => {
+                    currentPage = i;
+                    updateDesktopPagination();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+                pageNumbers.appendChild(btn);
+            } else if (i === currentPage - 2 || i === currentPage + 2) {
+                const dots = document.createElement('span');
+                dots.textContent = '...';
+                dots.className = 'px-1 text-primary/50';
+                pageNumbers.appendChild(dots);
+            }
+        }
+    }
+    
+    // Event listeners pagination desktop
+    if (prevPageBtn) {
+        prevPageBtn.addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                updateDesktopPagination();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+    }
+    
+    if (nextPageBtn) {
+        nextPageBtn.addEventListener('click', () => {
+            if (currentPage < totalPagesDesktop) {
+                currentPage++;
+                updateDesktopPagination();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+    }
+    
+    // ========== LOAD MORE MOBILE ==========
+    function updateMobileView() {
+        galleryItemWrappers.forEach((wrapper, index) => {
+            if (index < mobileVisibleCount) {
+                wrapper.style.display = '';
+            } else {
+                wrapper.style.display = 'none';
+            }
+        });
+        
+        // Mettre à jour le compteur
+        const visibleCount = Math.min(mobileVisibleCount, totalItems);
+        itemsInfo.textContent = `${visibleCount} sur ${totalItems} photos`;
+        
+        // Masquer le bouton si toutes les images sont affichées
+        if (mobileVisibleCount >= totalItems) {
+            loadMoreBtn.style.display = 'none';
+        } else {
+            loadMoreBtn.style.display = '';
+        }
+    }
+    
+    if (loadMoreBtn) {
+        loadMoreBtn.addEventListener('click', () => {
+            mobileVisibleCount += ITEMS_PER_PAGE_MOBILE;
+            updateMobileView();
+        });
+    }
+    
+    // ========== RESPONSIVE INIT ==========
+    function initPagination() {
+        const isMobile = window.innerWidth < 768;
+        
+        if (isMobile) {
+            mobileVisibleCount = ITEMS_PER_PAGE_MOBILE;
+            updateMobileView();
+        } else {
+            // Réafficher toutes les images puis appliquer la pagination desktop
+            galleryItemWrappers.forEach(wrapper => wrapper.style.display = '');
+            updateDesktopPagination();
+        }
+    }
+    
+    // Initialiser et écouter le resize
+    initPagination();
+    
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(initPagination, 150);
+    });
+    
+    // ========== LIGHTBOX ==========
+    function openLightbox(index) {
+        currentIndex = index;
+        updateLightboxImage();
+        lightbox.style.opacity = '1';
+        lightbox.style.pointerEvents = 'auto';
+        document.body.style.overflow = 'hidden';
+    }
+    
+    function closeLightbox() {
+        lightbox.style.opacity = '0';
+        lightbox.style.pointerEvents = 'none';
+        document.body.style.overflow = '';
+    }
+    
+    function updateLightboxImage() {
+        if (images[currentIndex]) {
+            lightboxImage.src = images[currentIndex].src;
+            lightboxImage.alt = images[currentIndex].alt;
+            lightboxCounter.textContent = `${currentIndex + 1} / ${images.length}`;
+        }
+    }
+    
+    function goToPrev() {
+        currentIndex = currentIndex > 0 ? currentIndex - 1 : images.length - 1;
+        updateLightboxImage();
+    }
+    
+    function goToNext() {
+        currentIndex = currentIndex < images.length - 1 ? currentIndex + 1 : 0;
+        updateLightboxImage();
+    }
+    
+    // Event listeners galerie
+    galleryItems.forEach((item) => {
+        item.addEventListener('click', () => {
+            const index = parseInt(item.dataset.index, 10);
+            openLightbox(index);
+        });
+    });
+    
+    // Event listeners lightbox
+    if (lightboxClose) {
+        lightboxClose.addEventListener('click', (e) => {
+            e.stopPropagation();
+            closeLightbox();
+        });
+    }
+    
+    if (lightboxPrev) {
+        lightboxPrev.addEventListener('click', (e) => {
+            e.stopPropagation();
+            goToPrev();
+        });
+    }
+    
+    if (lightboxNext) {
+        lightboxNext.addEventListener('click', (e) => {
+            e.stopPropagation();
+            goToNext();
+        });
+    }
+    
+    // Fermer en cliquant sur le backdrop (zone vide autour de l'image)
+    if (lightboxBackdrop) {
+        lightboxBackdrop.addEventListener('click', (e) => {
+            // Fermer seulement si on clique sur le backdrop, pas sur l'image
+            if (e.target === lightboxBackdrop) {
+                closeLightbox();
+            }
+        });
+    }
+    
+    // Navigation au clavier
+    document.addEventListener('keydown', (e) => {
+        if (lightbox && lightbox.style.pointerEvents === 'auto') {
+            switch (e.key) {
+                case 'Escape':
+                    closeLightbox();
+                    break;
+                case 'ArrowLeft':
+                    goToPrev();
+                    break;
+                case 'ArrowRight':
+                    goToNext();
+                    break;
+            }
+        }
+    });
+    
+    // Support tactile pour swipe
+    let touchStartX = 0;
+    let touchEndX = 0;
+    
+    if (lightbox) {
+        lightbox.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+        
+        lightbox.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, { passive: true });
+    }
+    
+    function handleSwipe() {
+        const swipeThreshold = 50;
+        const diff = touchStartX - touchEndX;
+        
+        if (Math.abs(diff) > swipeThreshold) {
+            if (diff > 0) {
+                goToNext();
+            } else {
+                goToPrev();
+            }
+        }
+    }
+});
+</script>
