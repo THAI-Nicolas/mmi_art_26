@@ -6,12 +6,12 @@ import Layout from '../layouts/Layout.astro';
 	title="Visite Virtuelle 360° | MMI Art 26"
 	description="Explorez l'exposition MMI Art 26 en immersion totale grâce à notre visite virtuelle 360°. Naviguez dans les différents espaces et découvrez les oeuvres des étudiants."
 >
-	<!-- Écran d'introduction -->
-	<div id="intro-screen" class="fixed inset-0 z-100 flex flex-col items-center justify-center bg-primary overflow-hidden">
+	<!-- Écran d'introduction (TEMPORAIREMENT MASQUÉ POUR DEV) -->
+	<div id="intro-screen" class="fixed inset-0 z-100 flex flex-col items-center justify-center bg-primary overflow-hidden hidden">
 		<!-- Image de fond avec overlay -->
 		<div class="absolute inset-0">
 			<img 
-				src="/360/img-1-360.jpg" 
+				src="/360/img-0-360.jpg" 
 				alt="" 
 				class="w-full h-full object-cover opacity-30 blur-sm"
 				loading="eager"
@@ -43,8 +43,8 @@ import Layout from '../layouts/Layout.astro';
 		</div>
 	</div>
 
-	<!-- Écran de chargement -->
-	<div id="loading-screen" class="fixed inset-0 z-110 flex flex-col items-center justify-center bg-primary opacity-0 pointer-events-none transition-opacity duration-300">
+	<!-- Écran de chargement (TEMPORAIREMENT MASQUÉ POUR DEV) -->
+	<div id="loading-screen" class="fixed inset-0 z-110 flex flex-col items-center justify-center bg-primary opacity-0 pointer-events-none transition-opacity duration-300 hidden">
 		<div class="flex flex-col items-center gap-6">
 			<p id="loading-text" class="text-secondary text-sm uppercase tracking-widest font-ibm-plex-mono">Chargement de l'exposition</p>
 			<div class="w-48 h-1 bg-secondary/20 rounded-full overflow-hidden">
@@ -53,8 +53,8 @@ import Layout from '../layouts/Layout.astro';
 		</div>
 	</div>
 
-	<!-- Conteneur Pannellum (caché au départ) -->
-	<div id="panorama-wrapper" class="fixed inset-0 z-99 opacity-0 pointer-events-none transition-opacity duration-500">
+	<!-- Conteneur Pannellum (AFFICHE DIRECTEMENT POUR DEV) -->
+	<div id="panorama-wrapper" class="fixed inset-0 z-99 opacity-100 pointer-events-auto transition-opacity duration-500">
 		<div id="panorama" class="w-full h-full">
 			<!-- Bouton fullscreen personnalisé (dans le panorama pour rester visible en fullscreen) -->
 			<button id="fullscreen-btn" class="absolute z-9999 bg-secondary text-primary p-1.5 rounded-md hover:opacity-70 transition-opacity cursor-pointer" style="bottom: 44px; left: 4px;" title="Plein écran">
@@ -64,10 +64,10 @@ import Layout from '../layouts/Layout.astro';
 			</button>
 		</div>
 		
-		<!-- Bouton quitter -->
-		<button id="exit-btn" class="fixed top-6 left-6 z-50 btn-white text-sm px-4 py-2">
-			Quitter la visite
-		</button>
+		<!-- Bouton quitter (MODE DEV : redirige vers l'accueil) -->
+		<a href="/" id="exit-btn" class="fixed top-6 left-6 z-50 btn-white text-sm px-4 py-2">
+			Retour à l'accueil
+		</a>
 		
 		<!-- Indicateur de position -->
 		<div id="position-indicator" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-primary/80 text-secondary px-4 py-2 rounded-full text-xs uppercase tracking-wider">
@@ -244,8 +244,13 @@ import Layout from '../layouts/Layout.astro';
 		
 		// Configuration des scènes
 		const sceneNames = {
-			'scene1': "Entrée de l'exposition",
-			'scene2': 'Dany Galmiche'
+			'scene0': "Entrée de l'exposition",
+			'scene1': 'Dany Galmiche',
+			'scene2': 'Point de vue 2',
+			'scene3': 'Point de vue 3',
+			'scene4': 'Point de vue 4',
+			'scene5': 'Point de vue 5',
+			'scene6': 'Point de vue 6'
 		};
 		
 		// Fonction pour créer un hotspot personnalisé
@@ -265,7 +270,7 @@ import Layout from '../layouts/Layout.astro';
 			
 			viewer = pannellum.viewer('panorama', {
 				default: {
-					firstScene: 'scene1',
+					firstScene: 'scene0',
 					author: 'MMI Art 26',
 					sceneFadeDuration: 1000,
 					autoLoad: true,
@@ -284,9 +289,9 @@ import Layout from '../layouts/Layout.astro';
 					hotSpotDebug: true // Activer pour debug, désactiver en prod
 				},
 				scenes: {
-					scene1: {
+					scene0: {
 						type: 'equirectangular',
-						panorama: '/360/img-1-360.jpg',
+						panorama: '/360/img-0-360.jpg',
 						pitch: -6,
 						yaw: -64,
 						hotSpots: [
@@ -294,12 +299,119 @@ import Layout from '../layouts/Layout.astro';
 								pitch: -8,
 								yaw: -5,
 								type: 'scene',
-								text: 'Aller au point de vue 2',
-								sceneId: 'scene2',
+								text: 'Aller au point de vue 1',
+								sceneId: 'scene1',
 								targetPitch: 4,
 								targetYaw: 90,
 								createTooltipFunc: function(hotSpotDiv) {
 									const span = createHotspotElement('1');
+									hotSpotDiv.appendChild(span);
+								},
+								createTooltipArgs: 'Avancer'
+							},
+							{
+								pitch: -6,
+								yaw: -103,
+								type: 'scene',
+								text: 'Aller au point de vue 2',
+								sceneId: 'scene2',
+								targetPitch: -22,
+								targetYaw: 115,
+								createTooltipFunc: function(hotSpotDiv) {
+									const span = createHotspotElement('2');
+									hotSpotDiv.appendChild(span);
+								},
+								createTooltipArgs: 'Point de vue 2'
+							},
+							{
+								pitch: -5,
+								yaw: -83,
+								type: 'scene',
+								text: 'Aller au point de vue 3',
+								sceneId: 'scene3',
+								targetPitch: -12,
+								targetYaw: -113,
+								createTooltipFunc: function(hotSpotDiv) {
+									const span = createHotspotElement('3');
+									hotSpotDiv.appendChild(span);
+								},
+								createTooltipArgs: 'Point de vue 3'
+							},
+							{
+								pitch: -2,
+								yaw: -55,
+								type: 'scene',
+								text: 'Aller au point de vue 4',
+								sceneId: 'scene4',
+								targetPitch: -19,
+								targetYaw: 73,
+								createTooltipFunc: function(hotSpotDiv) {
+									const span = createHotspotElement('4');
+									hotSpotDiv.appendChild(span);
+								},
+								createTooltipArgs: 'Point de vue 4'
+							},
+			
+						]
+					},
+					scene1: {
+						type: 'equirectangular',
+						panorama: '/360/img-1-360.jpg',
+						pitch: 4,
+						yaw: 90,
+						hotSpots: [
+							{
+								pitch: -6,
+								yaw: 162,
+								type: 'scene',
+								text: 'Retour au point de vue 0',
+								sceneId: 'scene0',
+								targetPitch: -6,
+								targetYaw: -64,
+								createTooltipFunc: function(hotSpotDiv) {
+									const span = createHotspotElement('0');
+									hotSpotDiv.appendChild(span);
+								},
+								createTooltipArgs: 'Retour'
+							},
+							{
+								pitch: -4,
+								yaw: -103,
+								type: 'scene',
+								text: 'Aller au point de vue 2',
+								sceneId: 'scene2',
+								targetPitch: -22,
+								targetYaw: 115,
+								createTooltipFunc: function(hotSpotDiv) {
+									const span = createHotspotElement('2');
+									hotSpotDiv.appendChild(span);
+								},
+								createTooltipArgs: 'Avancer'
+							},
+							{
+								pitch: -3,
+								yaw: -72,
+								type: 'scene',
+								text: 'Aller au point de vue 3',
+								sceneId: 'scene3',
+								targetPitch: -12,
+								targetYaw: -113,
+								createTooltipFunc: function(hotSpotDiv) {
+									const span = createHotspotElement('3');
+									hotSpotDiv.appendChild(span);
+								},
+								createTooltipArgs: 'Avancer'
+							},
+							{
+								pitch: -2,
+								yaw: -26,
+								type: 'scene',
+								text: 'Aller au point de vue 4',
+								sceneId: 'scene4',
+								targetPitch: -19,
+								targetYaw: 73,
+								createTooltipFunc: function(hotSpotDiv) {
+									const span = createHotspotElement('4');
 									hotSpotDiv.appendChild(span);
 								},
 								createTooltipArgs: 'Avancer'
@@ -309,19 +421,291 @@ import Layout from '../layouts/Layout.astro';
 					scene2: {
 						type: 'equirectangular',
 						panorama: '/360/img-2-360.jpg',
-						pitch: 4,
-						yaw: 90,
+						pitch: 0,
+						yaw: 0,
 						hotSpots: [
 							{
-								pitch: -15,
-								yaw: 162,
+								pitch: -6,
+								yaw: -31,
 								type: 'scene',
-								text: 'Retour au point de vue 1',
-								sceneId: 'scene1',
+								text: 'Retour au point de vue 0',
+								sceneId: 'scene0',
 								targetPitch: -6,
 								targetYaw: -64,
 								createTooltipFunc: function(hotSpotDiv) {
 									const span = createHotspotElement('0');
+									hotSpotDiv.appendChild(span);
+								},
+								createTooltipArgs: 'Retour'
+							},
+							{
+								pitch: 0,
+								yaw: -89,
+								type: 'scene',
+								text: 'Retour au point de vue 1',
+								sceneId: 'scene1',
+								targetPitch: 4,
+								targetYaw: 90,
+								createTooltipFunc: function(hotSpotDiv) {
+									const span = createHotspotElement('1');
+									hotSpotDiv.appendChild(span);
+								},
+								createTooltipArgs: 'Retour'
+							},
+							{
+								pitch: -11,
+								yaw: 168,
+								type: 'scene',
+								text: 'Retour au point de vue 3',
+								sceneId: 'scene3',
+								targetPitch: -12,
+								targetYaw: -113,
+								createTooltipFunc: function(hotSpotDiv) {
+									const span = createHotspotElement('3');
+									hotSpotDiv.appendChild(span);
+								},
+								createTooltipArgs: 'Retour'
+							},
+							{
+								pitch: -4,
+								yaw: -160,
+								type: 'scene',
+								text: 'Retour au point de vue 4',
+								sceneId: 'scene4',
+								targetPitch: -19,
+								targetYaw: 73,
+								createTooltipFunc: function(hotSpotDiv) {
+									const span = createHotspotElement('4');
+									hotSpotDiv.appendChild(span);
+								},
+								createTooltipArgs: 'Retour'
+							}
+
+
+						]
+					},
+					scene3: {
+						type: 'equirectangular',
+						panorama: '/360/img-3-360.jpg',
+						pitch: 0,
+						yaw: 0,
+						hotSpots: [
+							{
+								pitch: -9,
+								yaw: 160,
+								type: 'scene',
+								text: 'Retour à l\'entrée',
+								sceneId: 'scene0',
+								targetPitch: -6,
+								targetYaw: -64,
+								createTooltipFunc: function(hotSpotDiv) {
+									const span = createHotspotElement('0');
+									hotSpotDiv.appendChild(span);
+								},
+								createTooltipArgs: 'Retour'
+							},
+							{
+								pitch: -8,
+								yaw: 134,
+								type: 'scene',
+								text: 'Retour au point de vue 1',
+								sceneId: 'scene1',
+								targetPitch: 4,
+								targetYaw: 90,
+								createTooltipFunc: function(hotSpotDiv) {
+									const span = createHotspotElement('1');
+									hotSpotDiv.appendChild(span);
+								},
+								createTooltipArgs: 'Retour'
+							},
+							{
+								pitch: -8,
+								yaw: -157,
+								type: 'scene',
+								text: 'Retour au point de vue 2',
+								sceneId: 'scene2',
+								targetPitch: -22,
+								targetYaw: 115,
+								createTooltipFunc: function(hotSpotDiv) {
+									const span = createHotspotElement('2');
+									hotSpotDiv.appendChild(span);
+								},
+								createTooltipArgs: 'Retour'
+							},
+							{
+								pitch: -6,
+								yaw: 24,
+								type: 'scene',
+								text: 'Retour au point de vue 4',
+								sceneId: 'scene4',
+								targetPitch: -19,
+								targetYaw: 73,
+								createTooltipFunc: function(hotSpotDiv) {
+									const span = createHotspotElement('4');
+									hotSpotDiv.appendChild(span);
+								},
+								createTooltipArgs: 'Retour'
+							}
+						]
+					},
+					scene4: {
+						type: 'equirectangular',
+						panorama: '/360/img-4-360.jpg',
+						pitch: 0,
+						yaw: 0,
+						hotSpots: [
+							{
+								pitch: -5,
+								yaw: -120,
+								type: 'scene',
+								text: 'Retour à l\'entrée',
+								sceneId: 'scene0',
+								targetPitch: -6,
+								targetYaw: -64,
+								createTooltipFunc: function(hotSpotDiv) {
+									const span = createHotspotElement('0');
+									hotSpotDiv.appendChild(span);
+								},
+								createTooltipArgs: 'Retour'
+							},
+							{
+								pitch: -5,
+								yaw: -138,
+								type: 'scene',
+								text: 'Retour au point de vue 1',
+								sceneId: 'scene1',
+								targetPitch: 4,
+								targetYaw: 90,
+								createTooltipFunc: function(hotSpotDiv) {
+									const span = createHotspotElement('1');
+									hotSpotDiv.appendChild(span);
+								},
+								createTooltipArgs: 'Retour'
+							},
+							{
+								pitch: -3,
+								yaw: -87,
+								type: 'scene',
+								text: 'Retour au point de vue 2',
+								sceneId: 'scene2',
+								targetPitch: -22,
+								targetYaw: 115,
+								createTooltipFunc: function(hotSpotDiv) {
+									const span = createHotspotElement('2');
+									hotSpotDiv.appendChild(span);
+								},
+								createTooltipArgs: 'Retour'
+							},
+							{
+								pitch: -5,
+								yaw: -72,
+								type: 'scene',
+								text: 'Retour au point de vue 3',
+								sceneId: 'scene3',
+								targetPitch: -12,
+								targetYaw: -113,
+								createTooltipFunc: function(hotSpotDiv) {
+									const span = createHotspotElement('3');
+									hotSpotDiv.appendChild(span);
+								},
+								createTooltipArgs: 'Retour'
+							},
+							{
+								pitch: -2,
+								yaw: -4,
+								type: 'scene',
+								text: 'Aller au point de vue 5',
+								sceneId: 'scene5',
+								targetPitch: -2,
+								targetYaw: -85,
+								createTooltipFunc: function(hotSpotDiv) {
+									const span = createHotspotElement('5');
+									hotSpotDiv.appendChild(span);
+								},
+								createTooltipArgs: 'Point de vue 5'
+							},
+						]
+					},
+					scene5: {
+						type: 'equirectangular',
+						panorama: '/360/img-5-360.jpg',
+						pitch: 0,
+						yaw: 0,
+						hotSpots: [
+							{
+								pitch: -10,
+								yaw: 0,
+								type: 'scene',
+								text: 'Retour à la vue 4',
+								sceneId: 'scene4',
+								targetPitch: -19,
+								targetYaw: 73,
+								createTooltipFunc: function(hotSpotDiv) {
+									const span = createHotspotElement('4');
+									hotSpotDiv.appendChild(span);
+								},
+								createTooltipArgs: 'Retour'
+							},
+							{
+								pitch: -16,
+								yaw: 138,
+								type: 'scene',
+								text: 'Retour à la vue 6',
+								sceneId: 'scene6',
+								targetPitch: -20,
+								targetYaw: 89,
+								createTooltipFunc: function(hotSpotDiv) {
+									const span = createHotspotElement('6');
+									hotSpotDiv.appendChild(span);
+								},
+								createTooltipArgs: 'Retour'
+							}
+						]
+					},
+					scene6: {
+						type: 'equirectangular',
+						panorama: '/360/img-6-360.jpg',
+						pitch: 0,
+						yaw: 0,
+						hotSpots: [
+							{
+								pitch: -3,
+								yaw: -45,
+								type: 'scene',
+								text: 'Retour à l\'entrée',
+								sceneId: 'scene0',
+								targetPitch: -6,
+								targetYaw: -64,
+								createTooltipFunc: function(hotSpotDiv) {
+									const span = createHotspotElement('0');
+									hotSpotDiv.appendChild(span);
+								},
+								createTooltipArgs: 'Retour'
+							},
+							{
+								pitch: -4,
+								yaw: -130,
+								type: 'scene',
+								text: 'Retour à la vue 4',
+								sceneId: 'scene4',
+								targetPitch: -19,
+								targetYaw: 73,
+								createTooltipFunc: function(hotSpotDiv) {
+									const span = createHotspotElement('4');
+									hotSpotDiv.appendChild(span);
+								},
+								createTooltipArgs: 'Retour'
+							},
+							{
+								pitch: -6,
+								yaw: -175,
+								type: 'scene',
+								text: 'Retour à la vue 5',
+								sceneId: 'scene5',
+								targetPitch: -2,
+								targetYaw: -85,
+								createTooltipFunc: function(hotSpotDiv) {
+									const span = createHotspotElement('5');
 									hotSpotDiv.appendChild(span);
 								},
 								createTooltipArgs: 'Retour'
@@ -456,9 +840,12 @@ import Layout from '../layouts/Layout.astro';
 		if (enterBtn) {
 			enterBtn.addEventListener('click', enterImmersiveMode);
 		}
+		// MODE DEV : exitBtn est maintenant un lien <a>, pas besoin d'event listener
+		/*
 		if (exitBtn) {
 			exitBtn.addEventListener('click', exitImmersiveMode);
 		}
+		*/
 		
 		// Bouton fullscreen personnalisé
 		const fullscreenBtn = document.getElementById('fullscreen-btn');
@@ -491,5 +878,9 @@ import Layout from '../layouts/Layout.astro';
 				exitImmersiveMode();
 			}
 		});
+		
+		// MODE DEV : Initialiser directement Pannellum sans attendre le clic
+		document.body.classList.add('immersive-mode');
+		initPannellum();
 	});
 </script>
