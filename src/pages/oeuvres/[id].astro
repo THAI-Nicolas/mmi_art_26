@@ -4,6 +4,7 @@ import Layout from "../../layouts/Layout.astro";
 import BlobTransition from "../../components/ui/BlobTransition.astro";
 import CardArtisteEtOeuvre from "../../components/ui/CardArtisteEtOeuvre.astro";
 import ImagePB from "../../components/ImagePB.astro";
+import FABLink from "../../components/ui/FABLink.astro";
 
 
 //Imports des fonctions backend
@@ -30,6 +31,9 @@ const oeuvresSuggestions = await getSuggestedOeuvres(oeuvres, excludeIds, 3);
 // URL de l'image à précharger (sans thumbnail pour éviter double transformation)
 const pbUrl = import.meta.env.POCKETBASE_URL;
 const preloadImageUrl = `${pbUrl}/api/files/${imageRecord.collectionId}/${imageRecord.id}/${imageRecord.images[0]}`;
+
+// Lien externe de l'oeuvre (si c'est un site web)
+const lienOeuvre: string | undefined = oeuvres.lien;
 ---
 
 <Layout title={oeuvres.title + " - " + oeuvres.expand.artiste_id.name + " | MMI Art 26"} description={"Découvrez l'œuvre " + oeuvres.title + " de " + oeuvres.expand.artiste_id.name + ", présentée dans l'exposition MMI Art 26. Plongez dans l'univers créatif de nos artistes talentueux."} preloadImage={preloadImageUrl}>
@@ -136,4 +140,8 @@ const preloadImageUrl = `${pbUrl}/api/files/${imageRecord.collectionId}/${imageR
             </div>
         </section>
     </main>
+
+    {lienOeuvre && lienOeuvre.trim() !== "" && (
+        <FABLink href={lienOeuvre} />
+    )}
 </Layout>
