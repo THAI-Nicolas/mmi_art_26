@@ -175,14 +175,34 @@ const showBottom = position === "bottom" || position === "both";
       // Adapter la zone de sécurité
       const safeZoneThreshold = 150 * amplitudeScale;
       
-      let mouseX = 0;
-      let mouseY = 0;
-      let isHovering = false;
+      // Position brute de la souris (mise à jour instantanément)
+      let rawMouseX = 0;
+      let rawMouseY = 0;
+      // Position interpolée de la souris (suit avec un lissage)
+      let smoothMouseX = 0;
+      let smoothMouseY = 0;
+      // Influence du hover : 0 = pas de hover, 1 = hover complet
+      let hoverTarget = 0;
+      let hoverInfluence = 0;
       let time = 0;
+
+      // Facteurs de lissage
+      const mouseLerp = 0.08;
+      const hoverInLerp = 0.06;
+      const hoverOutLerp = 0.03;
 
       // Boucle d'animation continue
       function animate() {
         time += 0.025;
+
+        // Interpolation fluide de la position souris
+        smoothMouseX += (rawMouseX - smoothMouseX) * mouseLerp;
+        smoothMouseY += (rawMouseY - smoothMouseY) * mouseLerp;
+
+        // Interpolation fluide de l'influence du hover
+        const lerpFactor = hoverTarget > hoverInfluence ? hoverInLerp : hoverOutLerp;
+        hoverInfluence += (hoverTarget - hoverInfluence) * lerpFactor;
+        if (hoverInfluence < 0.001) hoverInfluence = 0;
 
         // Déformation de chaque point
         const deformedPoints = points.map((point, index) => {
@@ -203,18 +223,17 @@ const showBottom = position === "bottom" || position === "both";
             newY = point.y + offsetY;
           }
 
-          // Répulsion souris : s'ajoute à l'animation idle
-          if (isHovering) {
-            const dx = mouseX - newX;
-            const dy = mouseY - newY;
+          // Répulsion souris : pondérée par hoverInfluence (transition douce)
+          if (hoverInfluence > 0) {
+            const dx = smoothMouseX - newX;
+            const dy = smoothMouseY - newY;
             const distance = Math.sqrt(dx * dx + dy * dy);
             const maxDistance = 150;
 
             if (distance < maxDistance) {
-              const force = (1 - distance / maxDistance) * deformStrength * 50;
+              const force = (1 - distance / maxDistance) * deformStrength * 50 * hoverInfluence;
               const angle = Math.atan2(dy, dx);
 
-              // Repousse depuis la position déjà animée
               newX = newX - Math.cos(angle) * force;
               newY = newY - Math.sin(angle) * force;
             }
@@ -249,27 +268,27 @@ const showBottom = position === "bottom" || position === "both";
 
             if (inBounds) {
               // Le conteneur est rotate-180, il faut inverser les coordonnées
-              mouseX = ((rect.right - e.clientX) / rect.width) * viewBoxWidth;
-              mouseY = ((rect.bottom - e.clientY) / rect.height) * viewBoxHeight;
-              isHovering = true;
+              rawMouseX = ((rect.right - e.clientX) / rect.width) * viewBoxWidth;
+              rawMouseY = ((rect.bottom - e.clientY) / rect.height) * viewBoxHeight;
+              hoverTarget = 1;
             } else {
-              isHovering = false;
+              hoverTarget = 0;
             }
           });
         } else {
           // Comportement normal pour les blobs avec z-index positif
           svg.addEventListener("mousemove", (e) => {
             const rect = svg.getBoundingClientRect();
-            mouseX = ((e.clientX - rect.left) / rect.width) * viewBoxWidth;
-            mouseY = ((e.clientY - rect.top) / rect.height) * viewBoxHeight;
+            rawMouseX = ((e.clientX - rect.left) / rect.width) * viewBoxWidth;
+            rawMouseY = ((e.clientY - rect.top) / rect.height) * viewBoxHeight;
           });
 
           svg.addEventListener("mouseenter", () => {
-            isHovering = true;
+            hoverTarget = 1;
           });
 
           svg.addEventListener("mouseleave", () => {
-            isHovering = false;
+            hoverTarget = 0;
           });
         }
       }

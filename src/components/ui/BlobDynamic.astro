@@ -45,7 +45,9 @@ const hasImage = !!(imageUrl || imageData);
 const variants = {
   1: {
     path: "M254.667 9.66027C189.717 -19.3087 147.614 23.4234 135.312 51.8473L133.247 58.3172C137.675 114.386 77.5311 134.842 45.5481 136.984C-3.65639 146.796 -4.06644 194.61 3.72428 215.246C16.2923 248.537 28.7366 271.899 31.4018 282.412C28.4495 335.211 34.2721 356.976 37.5524 361.259C72.9796 422.001 135.961 407.984 163.024 393.382C210.26 359.274 248.312 362.038 261.433 367.684C308.669 399.456 351.231 401.559 366.608 398.639C446.319 373.408 432.214 312.588 415.197 285.333C394.039 232.067 424.013 179.425 441.645 159.762C490.849 88.2736 465.017 45.0927 445.95 32.4382C426.268 10.0107 368.453 31.4649 336.47 45.8715C313.713 52.2961 267.379 21.7307 254.667 9.66027Z",
-    viewBox: "0 0 470 406",
+    viewBox: "-20 -30 510 466",
+    contentWidth: 470,
+    contentHeight: 406,
     deformStrength: 0.3,
     animSpeed: 0.025,
     amplitude: 8,
@@ -53,7 +55,9 @@ const variants = {
   },
   2: {
     path: "M159.789 360.886C210.58 387.483 114.367 569.22 290.347 611.106C444.342 647.76 523.143 480.666 603.221 428.438C750.826 332.168 663.793 257.17 657.886 180.445C648.088 53.1946 608.476 28.7031 466.586 78.3009C412.5 97.207 390.752 -41.167 268.954 12.4137C168.69 56.5216 71.4368 -60.8943 7.10053 111.624C-22.7727 191.729 44.1785 300.345 159.789 360.886Z",
-    viewBox: "0 0 689 617",
+    viewBox: "-30 -30 749 677",
+    contentWidth: 689,
+    contentHeight: 617,
     defaultWidth: 470,
     defaultHeight: 420,
     deformStrength: 0.3,
@@ -64,7 +68,9 @@ const variants = {
   },
   3: {
     path: "M30.8747 572.006C92.8687 658.35 238.111 680.315 341.229 607.943C484.615 507.311 604.019 553.498 680.108 474.795C819.037 331.093 644.073 278.705 632.731 237.259C595.3 100.474 582.495 35.0566 414.169 5.0584C331.691 -9.64048 158.257 5.05841 114.75 84.315C36.433 226.986 117.498 193.374 76.8082 299.246C41.9947 389.829 -46.6178 464.076 30.8747 572.006Z",
-    viewBox: "0 0 734 652",
+    viewBox: "-30 -30 794 712",
+    contentWidth: 734,
+    contentHeight: 652,
     defaultWidth: 470,
     defaultHeight: 418,
     deformStrength: 0.3,
@@ -76,7 +82,9 @@ const variants = {
   },
   4: {
     path: "M10.545 175.984C22.386 207.122 -31.2426 246.509 46.6411 318.791C114.795 382.042 198.714 338.99 256.779 336.254C363.809 331.21 354.255 273.552 375.545 233.484C410.855 167.03 414.301 93.5973 325.045 76.9837C291.022 70.6509 266.259 8.38145 226.045 3.98375C185.831 -0.413942 116.141 -12.2094 86.6411 46.7901C63.6032 92.8655 -31.3586 65.7903 10.545 175.984Z",
-    viewBox: "0 0 399 354",
+    viewBox: "-40 -20 479 394",
+    contentWidth: 399,
+    contentHeight: 354,
     defaultWidth: 470,
     defaultHeight: 417,
     deformStrength: 0.3,
@@ -89,6 +97,8 @@ const variants = {
 
 const config = variants[variant];
 const [vbX, vbY, vbWidth, vbHeight] = config.viewBox.split(" ").map(Number);
+const contentW = config.contentWidth;
+const contentH = config.contentHeight;
 
 const uniqueId = `blob-dynamic-${variant}-${Math.random().toString(36).substr(2, 9)}`;
 const hasSlot = Astro.slots.has('default');
@@ -110,6 +120,7 @@ const hasSlot = Astro.slots.has('default');
     {...(width ? { width } : {})}
     {...(height ? { height } : {})}
     viewBox={config.viewBox}
+    overflow="visible"
     xmlns="http://www.w3.org/2000/svg"
   >
     <defs>
@@ -124,8 +135,8 @@ const hasSlot = Astro.slots.has('default');
       <foreignObject
         x="0"
         y="0"
-        width={vbWidth}
-        height={vbHeight}
+        width={contentW}
+        height={contentH}
         clip-path={`url(#clip-${uniqueId})`}
       >
         <div class="w-full h-full overflow-hidden">
@@ -136,8 +147,8 @@ const hasSlot = Astro.slots.has('default');
       <foreignObject
         x="0"
         y="0"
-        width={vbWidth}
-        height={vbHeight}
+        width={contentW}
+        height={contentH}
         clip-path={`url(#clip-${uniqueId})`}
       >
         <div class="w-full h-full">
@@ -146,8 +157,8 @@ const hasSlot = Astro.slots.has('default');
             record={imageData.record}
             file={imageData.file}
             alt=""
-            width={vbWidth}
-            height={vbHeight}
+            width={contentW}
+            height={contentH}
             loading="eager"
             class="w-full h-full object-cover"
           />
@@ -158,8 +169,8 @@ const hasSlot = Astro.slots.has('default');
         href={imageUrl}
         x="0"
         y="0"
-        width={vbWidth}
-        height={vbHeight}
+        width={contentW}
+        height={contentH}
         clip-path={`url(#clip-${uniqueId})`}
         preserveAspectRatio="xMidYMid slice"
       />
@@ -180,7 +191,7 @@ const hasSlot = Astro.slots.has('default');
     position: relative;
     display: block;
     width: 100%;
-    overflow: hidden;
+    overflow: visible;
   }
 
   .blob-svg {
@@ -218,14 +229,35 @@ const hasSlot = Astro.slots.has('default');
 
       // Parser le path SVG pour extraire les points
       const points = parseSVGPath(originalPath);
-      let mouseX = 0;
-      let mouseY = 0;
-      let isHovering = false;
+      // Position brute de la souris (mise à jour instantanément)
+      let rawMouseX = 0;
+      let rawMouseY = 0;
+      // Position interpolée de la souris (suit avec un lissage)
+      let smoothMouseX = 0;
+      let smoothMouseY = 0;
+      // Influence du hover : 0 = pas de hover, 1 = hover complet
+      let hoverTarget = 0;
+      let hoverInfluence = 0;
       let time = 0;
+
+      // Facteurs de lissage (plus petit = plus fluide/lent)
+      const mouseLerp = 0.08;   // lissage position souris
+      const hoverInLerp = 0.06;  // vitesse d'apparition de l'effet
+      const hoverOutLerp = 0.03; // vitesse de disparition (plus lent = plus organique)
 
       // Animation continue
       function animate() {
         time += animSpeed;
+
+        // Interpolation fluide de la position souris
+        smoothMouseX += (rawMouseX - smoothMouseX) * mouseLerp;
+        smoothMouseY += (rawMouseY - smoothMouseY) * mouseLerp;
+
+        // Interpolation fluide de l'influence du hover
+        const lerpFactor = hoverTarget > hoverInfluence ? hoverInLerp : hoverOutLerp;
+        hoverInfluence += (hoverTarget - hoverInfluence) * lerpFactor;
+        // Couper à zéro quand quasi-nul pour éviter des calculs inutiles
+        if (hoverInfluence < 0.001) hoverInfluence = 0;
 
         // Déformer chaque point
         const deformedPoints = points.map((point, index) => {
@@ -247,15 +279,15 @@ const hasSlot = Astro.slots.has('default');
             newY = point.y + offsetY;
           }
 
-          // Répulsion souris : S'AJOUTE à l'animation idle quand hover
-          if (isHovering) {
-            const dx = mouseX - newX;
-            const dy = mouseY - newY;
+          // Répulsion souris : pondérée par hoverInfluence (transition douce)
+          if (hoverInfluence > 0) {
+            const dx = smoothMouseX - newX;
+            const dy = smoothMouseY - newY;
             const distance = Math.sqrt(dx * dx + dy * dy);
             const maxDistance = 150;
 
             if (distance < maxDistance) {
-              const force = (1 - distance / maxDistance) * deformStrength * 50;
+              const force = (1 - distance / maxDistance) * deformStrength * 50 * hoverInfluence;
               const angle = Math.atan2(dy, dx);
               
               newX = newX - Math.cos(angle) * force;
@@ -281,19 +313,21 @@ const hasSlot = Astro.slots.has('default');
       svg.addEventListener("mousemove", (e) => {
         const rect = svg.getBoundingClientRect();
         const viewBoxParts = svg.getAttribute("viewBox")?.split(" ") || ["0", "0", "470", "406"];
+        const vbX = parseFloat(viewBoxParts[0]);
+        const vbY = parseFloat(viewBoxParts[1]);
         const viewBoxWidth = parseFloat(viewBoxParts[2]);
         const viewBoxHeight = parseFloat(viewBoxParts[3]);
         
-        mouseX = ((e.clientX - rect.left) / rect.width) * viewBoxWidth;
-        mouseY = ((e.clientY - rect.top) / rect.height) * viewBoxHeight;
+        rawMouseX = vbX + ((e.clientX - rect.left) / rect.width) * viewBoxWidth;
+        rawMouseY = vbY + ((e.clientY - rect.top) / rect.height) * viewBoxHeight;
       });
 
       svg.addEventListener("mouseenter", () => {
-        isHovering = true;
+        hoverTarget = 1;
       });
 
       svg.addEventListener("mouseleave", () => {
-        isHovering = false;
+        hoverTarget = 0;
       });
 
       // Démarrer l'animation
