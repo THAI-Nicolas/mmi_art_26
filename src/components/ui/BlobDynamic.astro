@@ -227,6 +227,13 @@ const hasSlot = Astro.slots.has('default');
 
       if (!svg || !blobPath || !originalPath) return;
 
+      // Récupérer les limites du viewBox pour le clamping
+      const viewBoxAttr = svg.getAttribute("viewBox")?.split(" ").map(Number) || [0, 0, 470, 406];
+      const clampMinX = viewBoxAttr[0] + 5;
+      const clampMinY = viewBoxAttr[1] + 5;
+      const clampMaxX = viewBoxAttr[0] + viewBoxAttr[2] - 5;
+      const clampMaxY = viewBoxAttr[1] + viewBoxAttr[3] - 5;
+
       // Parser le path SVG pour extraire les points
       const points = parseSVGPath(originalPath);
       // Position brute de la souris (mise à jour instantanément)
@@ -294,6 +301,10 @@ const hasSlot = Astro.slots.has('default');
               newY = newY - Math.sin(angle) * force;
             }
           }
+
+          // Clamper les points dans les limites du viewBox
+          newX = Math.max(clampMinX, Math.min(clampMaxX, newX));
+          newY = Math.max(clampMinY, Math.min(clampMaxY, newY));
 
           return {
             ...point,
