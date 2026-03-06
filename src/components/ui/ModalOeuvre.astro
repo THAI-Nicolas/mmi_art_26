@@ -1,0 +1,140 @@
+---
+import { getImageUrl } from '../../lib/backend';
+
+interface Props {
+	modalId: string;
+	artiste: any;
+	photos: string[];
+	oeuvreTitre?: string;
+}
+
+const { modalId, artiste, photos = [], oeuvreTitre } = Astro.props;
+
+const oeuvres = (artiste?.expand?.oeuvres_id || []) as any[];
+const avatarUrl = artiste?.avatar ? getImageUrl(artiste, artiste.avatar) : null;
+---
+
+<div id={modalId} class="artwork-modal fixed inset-0 z-500 hidden">
+	<!-- Overlay semi-transparent : fond panorama visible -->
+	<div class="modal-overlay absolute inset-0 bg-black/55 backdrop-blur-sm cursor-pointer"></div>
+
+	<!-- Bouton fermer : cercle noir haut droite -->
+	<button
+		class="modal-close m-8 absolute top-20 right-8 z-20 flex items-center justify-center w-16 h-16 rounded-full bg-black text-white hover:bg-black/70 transition-colors"
+		aria-label="Fermer"
+	>
+		<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+			<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+		</svg>
+	</button>
+
+	<!-- Lightbox plein écran pour chaque photo (clic image) -->
+	{photos.map((photo, index) => (
+		<div
+			id={`lb-${modalId}-${index}`}
+			class="fixed inset-0 items-center justify-center cursor-pointer"
+			style="display:none; z-index:9999; background:rgba(0,0,0,0.95);"
+			onclick="this.style.display='none'"
+		>
+			<img src={photo} alt={`${oeuvreTitre ?? 'Oeuvre'} — plein écran`} class="max-w-[90vw] max-h-[90vh] object-contain rounded-lg" style="pointer-events:none;" />
+		</div>
+	))}
+
+	<!-- Boîte modale : hauteur fixe, pas de scroll -->
+	<div
+		class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-[94%] max-w-5xl bg-primary/90 border border-secondary/20 rounded-xl p-5 lg:p-8 overflow-hidden flex flex-col"
+	>
+
+		<!-- Layout 2 colonnes, remplit la hauteur -->
+		<div class="flex flex-col lg:flex-row gap-4 lg:gap-6 min-h-0">
+
+			<!-- Colonne gauche : image(s) de l'oeuvre — 60% de la largeur -->
+			<div class="lg:w-[60%] flex flex-col gap-2 min-h-0">
+				<div class="modal-gallery flex-1 min-h-0 flex flex-col" data-total={photos.length}>
+					{photos.map((photo, index) => (
+						<div class:list={['modal-slide flex-1 min-h-0', { hidden: index !== 0 }]}>
+							<img
+								src={photo}
+								alt={`${oeuvreTitre ?? 'Oeuvre'} — photo ${index + 1}`}
+								class="w-full h-full rounded-lg object-contain cursor-zoom-in"
+								loading="lazy"
+							onclick={`document.getElementById('lb-${modalId}-${index}').style.display='flex'`}
+							/>
+						</div>
+					))}
+					{photos.length > 1 && (
+						<div class="flex items-center justify-between mt-2 shrink-0">
+							<button class="carousel-prev btn-white text-xs px-2 py-1" aria-label="Photo précédente">←</button>
+							<span class="carousel-counter text-secondary/60 text-xs font-ibm-plex-mono">1 / {photos.length}</span>
+							<button class="carousel-next btn-white text-xs px-2 py-1" aria-label="Photo suivante">→</button>
+						</div>
+					)}
+				</div>
+			</div>
+
+			<!-- Colonne droite : artiste (50%) + ses oeuvres (50%) -->
+			<div class="lg:w-[40%] flex flex-col min-h-0">
+
+				<!-- Card artiste : première moitié -->
+				<div class="flex-1 flex flex-col justify-center">
+					<p class="text-secondary/50 text-sm uppercase tracking-widest mb-3 font-ibm-plex-mono">Artiste</p>
+					<a
+						href={`/artistes/${artiste?.slug}`}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="flex items-center gap-4 hover:opacity-75 transition-opacity lg:flex-col"
+					>
+						<div class="rounded-full overflow-hidden shrink-0 border border-secondary/20" style="width:120px;height:120px;min-width:100px;border-radius:9999px;">
+							{avatarUrl ? (
+								<img src={avatarUrl} alt={artiste?.name ?? ''} class="w-full h-full object-cover" loading="lazy" />
+							) : (
+								<div class="w-full h-full bg-secondary/10"></div>
+							)}
+						</div>
+						<div>
+							<p class="text-secondary font-uni-sans uppercase text-base lg:text-lg leading-tight">{artiste?.name}</p>
+							{artiste?.mmi_year && (
+								<p class="text-secondary/55 text-sm mt-1">{artiste.mmi_year}</p>
+							)}
+						</div>
+					</a>
+				</div>
+
+				<!-- Oeuvres : deuxième moitié, thumbnails 40px fixes -->
+				{oeuvres.length > 0 && (
+					<div class="flex-1 flex flex-col min-h-0 overflow-hidden border-t border-secondary/10 pt-3">
+						<p class="text-secondary/50 text-sm uppercase tracking-widest mb-2 font-ibm-plex-mono shrink-0">Ses oeuvres</p>
+						<ul class="flex flex-wrap gap-1.5 content-start overflow-hidden">
+							{oeuvres.map((oeuvre: any) => {
+								const imgRecord = oeuvre?.expand?.oeuvres_images?.[0];
+								const imgUrl = imgRecord?.images?.[0]
+									? getImageUrl(imgRecord, imgRecord.images[0])
+									: null;
+								return (
+									<li class="shrink-0">
+										<a
+											href={`/oeuvres/${oeuvre.slug}`}
+											target="_blank"
+											rel="noopener noreferrer"
+											class="block hover:opacity-70 transition-opacity"
+											title={oeuvre.title}
+										>
+											<div class="w-10 h-10 rounded overflow-hidden bg-secondary/10">
+												{imgUrl ? (
+													<img src={imgUrl} alt={oeuvre.title ?? ''} class="w-full h-full object-cover" loading="lazy" />
+												) : (
+													<div class="w-full h-full bg-secondary/10"></div>
+												)}
+											</div>
+										</a>
+									</li>
+								);
+							})}
+						</ul>
+					</div>
+				)}
+
+			</div>
+		</div>
+	</div>
+</div>

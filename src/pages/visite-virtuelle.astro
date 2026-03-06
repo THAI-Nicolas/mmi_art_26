@@ -1,5 +1,10 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import ModalOeuvre from '../components/ui/ModalOeuvre.astro';
+import { GetArtistBySlug } from '../lib/backend';
+
+const artisteSmoky = await GetArtistBySlug('smoky');
+const artisteMelissa = await GetArtistBySlug('jellyperle');
 ---
 
 <Layout 
@@ -74,6 +79,23 @@ import Layout from '../layouts/Layout.astro';
 			<span id="current-scene-name">Entrée de l'exposition</span>
 		</div>
 	</div>
+
+	{artisteSmoky && (
+		<ModalOeuvre
+			modalId="modal-smoky"
+			artiste={artisteSmoky}
+			photos={['/photos-oeuvres/smoky1.webp']}
+			oeuvreTitre="Smoky"
+		/>
+	)}
+	{artisteMelissa && (
+		<ModalOeuvre
+			modalId="modal-jellyperle"
+			artiste={artisteMelissa}
+			photos={['/photos-oeuvres/melissa-toumazet1.webp']}
+			oeuvreTitre="Melissa Toumazet"
+		/>
+	)}
 </Layout>
 
 <!-- Chargement de Pannellum depuis public -->
@@ -226,6 +248,58 @@ import Layout from '../layouts/Layout.astro';
 	.pnlm-lbar-fill {
 		background: var(--color-primary) !important;
 	}
+
+	/* === Hotspot oeuvre pulsant === */
+	.artwork-hotspot {
+		position: relative;
+		width: 28px;
+		height: 28px;
+		cursor: pointer;
+	}
+
+	.artwork-hotspot .hs-ping {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 28px;
+		height: 28px;
+		background: var(--color-secondary);
+		border-radius: 50%;
+		opacity: 0.4;
+		animation: artwork-ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+	}
+
+	.artwork-hotspot .hs-dot {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 10px;
+		height: 10px;
+		background: var(--color-secondary);
+		border-radius: 50%;
+		z-index: 1;
+	}
+
+	@keyframes artwork-ping {
+		0%   { transform: translate(-50%, -50%) scale(0.5); opacity: 0.4; }
+		100% { transform: translate(-50%, -50%) scale(2.4); opacity: 0; }
+	}
+
+	.artwork-hotspot:hover .hs-dot {
+		opacity: 0.7;
+	}
+
+	/* Animation ouverture modal */
+	.artwork-modal:not(.hidden) {
+		animation: modal-fadein 0.2s ease;
+	}
+
+	@keyframes modal-fadein {
+		from { opacity: 0; }
+		to   { opacity: 1; }
+	}
 </style>
 
 <script is:inline>
@@ -260,7 +334,54 @@ import Layout from '../layouts/Layout.astro';
 			div.innerText = text;
 			return div;
 		}
-		
+
+		// Fonction pour créer un hotspot oeuvre pulsant
+		function createArtworkHotspot() {
+			const wrapper = document.createElement('div');
+			wrapper.classList.add('artwork-hotspot');
+			const ping = document.createElement('span');
+			ping.classList.add('hs-ping');
+			const dot = document.createElement('span');
+			dot.classList.add('hs-dot');
+			wrapper.appendChild(ping);
+			wrapper.appendChild(dot);
+			return wrapper;
+		}
+
+		// Ouvrir un modal oeuvre
+		function openArtworkModal(modalId) {
+			const modal = document.getElementById(modalId);
+			if (!modal) return;
+			modal.classList.remove('hidden');
+		}
+
+		// Fermer tous les modals oeuvres
+		function closeAllArtworkModals() {
+			document.querySelectorAll('.artwork-modal').forEach(function(m) {
+				m.classList.add('hidden');
+			});
+		}
+
+		// Initialiser les carrousels des modals
+		function initCarousels() {
+			document.querySelectorAll('.modal-gallery[data-total]').forEach(function(gallery) {
+				const total = parseInt(gallery.dataset.total);
+				if (total <= 1) return;
+				const slides = gallery.querySelectorAll('.modal-slide');
+				const counter = gallery.querySelector('.carousel-counter');
+				const prev = gallery.querySelector('.carousel-prev');
+				const next = gallery.querySelector('.carousel-next');
+				let current = 0;
+				function show(i) {
+					slides.forEach(function(s, idx) { s.classList.toggle('hidden', idx !== i); });
+					if (counter) counter.textContent = (i + 1) + ' / ' + total;
+					current = i;
+				}
+				if (prev) prev.addEventListener('click', function() { show((current - 1 + total) % total); });
+				if (next) next.addEventListener('click', function() { show((current + 1) % total); });
+			});
+		}
+
 		// Initialisation de Pannellum
 		function initPannellum() {
 			if (typeof pannellum === 'undefined') {
@@ -424,6 +545,40 @@ import Layout from '../layouts/Layout.astro';
 						pitch: 0,
 						yaw: 0,
 						hotSpots: [
+							// --- Hotspots oeuvres (pitch/yaw à affiner avec hotSpotDebug) ---
+							{
+								pitch: -20,
+								yaw: 95,
+								type: 'info',
+								text: 'Smoky',
+								createTooltipFunc: function(hotSpotDiv) {
+									const el = createArtworkHotspot();
+									hotSpotDiv.appendChild(el);
+									hotSpotDiv.addEventListener('mousedown', function(e) { e.stopPropagation(); });
+									hotSpotDiv.addEventListener('click', function(e) {
+										e.stopPropagation();
+										openArtworkModal('modal-smoky');
+									});
+								},
+								createTooltipArgs: 'Smoky'
+							},
+							{
+								pitch: -19,
+								yaw: 133,
+								type: 'info',
+								text: 'Melissa Toumazet',
+								createTooltipFunc: function(hotSpotDiv) {
+									const el = createArtworkHotspot();
+									hotSpotDiv.appendChild(el);
+									hotSpotDiv.addEventListener('mousedown', function(e) { e.stopPropagation(); });
+									hotSpotDiv.addEventListener('click', function(e) {
+										e.stopPropagation();
+										openArtworkModal('modal-jellyperle');
+									});
+								},
+								createTooltipArgs: 'Melissa Toumazet'
+							},
+							// --- Hotspots navigation ---
 							{
 								pitch: -6,
 								yaw: -31,
@@ -872,13 +1027,27 @@ import Layout from '../layouts/Layout.astro';
 			});
 		}
 		
-		// Touche Escape pour quitter
-		document.addEventListener('keydown', function(e) {
-			if (e.key === 'Escape' && document.body.classList.contains('immersive-mode')) {
-				exitImmersiveMode();
+		// Fermeture des modals oeuvres par délégation d'événement
+		document.addEventListener('click', function(e) {
+			if (e.target.closest('.modal-close') || e.target.classList.contains('modal-overlay')) {
+				closeAllArtworkModals();
 			}
 		});
-		
+
+		// Touche Escape : ferme le modal si ouvert, sinon quitte le mode immersif
+		document.addEventListener('keydown', function(e) {
+			if (e.key === 'Escape') {
+				const openModal = document.querySelector('.artwork-modal:not(.hidden)');
+				if (openModal) {
+					closeAllArtworkModals();
+				} else if (document.body.classList.contains('immersive-mode')) {
+					exitImmersiveMode();
+				}
+			}
+		});
+
+		initCarousels();
+
 		// MODE DEV : Initialiser directement Pannellum sans attendre le clic
 		document.body.classList.add('immersive-mode');
 		initPannellum();
