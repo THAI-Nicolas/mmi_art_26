@@ -46,7 +46,7 @@ const avatarUrl = artiste?.avatar ? getImageUrl(artiste, artiste.avatar) : null;
 	>
 
 		<!-- Layout 2 colonnes, remplit la hauteur -->
-		<div class="flex flex-col lg:flex-row gap-4 lg:gap-6 min-h-0">
+		<div class="flex flex-col lg:flex-row gap-4 lg:gap-6 flex-1 min-h-0">
 
 			<!-- Colonne gauche : image(s) de l'oeuvre — 60% de la largeur -->
 			<div class="lg:w-[60%] flex flex-col gap-2 min-h-0">
@@ -119,9 +119,9 @@ const avatarUrl = artiste?.avatar ? getImageUrl(artiste, artiste.avatar) : null;
 											class="block hover:opacity-70 transition-opacity"
 											title={oeuvre.title}
 										>
-											<div class="w-10 h-10 rounded overflow-hidden bg-secondary/10">
+											<div class="rounded overflow-hidden bg-secondary/10" style="width:44px;height:44px;min-width:44px;flex-shrink:0;">
 												{imgUrl ? (
-													<img src={imgUrl} alt={oeuvre.title ?? ''} class="w-full h-full object-cover" loading="lazy" />
+													<img src={imgUrl} alt={oeuvre.title ?? ''} class="w-32 h-32 object-cover" loading="lazy" />
 												) : (
 													<div class="w-full h-full bg-secondary/10"></div>
 												)}
