@@ -50,26 +50,35 @@ const avatarUrl = artiste?.avatar ? getImageUrl(artiste, artiste.avatar) : null;
 
 			<!-- Colonne gauche : image(s) de l'oeuvre — 60% de la largeur -->
 			<div class="lg:w-[60%] flex flex-col gap-2 min-h-0">
-				<div class="modal-gallery flex-1 min-h-0 flex flex-col" data-total={photos.length}>
-					{photos.map((photo, index) => (
-						<div class:list={['modal-slide flex-1 min-h-0', { hidden: index !== 0 }]}>
-							<img
-								src={photo}
-								alt={`${oeuvreTitre ?? 'Oeuvre'} — photo ${index + 1}`}
-								class="w-full h-full rounded-lg object-contain cursor-zoom-in"
-								loading="lazy"
-							onclick={`document.getElementById('lb-${modalId}-${index}').style.display='flex'`}
-							/>
-						</div>
-					))}
-					{photos.length > 1 && (
-						<div class="flex items-center justify-between mt-2 shrink-0">
-							<button class="carousel-prev btn-white text-xs px-2 py-1" aria-label="Photo précédente">←</button>
-							<span class="carousel-counter text-secondary/60 text-xs font-ibm-plex-mono">1 / {photos.length}</span>
-							<button class="carousel-next btn-white text-xs px-2 py-1" aria-label="Photo suivante">→</button>
-						</div>
-					)}
-				</div>
+				{photos.length > 0 ? (
+					<div class="modal-gallery flex-1 min-h-0 flex flex-col" data-total={photos.length}>
+						{photos.map((photo, index) => (
+							<div class:list={['modal-slide flex-1 min-h-0', { hidden: index !== 0 }]}>
+								<img
+									src={photo}
+									alt={`${oeuvreTitre ?? 'Oeuvre'} — photo ${index + 1}`}
+									class="w-full h-full rounded-lg object-contain cursor-zoom-in"
+									loading="lazy"
+								onclick={`document.getElementById('lb-${modalId}-${index}').style.display='flex'`}
+								/>
+							</div>
+						))}
+						{photos.length > 1 && (
+							<div class="flex items-center justify-between mt-2 shrink-0">
+								<button class="carousel-prev btn-white text-xs px-2 py-1" aria-label="Photo précédente">←</button>
+								<span class="carousel-counter text-secondary/60 text-xs font-ibm-plex-mono">1 / {photos.length}</span>
+								<button class="carousel-next btn-white text-xs px-2 py-1" aria-label="Photo suivante">→</button>
+							</div>
+						)}
+					</div>
+				) : (
+					<div class="flex-1 flex flex-col items-center justify-center rounded-lg border border-secondary/10 bg-secondary/5">
+						<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="text-secondary/20 mb-3">
+							<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
+						</svg>
+						<p class="text-secondary/30 text-xs font-ibm-plex-mono uppercase tracking-widest">Photo à venir</p>
+					</div>
+				)}
 			</div>
 
 			<!-- Colonne droite : artiste (50%) + ses oeuvres (50%) -->

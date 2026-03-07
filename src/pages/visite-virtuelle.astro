@@ -3,8 +3,29 @@ import Layout from '../layouts/Layout.astro';
 import ModalOeuvre from '../components/ui/ModalOeuvre.astro';
 import { GetArtistBySlug } from '../lib/backend';
 
-const artisteSmoky = await GetArtistBySlug('smoky');
-const artisteMelissa = await GetArtistBySlug('jellyperle');
+const artisteSmoky    = await GetArtistBySlug('smoky');
+const artisteMelissa  = await GetArtistBySlug('jellyperle');
+// Scène 1
+const artisteDany     = await GetArtistBySlug('dany-galmiche');
+// Scène 2
+const artisteManolia  = await GetArtistBySlug('manolia-kocaoglu');
+// Scène 3
+const artistePhasme   = await GetArtistBySlug('phasme');
+const artisteLola     = await GetArtistBySlug('lola-brouart');
+// Scène 4
+const artisteMaelie   = await GetArtistBySlug('maelie-addario');
+const artisteNoemie   = await GetArtistBySlug('noemie-caritey');
+// Scène 5
+const artisteSidus    = await GetArtistBySlug('sidus');
+const artistePaolo    = await GetArtistBySlug('paolo-vincent');
+const artisteArthur   = await GetArtistBySlug('arthur-wicky');
+const artisteAlice    = await GetArtistBySlug('alice-frelin');
+// Scène 6
+const artisteMathis   = await GetArtistBySlug('mathis-liegeon');
+const artisteHugo     = await GetArtistBySlug('hugo-molard');
+const artisteLeo      = await GetArtistBySlug('leo-baudry');
+const artisteMootys   = await GetArtistBySlug('mootys');
+const artisteMarion   = await GetArtistBySlug('marion-mura');
 ---
 
 <Layout 
@@ -94,6 +115,132 @@ const artisteMelissa = await GetArtistBySlug('jellyperle');
 			artiste={artisteMelissa}
 			photos={['/photos-oeuvres/melissa-toumazet1.webp']}
 			oeuvreTitre="Melissa Toumazet"
+		/>
+	)}
+	{/* Scène 1 */}
+	{artisteDany && (
+		<ModalOeuvre
+			modalId="modal-dany-galmiche"
+			artiste={artisteDany}
+			photos={['/photos-oeuvres/dany-galmiche1.webp']}
+			oeuvreTitre="Dany Galmiche"
+		/>
+	)}
+	{/* Scène 2 */}
+	{artisteManolia && (
+		<ModalOeuvre
+			modalId="modal-manolia-kocaoglu"
+			artiste={artisteManolia}
+			photos={['/photos-oeuvres/manolia-kocaoglu1.webp']}
+			oeuvreTitre="Manolia Kocaoglu"
+		/>
+	)}
+	{/* Scène 3 */}
+	{artistePhasme && (
+		<ModalOeuvre
+			modalId="modal-phasme"
+			artiste={artistePhasme}
+			photos={['/photos-oeuvres/phasme1.webp']}
+			oeuvreTitre="Phasme"
+		/>
+	)}
+	{artisteLola && (
+		<ModalOeuvre
+			modalId="modal-lola-brouart"
+			artiste={artisteLola}
+			photos={['/photos-oeuvres/lola-brouart1.webp']}
+			oeuvreTitre="Lola Brouart"
+		/>
+	)}
+	{/* Scène 4 */}
+	{artisteMaelie && (
+		<ModalOeuvre
+			modalId="modal-maelie-addario"
+			artiste={artisteMaelie}
+			photos={['/photos-oeuvres/maelie-addario-1.webp', '/photos-oeuvres/maelie-addario-2.webp', '/photos-oeuvres/maelie-addario-3.webp']}
+			oeuvreTitre="Maelie Addario"
+		/>
+	)}
+	{artisteNoemie && (
+		<ModalOeuvre
+			modalId="modal-noemie-caritey"
+			artiste={artisteNoemie}
+			photos={['/photos-oeuvres/noemie-caritey-1.webp', '/photos-oeuvres/noemie-caritey-2.webp', '/photos-oeuvres/noemie-caritey-3.webp']}
+			oeuvreTitre="Noémie Caritey"
+		/>
+	)}
+	{/* Scène 5 */}
+	{artisteSidus && (
+		<ModalOeuvre
+			modalId="modal-sidus"
+			artiste={artisteSidus}
+			photos={[]}
+			oeuvreTitre="Sidus"
+		/>
+	)}
+	{artistePaolo && (
+		<ModalOeuvre
+			modalId="modal-paolo-vincent"
+			artiste={artistePaolo}
+			photos={['/photos-oeuvres/paolo-vincent1.webp']}
+			oeuvreTitre="Paolo Vincent"
+		/>
+	)}
+	{artisteArthur && (
+		<ModalOeuvre
+			modalId="modal-arthur-wicky"
+			artiste={artisteArthur}
+			photos={['/photos-oeuvres/arthur-wicky1.webp']}
+			oeuvreTitre="Arthur Wicky"
+		/>
+	)}
+	{artisteAlice && (
+		<ModalOeuvre
+			modalId="modal-alice-frelin"
+			artiste={artisteAlice}
+			photos={['/photos-oeuvres/alice-frelin1.webp']}
+			oeuvreTitre="Alice Frelin"
+		/>
+	)}
+	{/* Scène 6 */}
+	{artisteMathis && (
+		<ModalOeuvre
+			modalId="modal-mathis-liegeon"
+			artiste={artisteMathis}
+			photos={[]}
+			oeuvreTitre="Mathis Liegeon"
+		/>
+	)}
+	{artisteHugo && (
+		<ModalOeuvre
+			modalId="modal-hugo-molard"
+			artiste={artisteHugo}
+			photos={['/photos-oeuvres/hugo-molard1.webp']}
+			oeuvreTitre="Hugo Molard"
+		/>
+	)}
+	{artisteLeo && (
+		<ModalOeuvre
+			modalId="modal-leo-baudry"
+			artiste={artisteLeo}
+			photos={['/photos-oeuvres/leo-baudry1.webp']}
+			oeuvreTitre="Léo Baudry"
+		/>
+	)}
+	{artisteMootys && (
+		<ModalOeuvre
+			modalId="modal-mootys"
+			artiste={artisteMootys}
+			photos={['/photos-oeuvres/mootys1.webp']}
+			oeuvreTitre="Mootys"
+		/>
+	)}
+	{artisteMarion && (
+		<ModalOeuvre
+			modalId="modal-marion-mura"
+			artiste={artisteMarion}
+			photos={[]}
+			oeuvreTitre="Marion Mura"
 		/>
 	)}
 </Layout>
@@ -536,6 +683,23 @@ const artisteMelissa = await GetArtistBySlug('jellyperle');
 									hotSpotDiv.appendChild(span);
 								},
 								createTooltipArgs: 'Avancer'
+							},
+							// --- Hotspots oeuvres ---
+							{
+								pitch: 0,
+								yaw: 94,
+								type: 'info',
+								text: 'Dany Galmiche',
+								createTooltipFunc: function(hotSpotDiv) {
+									const el = createArtworkHotspot();
+									hotSpotDiv.appendChild(el);
+									hotSpotDiv.addEventListener('mousedown', function(e) { e.stopPropagation(); });
+									hotSpotDiv.addEventListener('click', function(e) {
+										e.stopPropagation();
+										openArtworkModal('modal-dany-galmiche');
+									});
+								},
+								createTooltipArgs: 'Dany Galmiche'
 							}
 						]
 					},
@@ -577,6 +741,22 @@ const artisteMelissa = await GetArtistBySlug('jellyperle');
 									});
 								},
 								createTooltipArgs: 'Melissa Toumazet'
+							},
+							{
+								pitch: -3,
+								yaw: 22,
+								type: 'info',
+								text: 'Manolia Kocaoglu',
+								createTooltipFunc: function(hotSpotDiv) {
+									const el = createArtworkHotspot();
+									hotSpotDiv.appendChild(el);
+									hotSpotDiv.addEventListener('mousedown', function(e) { e.stopPropagation(); });
+									hotSpotDiv.addEventListener('click', function(e) {
+										e.stopPropagation();
+										openArtworkModal('modal-manolia-kocaoglu');
+									});
+								},
+								createTooltipArgs: 'Manolia Kocaoglu'
 							},
 							// --- Hotspots navigation ---
 							{
@@ -700,6 +880,39 @@ const artisteMelissa = await GetArtistBySlug('jellyperle');
 									hotSpotDiv.appendChild(span);
 								},
 								createTooltipArgs: 'Retour'
+							},
+							// --- Hotspots oeuvres ---
+							{
+								pitch: -9,
+								yaw: -132,
+								type: 'info',
+								text: 'Phasme',
+								createTooltipFunc: function(hotSpotDiv) {
+									const el = createArtworkHotspot();
+									hotSpotDiv.appendChild(el);
+									hotSpotDiv.addEventListener('mousedown', function(e) { e.stopPropagation(); });
+									hotSpotDiv.addEventListener('click', function(e) {
+										e.stopPropagation();
+										openArtworkModal('modal-phasme');
+									});
+								},
+								createTooltipArgs: 'Phasme'
+							},
+							{
+								pitch: -13,
+								yaw: -88,
+								type: 'info',
+								text: 'Lola Brouart',
+								createTooltipFunc: function(hotSpotDiv) {
+									const el = createArtworkHotspot();
+									hotSpotDiv.appendChild(el);
+									hotSpotDiv.addEventListener('mousedown', function(e) { e.stopPropagation(); });
+									hotSpotDiv.addEventListener('click', function(e) {
+										e.stopPropagation();
+										openArtworkModal('modal-lola-brouart');
+									});
+								},
+								createTooltipArgs: 'Lola Brouart'
 							}
 						]
 					},
@@ -779,6 +992,39 @@ const artisteMelissa = await GetArtistBySlug('jellyperle');
 								},
 								createTooltipArgs: 'Point de vue 5'
 							},
+							// --- Hotspots oeuvres ---
+							{
+								pitch: -5,
+								yaw: 56,
+								type: 'info',
+								text: 'Maelie Addario',
+								createTooltipFunc: function(hotSpotDiv) {
+									const el = createArtworkHotspot();
+									hotSpotDiv.appendChild(el);
+									hotSpotDiv.addEventListener('mousedown', function(e) { e.stopPropagation(); });
+									hotSpotDiv.addEventListener('click', function(e) {
+										e.stopPropagation();
+										openArtworkModal('modal-maelie-addario');
+									});
+								},
+								createTooltipArgs: 'Maelie Addario'
+							},
+							{
+								pitch: -24,
+								yaw: -174,
+								type: 'info',
+								text: 'Noémie Caritey',
+								createTooltipFunc: function(hotSpotDiv) {
+									const el = createArtworkHotspot();
+									hotSpotDiv.appendChild(el);
+									hotSpotDiv.addEventListener('mousedown', function(e) { e.stopPropagation(); });
+									hotSpotDiv.addEventListener('click', function(e) {
+										e.stopPropagation();
+										openArtworkModal('modal-noemie-caritey');
+									});
+								},
+								createTooltipArgs: 'Noémie Caritey'
+							}
 						]
 					},
 					scene5: {
@@ -814,6 +1060,71 @@ const artisteMelissa = await GetArtistBySlug('jellyperle');
 									hotSpotDiv.appendChild(span);
 								},
 								createTooltipArgs: 'Retour'
+							},
+							// --- Hotspots oeuvres ---
+							{
+								pitch: 7,
+								yaw: -79,
+								type: 'info',
+								text: 'Sidus',
+								createTooltipFunc: function(hotSpotDiv) {
+									const el = createArtworkHotspot();
+									hotSpotDiv.appendChild(el);
+									hotSpotDiv.addEventListener('mousedown', function(e) { e.stopPropagation(); });
+									hotSpotDiv.addEventListener('click', function(e) {
+										e.stopPropagation();
+										openArtworkModal('modal-sidus');
+									});
+								},
+								createTooltipArgs: 'Sidus'
+							},
+							{
+								pitch: -18,
+								yaw: -147,
+								type: 'info',
+								text: 'Paolo Vincent',
+								createTooltipFunc: function(hotSpotDiv) {
+									const el = createArtworkHotspot();
+									hotSpotDiv.appendChild(el);
+									hotSpotDiv.addEventListener('mousedown', function(e) { e.stopPropagation(); });
+									hotSpotDiv.addEventListener('click', function(e) {
+										e.stopPropagation();
+										openArtworkModal('modal-paolo-vincent');
+									});
+								},
+								createTooltipArgs: 'Paolo Vincent'
+							},
+							{
+								pitch: -24,
+								yaw: -172,
+								type: 'info',
+								text: 'Arthur Wicky',
+								createTooltipFunc: function(hotSpotDiv) {
+									const el = createArtworkHotspot();
+									hotSpotDiv.appendChild(el);
+									hotSpotDiv.addEventListener('mousedown', function(e) { e.stopPropagation(); });
+									hotSpotDiv.addEventListener('click', function(e) {
+										e.stopPropagation();
+										openArtworkModal('modal-arthur-wicky');
+									});
+								},
+								createTooltipArgs: 'Arthur Wicky'
+							},
+							{
+								pitch: -11,
+								yaw: 53,
+								type: 'info',
+								text: 'Alice Frelin',
+								createTooltipFunc: function(hotSpotDiv) {
+									const el = createArtworkHotspot();
+									hotSpotDiv.appendChild(el);
+									hotSpotDiv.addEventListener('mousedown', function(e) { e.stopPropagation(); });
+									hotSpotDiv.addEventListener('click', function(e) {
+										e.stopPropagation();
+										openArtworkModal('modal-alice-frelin');
+									});
+								},
+								createTooltipArgs: 'Alice Frelin'
 							}
 						]
 					},
@@ -864,6 +1175,87 @@ const artisteMelissa = await GetArtistBySlug('jellyperle');
 									hotSpotDiv.appendChild(span);
 								},
 								createTooltipArgs: 'Retour'
+							},
+							// --- Hotspots oeuvres ---
+							{
+								pitch: -16,
+								yaw: 92,
+								type: 'info',
+								text: 'Mathis Liegeon',
+								createTooltipFunc: function(hotSpotDiv) {
+									const el = createArtworkHotspot();
+									hotSpotDiv.appendChild(el);
+									hotSpotDiv.addEventListener('mousedown', function(e) { e.stopPropagation(); });
+									hotSpotDiv.addEventListener('click', function(e) {
+										e.stopPropagation();
+										openArtworkModal('modal-mathis-liegeon');
+									});
+								},
+								createTooltipArgs: 'Mathis Liegeon'
+							},
+							{
+								pitch: -3,
+								yaw: -89,
+								type: 'info',
+								text: 'Hugo Molard',
+								createTooltipFunc: function(hotSpotDiv) {
+									const el = createArtworkHotspot();
+									hotSpotDiv.appendChild(el);
+									hotSpotDiv.addEventListener('mousedown', function(e) { e.stopPropagation(); });
+									hotSpotDiv.addEventListener('click', function(e) {
+										e.stopPropagation();
+										openArtworkModal('modal-hugo-molard');
+									});
+								},
+								createTooltipArgs: 'Hugo Molard'
+							},
+							{
+								pitch: -1,
+								yaw: -73,
+								type: 'info',
+								text: 'Léo Baudry',
+								createTooltipFunc: function(hotSpotDiv) {
+									const el = createArtworkHotspot();
+									hotSpotDiv.appendChild(el);
+									hotSpotDiv.addEventListener('mousedown', function(e) { e.stopPropagation(); });
+									hotSpotDiv.addEventListener('click', function(e) {
+										e.stopPropagation();
+										openArtworkModal('modal-leo-baudry');
+									});
+								},
+								createTooltipArgs: 'Léo Baudry'
+							},
+							{
+								pitch: -1,
+								yaw: -58,
+								type: 'info',
+								text: 'Mootys',
+								createTooltipFunc: function(hotSpotDiv) {
+									const el = createArtworkHotspot();
+									hotSpotDiv.appendChild(el);
+									hotSpotDiv.addEventListener('mousedown', function(e) { e.stopPropagation(); });
+									hotSpotDiv.addEventListener('click', function(e) {
+										e.stopPropagation();
+										openArtworkModal('modal-mootys');
+									});
+								},
+								createTooltipArgs: 'Mootys'
+							},
+							{
+								pitch: -9,
+								yaw: 21,
+								type: 'info',
+								text: 'Marion Mura',
+								createTooltipFunc: function(hotSpotDiv) {
+									const el = createArtworkHotspot();
+									hotSpotDiv.appendChild(el);
+									hotSpotDiv.addEventListener('mousedown', function(e) { e.stopPropagation(); });
+									hotSpotDiv.addEventListener('click', function(e) {
+										e.stopPropagation();
+										openArtworkModal('modal-marion-mura');
+									});
+								},
+								createTooltipArgs: 'Marion Mura'
 							}
 						]
 					}
