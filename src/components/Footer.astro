@@ -6,28 +6,24 @@ import LogoUmlp from "../assets/icones/logo_umlp.webp";
 import LogoMmi from "../assets/icones/logo_mmi.webp";
 import LogoPma from "../assets/icones/logo_pma.webp";
 
-const footerPathDesktop = "M1159.5 0c106 0 99.06 110.285 204.5 92.53 145.5-24.5 144.72 54.97 190 56.47s114.82-12.021 185.5-25.092c73-13.5 152.5 38.592 221 38.592 17.03 0 23.04 30.366 22.47 76H0V123.908S21 0 145.5 0s122.494 111.097 232 108.5c61.754-1.464 180.589-56.14 252.5-52 199.429 11.48 143.042 74 263 74 54.477 0 90.242 4.548 133.5-37.97C1052.58 66.898 1078 0 1159.5 0z";
-const footerPathMobile = "M1159.5 0c106 0 99.06 110.285 204.5 92.53 145.5-24.5 144.72 54.97 190 56.47s114.82-12.021 185.5-25.092c73-13.5 152.5 38.592 221 38.592 17.03 0 23.04 30.366 22.47 76H0V123.908S21 0 145.5 0s122.494 111.097 232 108.5c61.754-1.464 180.589-56.14 252.5-52 199.429 11.48 143.042 74 263 74 54.477 0 90.242 4.548 133.5-37.97C1052.58 66.898 1078 0 1159.5 0z";
-const footerViewBox = "0 -20 1983 259";
-const uniqueIdFooter = `footer-wave-${Math.random().toString(36).substr(2, 9)}`;
+const footerPath = "M1159.5 0c106 0 99.06 110.285 204.5 92.53 145.5-24.5 144.72 54.97 190 56.47s114.82-12.021 185.5-25.092c73-13.5 152.5 38.592 221 38.592 17.03 0 23.04 30.366 22.47 76H0V123.908S21 0 145.5 0s122.494 111.097 232 108.5c61.754-1.464 180.589-56.14 252.5-52 199.429 11.48 143.042 74 263 74 54.477 0 90.242 4.548 133.5-37.97C1052.58 66.898 1078 0 1159.5 0z";
 ---
-<div 
-  class="footer-wave-container w-full md:-mb-22 -mb-32 overflow-x-hidden relative"
-  data-wave-id={uniqueIdFooter}
-  data-path={footerPathDesktop}
-  data-deform="0.3"
->
+<!-- Vague desktop -->
+<div class="hidden md:block w-full -mb-22 overflow-x-hidden">
   <svg
     class="block w-full h-auto"
-    viewBox={footerViewBox}
+    viewBox="0 -20 1983 259"
     preserveAspectRatio="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <path
-      id={`footer-wave-path-${uniqueIdFooter}`}
-      d={footerPathDesktop}
-      fill="#111"
-    />
+    <path d={footerPath} fill="#111" />
+  </svg>
+</div>
+
+<!-- Vague mobile -->
+<div class="block md:hidden w-full -mb-16 overflow-x-hidden">
+  <svg width="393" height="198" viewBox="0 0 393 198" preserveAspectRatio="none" class="block w-full h-auto" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M227.041 0c26.495 0 42.69 23.706 40.089 38.31-4.147 23.282-23.838 40.53-8.755 63.075 13.593 20.319 49.995 34.5 83.402 25.61 23.943-6.371 38.536-18.81 51.223-31.153V198H0V38.64c100.906 5.88 91.277 88.355 139.491 88.355 37.094 0 46.54-17.035 52.07-22.435 21.887-21.378-3.918-46.777-5.531-66.25C184.419 18.838 200.868 0 227.041 0z" fill="#111"/>
   </svg>
 </div>
 
@@ -56,13 +52,14 @@ const uniqueIdFooter = `footer-wave-${Math.random().toString(36).substr(2, 9)}`;
                     <a href="/exposition" class="text-secondary text-sm lg:text-lg hover:opacity-70 transition-opacity">
                         L'exposition
                     </a>
-                    <a href="/artistes" class="text-secondary text-sm lg:text-lg hover:opacity-70 transition-opacity">
-                        Les artistes
+                    <a href="/galerie" class="text-secondary text-sm lg:text-lg hover:opacity-70 transition-opacity">
+                        Galerie
+                    </a>
+                    <a href="/visite-virtuelle" class="text-secondary text-sm lg:text-lg hover:opacity-70 transition-opacity">
+                        Visite 360°
                     </a>
                     <a href="/contact" class="text-secondary text-sm lg:text-lg hover:opacity-70 transition-opacity">
                         Nous contacter
-                    </a><a href="/oeuvres" class="text-secondary text-sm lg:text-lg hover:opacity-70 transition-opacity">
-                        Les oeuvres
                     </a>
                 </nav>
             </div>
@@ -127,217 +124,3 @@ const uniqueIdFooter = `footer-wave-${Math.random().toString(36).substr(2, 9)}`;
     </div>
 </footer>
 
-<script>
-  document.addEventListener("astro:page-load", () => {
-    initFooterWave();
-  });
-
-  function initFooterWave() {
-    const containers = document.querySelectorAll(".footer-wave-container");
-
-    containers.forEach((container) => {
-      const waveId = container.getAttribute("data-wave-id");
-      const svg = container.querySelector("svg") as SVGSVGElement;
-      const wavePath = svg?.querySelector(`#footer-wave-path-${waveId}`) as SVGPathElement;
-      const originalPath = container.getAttribute("data-path");
-      const deformStrength = parseFloat(container.getAttribute("data-deform") || "0.3");
-
-      if (!svg || !wavePath || !originalPath) return;
-
-      const points = parseSVGPath(originalPath);
-
-      const viewBoxParts = svg.getAttribute("viewBox")?.split(" ").map(Number) || [0, 0, 1983, 259];
-      const vbX = viewBoxParts[0];
-      const vbY = viewBoxParts[1];
-      const viewBoxWidth = viewBoxParts[2];
-      const viewBoxHeight = viewBoxParts[3];
-
-      // Limites de clamping
-      const clampMinX = vbX + 2;
-      const clampMinY = vbY + 2;
-      const clampMaxX = vbX + viewBoxWidth - 2;
-      const clampMaxY = vbY + viewBoxHeight - 2;
-
-      const amplitude = 1;
-      const safeZoneThreshold = 30;
-
-      let rawMouseX = 0;
-      let rawMouseY = 0;
-      let smoothMouseX = 0;
-      let smoothMouseY = 0;
-      let hoverTarget = 0;
-      let hoverInfluence = 0;
-      let time = 0;
-
-      const mouseLerp = 0.08;
-      const hoverInLerp = 0.06;
-      const hoverOutLerp = 0.03;
-
-      function animate() {
-        time += 0.02;
-
-        smoothMouseX += (rawMouseX - smoothMouseX) * mouseLerp;
-        smoothMouseY += (rawMouseY - smoothMouseY) * mouseLerp;
-
-        const lerpFactor = hoverTarget > hoverInfluence ? hoverInLerp : hoverOutLerp;
-        hoverInfluence += (hoverTarget - hoverInfluence) * lerpFactor;
-        if (hoverInfluence < 0.001) hoverInfluence = 0;
-
-        const deformedPoints = points.map((point, index) => {
-          let newX = point.x;
-          let newY = point.y;
-
-          // Facteur de fondu progressif (0 aux bords, 1 au centre) — évite les cassures
-          const fadeLeft = Math.min(point.x / 250, 1);
-          const fadeRight = Math.min((1983 - point.x) / 250, 1);
-          const fadeBottom = point.y > 120 ? Math.max(0, 1 - (point.y - 120) / 80) : 1;
-          const fadeFactor = Math.min(fadeLeft, fadeRight, fadeBottom);
-
-          if (fadeFactor > 0.01) {
-            const wavePhase = time + index * 0.3;
-            const offsetX = Math.sin(wavePhase) * amplitude * fadeFactor;
-            const offsetY = Math.cos(wavePhase * 0.7) * amplitude * 0.3 * fadeFactor;
-            newX = point.x + offsetX;
-            newY = point.y + offsetY;
-          }
-
-          if (hoverInfluence > 0 && fadeFactor > 0.01) {
-            const dx = smoothMouseX - newX;
-            const dy = smoothMouseY - newY;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            const maxDistance = 150;
-
-            if (distance < maxDistance) {
-              const force = (1 - distance / maxDistance) * deformStrength * 10 * hoverInfluence * fadeFactor;
-              const angle = Math.atan2(dy, dx);
-              newX = newX - Math.cos(angle) * force;
-              newY = newY - Math.sin(angle) * force;
-            }
-          }
-
-          // Clamper dans le viewBox
-          newX = Math.max(clampMinX, Math.min(clampMaxX, newX));
-          newY = Math.max(clampMinY, Math.min(clampMaxY, newY));
-
-          return { ...point, x: newX, y: newY };
-        });
-
-        const newPath = buildSVGPath(deformedPoints);
-        wavePath.setAttribute("d", newPath);
-        requestAnimationFrame(animate);
-      }
-
-      svg.addEventListener("mousemove", (e) => {
-        const rect = svg.getBoundingClientRect();
-        rawMouseX = vbX + ((e.clientX - rect.left) / rect.width) * viewBoxWidth;
-        rawMouseY = vbY + ((e.clientY - rect.top) / rect.height) * viewBoxHeight;
-      });
-
-      svg.addEventListener("mouseenter", () => { hoverTarget = 1; });
-      svg.addEventListener("mouseleave", () => { hoverTarget = 0; });
-
-      animate();
-    });
-  }
-
-  function parseSVGPath(pathString: string) {
-    const points: Array<{ x: number; y: number; type: string }> = [];
-    const commands = pathString.match(/[MLHVCSQTAZmlhvcsqtaz][^MLHVCSQTAZmlhvcsqtaz]*/gi) || [];
-    let currentX = 0, currentY = 0;
-
-    commands.forEach((cmd) => {
-      const type = cmd[0];
-      const coords = (cmd.slice(1).match(/-?[0-9]*\.?[0-9]+/g) || []).map(Number).filter((n) => !isNaN(n));
-
-      if (type === "M") {
-        currentX = coords[0]; currentY = coords[1];
-        points.push({ x: currentX, y: currentY, type: "M" });
-      } else if (type === "L") {
-        for (let i = 0; i < coords.length; i += 2) {
-          currentX = coords[i]; currentY = coords[i + 1];
-          points.push({ x: currentX, y: currentY, type: "L" });
-        }
-      } else if (type === "l") {
-        for (let i = 0; i < coords.length; i += 2) {
-          currentX += coords[i]; currentY += coords[i + 1];
-          points.push({ x: currentX, y: currentY, type: "L" });
-        }
-      } else if (type === "V") {
-        for (let i = 0; i < coords.length; i++) {
-          currentY = coords[i];
-          points.push({ x: currentX, y: currentY, type: "L" });
-        }
-      } else if (type === "H") {
-        for (let i = 0; i < coords.length; i++) {
-          currentX = coords[i];
-          points.push({ x: currentX, y: currentY, type: "L" });
-        }
-      } else if (type === "C") {
-        for (let i = 0; i < coords.length; i += 6) {
-          points.push({ x: coords[i], y: coords[i + 1], type: "C1" });
-          points.push({ x: coords[i + 2], y: coords[i + 3], type: "C2" });
-          currentX = coords[i + 4]; currentY = coords[i + 5];
-          points.push({ x: currentX, y: currentY, type: "C" });
-        }
-      } else if (type === "c") {
-        for (let i = 0; i < coords.length; i += 6) {
-          points.push({ x: currentX + coords[i], y: currentY + coords[i + 1], type: "C1" });
-          points.push({ x: currentX + coords[i + 2], y: currentY + coords[i + 3], type: "C2" });
-          currentX += coords[i + 4]; currentY += coords[i + 5];
-          points.push({ x: currentX, y: currentY, type: "C" });
-        }
-      } else if (type === "S" || type === "s") {
-        for (let i = 0; i < coords.length; i += 4) {
-          // Calculer C1 comme reflet du dernier C2 par rapport au point courant
-          let c1x = currentX;
-          let c1y = currentY;
-          const prev = points.length > 0 ? points[points.length - 1] : null;
-          const prevC2 = points.length > 1 ? points[points.length - 2] : null;
-          if (prev && prevC2 && (prevC2.type === "C2" || prevC2.type === "C1")) {
-            c1x = 2 * currentX - prevC2.x;
-            c1y = 2 * currentY - prevC2.y;
-          }
-          if (type === "S") {
-            points.push({ x: c1x, y: c1y, type: "C1" });
-            points.push({ x: coords[i], y: coords[i + 1], type: "C2" });
-            currentX = coords[i + 2]; currentY = coords[i + 3];
-          } else {
-            points.push({ x: c1x, y: c1y, type: "C1" });
-            points.push({ x: currentX + coords[i], y: currentY + coords[i + 1], type: "C2" });
-            currentX += coords[i + 2]; currentY += coords[i + 3];
-          }
-          points.push({ x: currentX, y: currentY, type: "C" });
-        }
-      }
-    });
-    return points;
-  }
-
-  function buildSVGPath(points: Array<{ x: number; y: number; type: string }>) {
-    let path = "";
-    let i = 0;
-    while (i < points.length) {
-      const point = points[i];
-      if (isNaN(point.x) || isNaN(point.y)) { i++; continue; }
-      if (point.type === "M") {
-        path += `M${point.x},${point.y} `;
-        i++;
-      } else if (point.type === "C") {
-        const c1 = points[i - 2];
-        const c2 = points[i - 1];
-        if (c1 && c2 && !isNaN(c1.x) && !isNaN(c1.y) && !isNaN(c2.x) && !isNaN(c2.y)) {
-          path += `C${c1.x},${c1.y} ${c2.x},${c2.y} ${point.x},${point.y} `;
-        }
-        i++;
-      } else if (point.type === "L") {
-        path += `L${point.x},${point.y} `;
-        i++;
-      } else { i++; }
-    }
-    return path + "Z";
-  }
-
-  if (document.readyState !== "loading") {
-    initFooterWave();
-  }
-</script>

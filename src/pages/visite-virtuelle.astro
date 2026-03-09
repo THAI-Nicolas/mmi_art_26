@@ -32,8 +32,8 @@ const artisteMarion   = await GetArtistBySlug('marion-mura');
 	title="Visite Virtuelle 360° | MMI Art 26"
 	description="Explorez l'exposition MMI Art 26 en immersion totale grâce à notre visite virtuelle 360°. Naviguez dans les différents espaces et découvrez les oeuvres des étudiants."
 >
-	<!-- Écran d'introduction (TEMPORAIREMENT MASQUÉ POUR DEV) -->
-	<div id="intro-screen" class="fixed inset-0 z-100 flex flex-col items-center justify-center bg-primary overflow-hidden hidden">
+	<!-- Écran d'introduction -->
+	<div id="intro-screen" class="fixed inset-0 z-100 flex flex-col items-center justify-center bg-primary overflow-hidden">
 		<!-- Image de fond avec overlay -->
 		<div class="absolute inset-0">
 			<img 
@@ -55,22 +55,24 @@ const artisteMarion   = await GetArtistBySlug('marion-mura');
 				Naviguez dans l'espace en cliquant et glissant, et déplacez-vous 
 				entre les différents points de vue pour découvrir les oeuvres.
 			</p>
-			<div class="mt-8 md:mt-12 flex flex-col sm:flex-row gap-4">
-				<button id="enter-btn" class="btn-white">
-					Entrer dans l'exposition
-				</button>
-				<a href="/" class="btn-white border border-secondary/30 hover:border-transparent">
+			<div class="mt-8 md:mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
+				<a href="/" class="btn-outline-white flex items-center gap-2 group">
+					
 					Retour à l'accueil
 				</a>
+				<button id="enter-btn" class="btn-white flex items-center gap-2 group cursor-pointer">
+					Entrer dans l'exposition
+					
+				</button>
 			</div>
-			<p class="text-secondary/50 mt-8 text-xs">
+			<p class="text-secondary/50 mt-6 text-xs">
 				Utilisez votre souris ou votre doigt pour regarder autour de vous
 			</p>
 		</div>
 	</div>
 
-	<!-- Écran de chargement (TEMPORAIREMENT MASQUÉ POUR DEV) -->
-	<div id="loading-screen" class="fixed inset-0 z-110 flex flex-col items-center justify-center bg-primary opacity-0 pointer-events-none transition-opacity duration-300 hidden">
+	<!-- Écran de chargement -->
+	<div id="loading-screen" class="fixed inset-0 z-110 flex flex-col items-center justify-center bg-primary opacity-0 pointer-events-none transition-opacity duration-300">
 		<div class="flex flex-col items-center gap-6">
 			<p id="loading-text" class="text-secondary text-sm uppercase tracking-widest font-ibm-plex-mono">Chargement de l'exposition</p>
 			<div class="w-48 h-1 bg-secondary/20 rounded-full overflow-hidden">
@@ -79,8 +81,8 @@ const artisteMarion   = await GetArtistBySlug('marion-mura');
 		</div>
 	</div>
 
-	<!-- Conteneur Pannellum (AFFICHE DIRECTEMENT POUR DEV) -->
-	<div id="panorama-wrapper" class="fixed inset-0 z-99 opacity-100 pointer-events-auto transition-opacity duration-500">
+	<!-- Conteneur Pannellum -->
+	<div id="panorama-wrapper" class="fixed inset-0 z-99 opacity-0 pointer-events-none transition-opacity duration-500">
 		<div id="panorama" class="w-full h-full">
 			<!-- Bouton fullscreen personnalisé (dans le panorama pour rester visible en fullscreen) -->
 			<button id="fullscreen-btn" class="absolute z-9999 bg-secondary text-primary p-1.5 rounded-md hover:opacity-70 transition-opacity cursor-pointer" style="bottom: 44px; left: 4px;" title="Plein écran">
@@ -90,10 +92,13 @@ const artisteMarion   = await GetArtistBySlug('marion-mura');
 			</button>
 		</div>
 		
-		<!-- Bouton quitter (MODE DEV : redirige vers l'accueil) -->
-		<a href="/" id="exit-btn" class="fixed top-6 left-6 z-50 btn-white text-sm px-4 py-2">
+		<!-- Bouton quitter -->
+		<button id="exit-btn" class="fixed top-6 left-6 z-50 btn-white text-sm px-4 py-2 flex items-center gap-2 cursor-pointer">
+			<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+				<path d="M19 12H5"/><path d="m12 19-7-7 7-7"/>
+			</svg>
 			Retour à l'accueil
-		</a>
+		</button>
 		
 		<!-- Indicateur de position -->
 		<div id="position-indicator" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-primary/80 text-secondary px-4 py-2 rounded-full text-xs uppercase tracking-wider">
@@ -1388,12 +1393,21 @@ const artisteMarion   = await GetArtistBySlug('marion-mura');
 		if (enterBtn) {
 			enterBtn.addEventListener('click', enterImmersiveMode);
 		}
-		// MODE DEV : exitBtn est maintenant un lien <a>, pas besoin d'event listener
-		/*
 		if (exitBtn) {
-			exitBtn.addEventListener('click', exitImmersiveMode);
+			exitBtn.addEventListener('click', function() {
+				if (isLoading) return;
+				isLoading = true;
+				const loadingInterval = showLoading('Sortie de la visite virtuelle');
+				if (panoramaWrapper) {
+					panoramaWrapper.style.opacity = '0';
+					panoramaWrapper.style.pointerEvents = 'none';
+				}
+				setTimeout(() => {
+					hideLoading(loadingInterval);
+					window.location.href = '/';
+				}, 1000);
+			});
 		}
-		*/
 		
 		// Bouton fullscreen personnalisé
 		const fullscreenBtn = document.getElementById('fullscreen-btn');
@@ -1440,9 +1454,5 @@ const artisteMarion   = await GetArtistBySlug('marion-mura');
 		});
 
 		initCarousels();
-
-		// MODE DEV : Initialiser directement Pannellum sans attendre le clic
-		document.body.classList.add('immersive-mode');
-		initPannellum();
 	});
 </script>
