@@ -132,7 +132,7 @@ const avatarUrl = artiste?.avatar ? getImageUrl(artiste, artiste.avatar) : null;
 										>
 											<div class="rounded overflow-hidden bg-secondary/10" style="width:56px;height:56px;min-width:56px;flex-shrink:0;">
 												{imgUrl ? (
-													<img src={imgUrl} alt={oeuvre.title ?? ''} class="w-32 h-32 object-cover" loading="lazy" />
+													<img src={imgUrl} alt={oeuvre.title ?? ''} class="w-full h-full object-cover" loading="lazy" />
 												) : (
 													<div class="w-full h-full bg-secondary/10"></div>
 												)}

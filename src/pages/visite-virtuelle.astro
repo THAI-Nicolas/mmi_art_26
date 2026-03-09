@@ -426,6 +426,7 @@ const artisteMarion   = await GetArtistBySlug('marion-mura');
 		height: 10px;
 		background: var(--color-secondary);
 		border-radius: 50%;
+		box-shadow: 0 0 0 2px var(--color-primary), 0 0 0 4px var(--color-secondary);
 		z-index: 1;
 	}
 
@@ -554,7 +555,7 @@ const artisteMarion   = await GetArtistBySlug('marion-mura');
 					hfov: 120,
 					minHfov: 50,
 					maxHfov: 120,
-					hotSpotDebug: true // Activer pour debug, désactiver en prod
+					hotSpotDebug: false // Activer pour debug, désactiver en prod
 				},
 				scenes: {
 					scene0: {

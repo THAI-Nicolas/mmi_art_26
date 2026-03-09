@@ -10,6 +10,16 @@ import sitemap from "@astrojs/sitemap";
 export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
+    server: {
+      watch: {
+        ignored: [
+          "**/node_modules/**",
+          "**/backend/**",
+          "**/public/360/**",
+          "**/.git/**",
+        ],
+      },
+    },
   },
   site: "https://expo.mmimontbeliard.com",
   output: "server",
