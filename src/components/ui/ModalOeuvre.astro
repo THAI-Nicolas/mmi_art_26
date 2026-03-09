@@ -70,9 +70,9 @@ const avatarUrl = artiste?.avatar ? getImageUrl(artiste, artiste.avatar) : null;
 						))}
 						{photos.length > 1 && (
 							<div class="flex items-center justify-between mt-2 shrink-0">
-							<button class="carousel-prev w-8 h-8 rounded-full bg-secondary/15 border border-secondary/30 text-secondary flex items-center justify-center hover:bg-secondary hover:text-primary transition-colors shrink-0" aria-label="Photo précédente">←</button>
+							<button class="carousel-prev cursor-pointer w-8 h-8 rounded-full bg-secondary/15 border border-secondary/30 text-secondary flex items-center justify-center hover:bg-secondary hover:text-primary transition-colors shrink-0" aria-label="Photo précédente">←</button>
 							<span class="carousel-counter text-secondary/60 text-xs font-ibm-plex-mono">1 / {photos.length}</span>
-							<button class="carousel-next w-8 h-8 rounded-full bg-secondary/15 border border-secondary/30 text-secondary flex items-center justify-center hover:bg-secondary hover:text-primary transition-colors shrink-0" aria-label="Photo suivante">→</button>
+							<button class="carousel-next cursor-pointer w-8 h-8 rounded-full bg-secondary/15 border border-secondary/30 text-secondary flex items-center justify-center hover:bg-secondary hover:text-primary transition-colors shrink-0" aria-label="Photo suivante">→</button>
 							</div>
 						)}
 					</div>
