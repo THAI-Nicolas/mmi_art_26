@@ -41,6 +41,7 @@ const ITEMS_PER_PAGE_MOBILE = 6;
             <div id="load-more-container" class="flex flex-col items-center gap-3 mt-6 md:hidden px-4">
                 <button 
                     id="load-more-btn" 
+                    type="button"
                     class="w-full max-w-xs px-8 py-3.5 bg-primary text-secondary rounded-full font-medium hover:bg-primary/80 transition-all active:scale-95 text-sm"
                 >
                     Charger plus
@@ -292,12 +293,24 @@ document.addEventListener('astro:page-load', () => {
     }
     
     // Initialiser et écouter le resize
+    let lastBreakpoint = window.innerWidth < 768 ? 'mobile' : 'desktop';
     initPagination();
     
     let resizeTimeout;
     window.addEventListener('resize', () => {
         clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(initPagination, 150);
+        resizeTimeout = setTimeout(() => {
+            const newBreakpoint = window.innerWidth < 768 ? 'mobile' : 'desktop';
+            // Ne réinitialiser que si on change de breakpoint (mobile <-> desktop)
+            // Évite de réinitialiser sur mobile quand le viewport change à cause de la barre du navigateur
+            if (newBreakpoint !== lastBreakpoint) {
+                lastBreakpoint = newBreakpoint;
+                mobileVisibleCount = ITEMS_PER_PAGE_MOBILE;
+                initPagination();
+            } else if (newBreakpoint === 'desktop') {
+                updateDesktopPagination();
+            }
+        }, 150);
     });
     
     // ========== LIGHTBOX ==========

@@ -77,12 +77,14 @@ const yearOptions = [
             <div id="load-more-container" class="flex flex-col items-center gap-3 mt-8 md:hidden">
                 <button 
                     id="load-more-btn" 
+                    type="button"
                     class="px-10 py-4 bg-primary text-secondary rounded-3xl font-medium hover:bg-primary/80 transition-all active:scale-95 min-w-60 text-base"
                 >
                     Charger plus
                 </button>
                 <button 
                     id="back-to-top-btn" 
+                    type="button"
                     class="px-10 py-4 bg-primary text-secondary rounded-3xl font-medium hover:bg-primary/80 transition-all active:scale-95 min-w-60 text-base"
                     style="display: none;"
                 >
@@ -143,14 +145,22 @@ const yearOptions = [
         let isMobile = window.innerWidth < 768;
         
         // Détecter le changement de taille d'écran
+        // On ne réinitialise que si on change vraiment de breakpoint (évite les resets
+        // causés par la barre du navigateur qui se cache/réapparaît sur mobile)
+        let lastBreakpoint = isMobile ? 'mobile' : 'desktop';
+        let resizeTimeout: ReturnType<typeof setTimeout>;
         window.addEventListener('resize', () => {
-            const wasMobile = isMobile;
-            isMobile = window.innerWidth < 768;
-            if (wasMobile !== isMobile) {
-                currentPage = 1;
-                itemsShownMobile = ITEMS_PER_PAGE_MOBILE;
-                updateDisplay();
-            }
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                const newBreakpoint = window.innerWidth < 768 ? 'mobile' : 'desktop';
+                if (newBreakpoint !== lastBreakpoint) {
+                    lastBreakpoint = newBreakpoint;
+                    isMobile = newBreakpoint === 'mobile';
+                    currentPage = 1;
+                    itemsShownMobile = ITEMS_PER_PAGE_MOBILE;
+                    updateDisplay();
+                }
+            }, 150);
         });
         
         function filterOeuvres() {

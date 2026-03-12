@@ -42,7 +42,7 @@ const avatarUrl = artiste?.avatar ? getImageUrl(artiste, artiste.avatar) : null;
 	))}
 
 	<!-- Boîte modale -->
-	<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-[97%] lg:w-[94%] max-w-[480px] lg:max-w-[900px] xl:max-w-[1200px]">
+	<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-[97%] lg:w-[94%] max-w-120 lg:max-w-225 xl:max-w-300">
 
 		<!-- Contenu visuel du modal -->
 		<div
@@ -54,7 +54,7 @@ const avatarUrl = artiste?.avatar ? getImageUrl(artiste, artiste.avatar) : null;
 		<div class="flex flex-col lg:flex-row gap-4 xl:gap-6">
 
 			<!-- Colonne gauche : se dimensionne sur l'image -->
-			<div class="shrink-0 flex flex-col gap-2 max-w-full lg:max-w-[480px] xl:max-w-[640px]">
+			<div class="shrink-0 flex flex-col gap-2 max-w-full lg:max-w-120 xl:max-w-160">
 				{photos.length > 0 ? (
 					<div class="modal-gallery flex flex-col gap-2" data-total={photos.length}>
 						{photos.map((photo, index) => (
