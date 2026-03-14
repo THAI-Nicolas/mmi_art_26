@@ -20,7 +20,7 @@ export default defineConfig({
       },
     },
   },
-  site: "https://expo.mmimontbeliard.com",
+  site: "https://mmiart26.nicolas-thai.fr",
   output: "server", // C'est parfait
   integrations: [sitemap()],
   image: {
