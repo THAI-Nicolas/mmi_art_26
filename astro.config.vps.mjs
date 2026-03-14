@@ -27,7 +27,7 @@ export default defineConfig({
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "pb-expo.nicolas-thai.fr",
+        hostname: "mmiart26.nicolas-thai.fr",
       },
     ],
     domains: ["127.0.0.1", "localhost"],
