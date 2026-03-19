@@ -2,8 +2,6 @@
 import { defineConfig } from "astro/config";
 import tailwindcss from "@tailwindcss/vite";
 import node from "@astrojs/node";
-
-import netlify from "@astrojs/netlify";
 import sitemap from "@astrojs/sitemap";
 
 // https://astro.build/config
@@ -21,22 +19,27 @@ export default defineConfig({
       },
     },
   },
+  // Domaine officiel de l'expo
   site: "https://expo.mmimontbeliard.com",
   output: "server",
   integrations: [sitemap()],
   image: {
-    // Désactiver l'optimisation d'images pour les domaines PocketBase
-    // Cela évite la double transformation qui cause les timeouts
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "pb-expo.nicolas-thai.fr",
+        // On autorise le domaine de l'expo pour les images (servies via /api)
+        hostname: "expo.mmimontbeliard.com",
+      },
+      {
+        protocol: "https",
+        // On garde ton domaine perso en secours si besoin
+        hostname: "mmiart26.nicolas-thai.fr",
       },
     ],
     domains: ["127.0.0.1", "localhost"],
   },
-  adapter: netlify({
-    // Améliorer le cache des images
-    imageCDN: false, // Désactiver le CDN Netlify pour éviter les timeouts
+  // Utilisation de l'adaptateur Node pour le VPS
+  adapter: node({
+    mode: "standalone",
   }),
 });
