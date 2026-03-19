@@ -4,4 +4,4 @@ Commanditaire : Myriam NICOLLE
 Tuteur : Xavier SENENTE
 
 URL du site : https://expo.mmimontbeliard.com ou https://mmiart26.nicolas-thai.fr/
-URL du PocketBase : https://pb-expo.nicolas-thai.fr/_/ ou https://mmiart26.nicolas-thai.fr/_/
+URL du PocketBase : https://expo.mmimontbeliard.com/_/ ou https://mmiart26.nicolas-thai.fr/_/
