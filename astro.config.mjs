@@ -6,6 +6,10 @@ import sitemap from "@astrojs/sitemap";
 
 // https://astro.build/config
 export default defineConfig({
+  security: {
+    // VPS reverse proxy can cause Origin/Host mismatches on POST (Astro Actions).
+    checkOrigin: false,
+  },
   vite: {
     plugins: [tailwindcss()],
     server: {
