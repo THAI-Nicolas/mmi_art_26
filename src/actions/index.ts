@@ -20,6 +20,7 @@ export const server = {
       hp_field: z.string().optional(), // Honeypot
     }),
     handler: async (input) => {
+      const debugId = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
       const serviceId =
         process.env.EMAILJS_SERVICE_ID || import.meta.env.EMAILJS_SERVICE_ID;
       const templateId =
@@ -36,14 +37,18 @@ export const server = {
       }
 
       if (!serviceId || !templateId || !publicId) {
-        console.error("Configuration EmailJS manquante.", {
-          serviceId: Boolean(serviceId),
-          templateId: Boolean(templateId),
-          publicId: Boolean(publicId),
-        });
+        console.error(
+          `[sendContact:${debugId}] Configuration EmailJS manquante.`,
+          {
+            serviceId: Boolean(serviceId),
+            templateId: Boolean(templateId),
+            publicId: Boolean(publicId),
+          },
+        );
 
         return {
           success: false,
+          debugId,
           error:
             "Le formulaire est temporairement indisponible. Reessayez plus tard.",
         };
@@ -76,23 +81,27 @@ export const server = {
 
         if (!response.ok) {
           const errorText = await response.text();
-          console.error("Erreur EmailJS:", response.status, errorText);
+          console.error(
+            `[sendContact:${debugId}] Erreur EmailJS:`,
+            response.status,
+            errorText,
+          );
           return {
             success: false,
-            error:
-              "Impossible d'envoyer le message pour le moment. Merci de reessayer.",
+            debugId,
+            error: `EmailJS ${response.status}: ${errorText.slice(0, 240)}`,
           };
         }
       } catch (error) {
-        console.error("Erreur reseau EmailJS:", error);
+        console.error(`[sendContact:${debugId}] Erreur reseau EmailJS:`, error);
         return {
           success: false,
-          error:
-            "Une erreur reseau est survenue pendant l'envoi. Merci de reessayer.",
+          debugId,
+          error: "Une erreur reseau est survenue pendant l'envoi vers EmailJS.",
         };
       }
 
-      return { success: true, firstname: input.firstname };
+      return { success: true, firstname: input.firstname, debugId };
     },
   }),
 };

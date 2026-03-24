@@ -33,7 +33,7 @@ const actionData = (result?.data as any) || null;
         <div class="hidden">
           <input name="hp_field" tabindex="-1" autocomplete="off" />
         </div>
-        <div></div>
+        <div />
         <div class="flex flex-col gap-4">
           <div class="flex gap-6 mb-2">
             <div>
@@ -126,10 +126,15 @@ const actionData = (result?.data as any) || null;
           )}
 
           {actionData?.success === false && (
-            <p class="text-red-600 text-sm mt-1">
-              {actionData.error ||
-                "Impossible d'envoyer le message pour le moment."}
-            </p>
+            <div class="text-red-600 text-sm mt-1 space-y-1">
+              <p>
+                {actionData.error ||
+                  "Impossible d'envoyer le message pour le moment."}
+              </p>
+              {actionData.debugId && (
+                <p class="text-red-500/90">Reference: {actionData.debugId}</p>
+              )}
+            </div>
           )}
 
           <button type="submit" class="btn-white mt-2">
