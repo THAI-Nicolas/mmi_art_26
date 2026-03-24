@@ -1,99 +1,127 @@
 ---
-import { ViewTransitions } from 'astro:transitions';
-import '../styles/global.css';
-import TransitionPage from '../components/gsap/TransitionPage.astro';
-import TransitionPageMobile from '../components/gsap/TransitionPageMobile.astro';
-import BackgroundGrid from '../components/ui/BackgroundGrid.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
+import { ViewTransitions } from "astro:transitions";
+import "../styles/global.css";
+import TransitionPage from "../components/gsap/TransitionPage.astro";
+import TransitionPageMobile from "../components/gsap/TransitionPageMobile.astro";
+import BackgroundGrid from "../components/ui/BackgroundGrid.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
 const {
-  title = 'MMI Art 26 | Exposition Artistique des étudiants MMI Montbéliard 2026',
-  description = 'Site officiel de la promotion MMI Art 26 de l\'Université Marie et Louis Pasteur à Montbéliard. Découvrez les projets artistiques et multimédias réalisés par nos étudiants en Métiers du Multimédia et de l\'Internet.',
-  keywords = 'MMI, Art, 26, Multimédia, Exposition Artistique, Université Marie et Louis Pasteur, MMI Monbéliard, Métiers, du, Multimédia, de, l\'Internet',
-  ogImage = '/og-image.png',
-  ogType = 'website',
+  title = "MMI Art 26 | Exposition Artistique des étudiants MMI Montbéliard 2026",
+  description = "Site officiel de la promotion MMI Art 26 de l'Université Marie et Louis Pasteur à Montbéliard. Découvrez les projets artistiques et multimédias réalisés par nos étudiants en Métiers du Multimédia et de l'Internet.",
+  keywords = "MMI, Art, 26, Multimédia, Exposition Artistique, Université Marie et Louis Pasteur, MMI Monbéliard, Métiers, du, Multimédia, de, l'Internet",
+  ogImage = "/og-image.png",
+  ogType = "website",
   canonical,
   preloadImage, // URL de l'image critique à précharger
 } = Astro.props;
 
-const canonicalURL = canonical || new URL(Astro.url.pathname, Astro.site).href
+const canonicalURL = canonical || new URL(Astro.url.pathname, Astro.site).href;
+const umamiScriptSrc =
+  import.meta.env.PUBLIC_UMAMI_SCRIPT_URL || "/stats/script.js";
 ---
+
 <!doctype html>
 <html lang="fr">
-	<head>
-		<ViewTransitions />
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <head>
+    <ViewTransitions />
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
 
-		<link rel="icon" type="image/svg+xml" href="/icons/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
 
-		<!-- PWA Manifest -->
-		<link rel="manifest" href="/manifest.webmanifest" />
-		
-		<!-- Theme colors -->
-		<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
-		<meta name="theme-color" content="#000000" media="(prefers-color-scheme: light)" />
-		
-		<!-- iOS specific meta tags -->
-		<meta name="mobile-web-app-capable" content="yes" />
-		<meta name="apple-mobile-web-app-capable" content="yes" />
-		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-		<meta name="apple-mobile-web-app-title" content="MMI Art 26" />
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.webmanifest" />
 
-		<!-- Préconnexion au serveur PocketBase pour réduire la latence -->
-		<link rel="preconnect" href="https://pb-expo.nicolas-thai.fr" crossorigin>
-		<link rel="dns-prefetch" href="https://pb-expo.nicolas-thai.fr">
-		
-		<!-- Préchargement de l'image critique si spécifiée -->
-		{preloadImage && (
-			<link rel="preload" as="image" href={preloadImage} fetchpriority="high">
-		)}
+    <!-- Theme colors -->
+    <meta
+      name="theme-color"
+      content="#000000"
+      media="(prefers-color-scheme: dark)"
+    />
+    <meta
+      name="theme-color"
+      content="#000000"
+      media="(prefers-color-scheme: light)"
+    />
 
-		<meta name="color-scheme" content="light dark" />
-		<meta name="referrer" content="strict-origin-when-cross-origin" />
-		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-		
-		<!-- Prefetch des pages principales pour navigation rapide -->
-		<link rel="prefetch" href="/exposition">
-		<link rel="prefetch" href="/artistes">
-		<link rel="prefetch" href="/visite-virtuelle">
-		
-		<!-- SEO Meta Tags -->
-		<title>{title}</title>
-		<meta name="description" content={description} />
-		<meta name="keywords" content={keywords} />
-		<meta name="author" content="Nicolas THAI - Andréa MESTRE - Elois HENRY" />
-		<meta name="robots" content="index, follow" />
-		<link rel="canonical" href={canonicalURL} />
-		<link rel="sitemap" href="/sitemap-index.xml" />
+    <!-- iOS specific meta tags -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="apple-mobile-web-app-title" content="MMI Art 26" />
 
-		<!-- Open Graph (Facebook, LinkedIn) -->
-		<meta property="og:type" content={ogType} />
-		<meta property="og:title" content={title} />
-		<meta property="og:description" content={description} />
-		<meta property="og:image" content={new URL(ogImage, Astro.site).href} />
-		<meta property="og:url" content={canonicalURL} /> 
-		<meta property="og:locale" content="fr_FR" />
-		<meta property="og:site_name" content="MMI Art 26 - Exposition Artistique MMI 2026" />
+    <!-- Préconnexion au serveur PocketBase pour réduire la latence -->
+    <link rel="preconnect" href="https://pb-expo.nicolas-thai.fr" crossorigin />
+    <link rel="dns-prefetch" href="https://pb-expo.nicolas-thai.fr" />
 
-		<!-- Twitter Cards -->
-		<meta name="twitter:card" content="summary_large_image" />
-		<meta name="twitter:title" content={title} />
-		<meta name="twitter:description" content={description} />
-		<meta name="twitter:image" content={new URL(ogImage, Astro.site).href} /> 
+    <!-- Préchargement de l'image critique si spécifiée -->
+    {
+      preloadImage && (
+        <link
+          rel="preload"
+          as="image"
+          href={preloadImage}
+          fetchpriority="high"
+        />
+      )
+    }
 
-		<!-- Analytics - Umami (proxyfié pour éviter les bloqueurs) -->
-		<script defer src="/stats/script.js" data-website-id="38dec95c-3287-4ffe-b956-79951ba531c4"></script>
-	</head>
-	<body>
-		<TransitionPage />
-		<TransitionPageMobile />
-		<Header />
-		<BackgroundGrid />
-		<slot />
-		<Footer />
-	</body>
+    <meta name="color-scheme" content="light dark" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- Prefetch des pages principales pour navigation rapide -->
+    <link rel="prefetch" href="/exposition" />
+    <link rel="prefetch" href="/artistes" />
+    <link rel="prefetch" href="/visite-virtuelle" />
+
+    <!-- SEO Meta Tags -->
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="keywords" content={keywords} />
+    <meta name="author" content="Nicolas THAI - Andréa MESTRE - Elois HENRY" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href={canonicalURL} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <!-- Open Graph (Facebook, LinkedIn) -->
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(ogImage, Astro.site).href} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:locale" content="fr_FR" />
+    <meta
+      property="og:site_name"
+      content="MMI Art 26 - Exposition Artistique MMI 2026"
+    />
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL(ogImage, Astro.site).href} />
+
+    <!-- Analytics - Umami (URL configurable pour s'adapter a l'infra) -->
+    <script
+      defer
+      src={umamiScriptSrc}
+      data-website-id="38dec95c-3287-4ffe-b956-79951ba531c4"></script>
+  </head>
+  <body>
+    <TransitionPage />
+    <TransitionPageMobile />
+    <Header />
+    <BackgroundGrid />
+    <slot />
+    <Footer />
+  </body>
 </html>
-
-
