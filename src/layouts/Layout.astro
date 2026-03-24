@@ -18,7 +18,9 @@ const {
 
 const canonicalURL = canonical || new URL(Astro.url.pathname, Astro.site).href;
 const umamiScriptSrc =
-  import.meta.env.PUBLIC_UMAMI_SCRIPT_URL || "/stats/script.js";
+  process.env.PUBLIC_UMAMI_SCRIPT_URL ||
+  import.meta.env.PUBLIC_UMAMI_SCRIPT_URL ||
+  "/stats/script.js";
 ---
 
 <!doctype html>
