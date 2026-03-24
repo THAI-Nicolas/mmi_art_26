@@ -26,6 +26,8 @@ export const server = {
         process.env.EMAILJS_TEMPLATE_ID || import.meta.env.EMAILJS_TEMPLATE_ID;
       const publicId =
         process.env.EMAILJS_PUBLIC_ID || import.meta.env.EMAILJS_PUBLIC_ID;
+      const privateKey =
+        process.env.EMAILJS_PRIVATE_KEY || import.meta.env.EMAILJS_PRIVATE_KEY;
 
       // Vérification du champ honeypot
       if (input.hp_field) {
@@ -60,6 +62,7 @@ export const server = {
               service_id: serviceId,
               template_id: templateId,
               user_id: publicId,
+              ...(privateKey ? { accessToken: privateKey } : {}),
               template_params: {
                 prenom: input.firstname,
                 nom: input.lastname,
