@@ -13,34 +13,40 @@ import IconTiktok from "../../assets/icones/tiktok.webp";
 import IconBehance from "../../assets/icones/behance.webp";
 import IconEmail from "../../assets/icones/email.webp";
 
-
-
 //Imports des fonctions Backend
-import { GetArtistBySlug, getImageUrl, getSuggestedArtistes } from "../../lib/backend";
+import {
+  GetArtistBySlug,
+  getImageUrl,
+  getSuggestedArtistes,
+} from "../../lib/backend";
 const slug = Astro.params.id;
 const artiste = await GetArtistBySlug(slug);
 
 // Rediriger vers 404 si l'artiste n'existe pas
 if (!artiste) {
-  return Astro.redirect('/404');
+  return Astro.redirect("/404");
 }
 
 // Récupérer 3 artistes de la même promotion avec tri déterministe SEO
 const autresArtistes = await getSuggestedArtistes(artiste, 3);
 
 // Données pour ImagePB optimisé
-const artisteImageData = artiste.avatar ? {
-  collection: artiste.collectionId,
-  record: artiste.id,
-  file: artiste.avatar
-} : null;
+const artisteImageData = artiste.avatar
+  ? {
+      collection: artiste.collectionId,
+      record: artiste.id,
+      file: artiste.avatar,
+    }
+  : null;
 
 // Récupérer les canaux numériques de l'artiste
 const canaux = artiste.expand?.canaux_id || [];
 
 // Séparer le portfolio des autres réseaux sociaux
-const portfolio = canaux.find(c => c.platform?.toLowerCase() === 'portfolio');
-const reseauxSociaux = canaux.filter(c => c.platform?.toLowerCase() !== 'portfolio');
+const portfolio = canaux.find((c) => c.platform?.toLowerCase() === "portfolio");
+const reseauxSociaux = canaux.filter(
+  (c) => c.platform?.toLowerCase() !== "portfolio",
+);
 
 // Mapping des icônes par plateforme
 const iconMap = {
@@ -48,120 +54,163 @@ const iconMap = {
   tiktok: IconTiktok,
   behance: IconBehance,
   linkedin: IconLinkedin,
-  pinterest: IconPinterest
+  pinterest: IconPinterest,
 };
 
 // Fonction pour obtenir le label d'accessibilité
 const getAriaLabel = (platform) => {
   const labels = {
-    instagram: 'Instagram',
-    tiktok: 'TikTok',
-    behance: 'Behance',
-    linkedin: 'LinkedIn',
-    pinterest: 'Pinterest'
+    instagram: "Instagram",
+    tiktok: "TikTok",
+    behance: "Behance",
+    linkedin: "LinkedIn",
+    pinterest: "Pinterest",
   };
   return labels[platform?.toLowerCase()] || platform;
 };
 ---
-<Layout title={artiste.name + " | MMI Art 26"} description={"Découvrez le profil de " + artiste.name + ", un talentueux artiste de la promotion MMI Art 26. Explorez son parcours, ses œuvres et son univers créatif."}>
-    <main class="overflow-hidden">
-        <section class="pt-4 lg:pt-20 lg:pb-20 2xl:pt-32 2xl:pb-30">
-            <div class="flex flex-col lg:flex-row lg:gap-8 2xl:gap-16 lg:items-center">
-                {/* Colonne gauche : Avatar */}
-                <div class="lg:w-[40%] lg:flex lg:justify-center">
-                    <div class="w-70 flex mx-auto mb-16 lg:mb-0 lg:w-90 lg:mx-0 2xl:w-140">
-                        <BlobDynamic 
-                          imageUrl={artiste.avatar ? getImageUrl(artiste, artiste.avatar) : null}
-                          imageData={artisteImageData}
-                          variant={3} 
+
+<Layout
+  title={artiste.name + " | MMI Art 26"}
+  description={"Découvrez le profil de " +
+    artiste.name +
+    ", un talentueux artiste de la promotion MMI Art 26. Explorez son parcours, ses œuvres et son univers créatif."}
+>
+  <main class="overflow-hidden">
+    <section class="pt-4 lg:pt-20 lg:pb-20 2xl:pt-32 2xl:pb-30">
+      <div
+        class="flex flex-col lg:flex-row lg:gap-8 2xl:gap-16 lg:items-center"
+      >
+        {/* Colonne gauche : Avatar */}
+        <div class="lg:w-[40%] lg:flex lg:justify-center">
+          <div
+            class="w-70 flex mx-auto mb-16 lg:mb-0 lg:w-90 lg:mx-0 2xl:w-140"
+          >
+            <BlobDynamic
+              imageUrl={artiste.avatar
+                ? getImageUrl(artiste, artiste.avatar)
+                : null}
+              imageData={artisteImageData}
+              variant={3}
+            />
+          </div>
+        </div>
+
+        {/* Colonne droite : Informations */}
+        <div class="lg:w-[60%]">
+          <header>
+            <div class="flex flex-col">
+              <h1 class="text-center lg:text-left">{artiste.name}</h1>
+              <span class="uppercase text-center lg:text-left lg:text-lg"
+                >{artiste.mmi_year}</span
+              >
+            </div>
+          </header>
+          <div class="my-8">
+            <p>{artiste.bio}</p>
+          </div>
+          <div
+            class="flex flex-col gap-12 items-center lg:items-start lg:flex-row lg:justify-between my-12"
+          >
+            <div
+              class="flex gap-8 flex-wrap justify-center lg:justify-start items-center"
+            >
+              {/* Réseaux sociaux dynamiques */}
+              {
+                reseauxSociaux.map((canal) => {
+                  const platformKey = canal.platform?.toLowerCase();
+                  const icon = iconMap[platformKey];
+                  if (icon) {
+                    return (
+                      <a
+                        href={canal.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`${getAriaLabel(canal.platform)} de ${artiste.name}`}
+                      >
+                        <img
+                          class="w-10"
+                          src={icon.src}
+                          alt={`${getAriaLabel(canal.platform)} icon`}
                         />
-                    </div>
+                      </a>
+                    );
+                  }
+                })
+              }
+
+              {/* Email (obligatoire) */}
+              {
+                artiste.email && (
+                  <a
+                    href={`mailto:${artiste.email}`}
+                    aria-label={`Envoyer un email à ${artiste.name}`}
+                  >
+                    <img class="w-10" src={IconEmail.src} alt="" />
+                  </a>
+                )
+              }
+            </div>
+
+            {/* Portfolio (bouton si disponible) */}
+            {
+              portfolio && (
+                <div class="2xl:mr-8">
+                  <a
+                    href={portfolio.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="btn"
+                    aria-label={`Voir le portfolio de ${artiste.name}`}
+                  >
+                    Portfolio
+                  </a>
                 </div>
+              )
+            }
+          </div>
+        </div>
+      </div>
+    </section>
 
-                {/* Colonne droite : Informations */}
-                <div class="lg:w-[60%]">
-                    <header>
-                        <div class="flex flex-col ">
-                            <h1 class="text-center lg:text-left ">{artiste.name}</h1>
-                            <span class="uppercase text-center lg:text-left lg:text-lg">{artiste.mmi_year}</span>
-                        </div>
-                    </header>
-                    <div class="my-8">
-                        <p>{artiste.bio}</p>
-                    </div>
-                    <div class="flex flex-col gap-12 items-center lg:items-start lg:flex-row lg:justify-between my-12">
-                        <div class="flex gap-8 flex-wrap justify-center lg:justify-start items-center">
-                            {/* Réseaux sociaux dynamiques */}
-                            {reseauxSociaux.map((canal) => {
-                                const platformKey = canal.platform?.toLowerCase();
-                                const icon = iconMap[platformKey];
-                                if (icon) {
-                                    return (
-                                        <a href={canal.link} target="_blank" rel="noopener noreferrer" aria-label={`${getAriaLabel(canal.platform)} de ${artiste.name}`}>
-                                            <img class="w-10" src={icon.src} alt={`${getAriaLabel(canal.platform)} icon`} />
-                                        </a>
-                                    );
-                                }
-                            })}
-                            
-                            {/* Email (obligatoire) */}
-                            {artiste.email && (
-                                <a href={`mailto:${artiste.email}`} aria-label={`Envoyer un email à ${artiste.name}`}>
-                                    <img class="w-10" src={IconEmail.src} alt="">
-                                </a>
-                            )}
-                        </div>
-                        
-                        {/* Portfolio (bouton si disponible) */}
-                        {portfolio && (
-                            <div class="2xl:mr-8">
-                                <a href={portfolio.link} target="_blank" rel="noopener noreferrer" class="btn" aria-label={`Voir le portfolio de ${artiste.name}`}>Portfolio</a>
-                            </div>
-                        )}
-                    </div>
-                </div>
-            </div>
-        </section>
+    <BlobTransition position="top" color="#111111" deformStrength={0.3} />
 
-        <BlobTransition position="top" color="#111111" deformStrength={0.3} />
+    <section class="black-section">
+      <header>
+        <h2>Découvrir ses oeuvres</h2>
+      </header>
+      <ul class="ul-flex">
+        {
+          artiste.expand?.oeuvres_id?.map((oeuvre, index) => (
+            <li>
+              <CardArtisteEtOeuvre oeuvre={oeuvre} variant={(index % 3) + 1} />
+            </li>
+          ))
+        }
+      </ul>
+      <div class="btn-wrapper">
+        <a href="/oeuvres" class="btn-white">Les oeuvres</a>
+      </div>
+    </section>
 
-        <section class="black-section">
-            <header>
-                <h2>Découvrir ses oeuvres</h2>
-            </header>
-            <ul class="ul-flex ">
-                {
-                    artiste.expand?.oeuvres_id?.map((oeuvre, index) =>  (
-                            <li>
-                                <CardArtisteEtOeuvre oeuvre={oeuvre} variant={(index % 3) + 1} />
-                            </li>
-                        )
-                    )
-                }
-            </ul>
-            <div class="btn-wrapper">
-                <a href="/exposition" class="btn-white">Teaser des oeuvres</a>
-            </div>
-        </section>
+    <BlobTransition position="bottom" color="#111111" deformStrength={0.3} />
 
-        <BlobTransition position="bottom" color="#111111" deformStrength={0.3} />
-
-        <section>
-            <header>
-                <h2>De la même promotion</h2>
-            </header>
-            <ul class="ul-flex">
-                {
-                    autresArtistes.map((artiste) => (
-                    <li>
-                        <CardArtisteEtOeuvre artiste={artiste} />
-                    </li>
-                    ))
-                }
-            </ul>
-            <div class="btn-wrapper">
-                <a href="/artistes" class="btn">Voir tous les artistes</a>
-            </div>
-        </section>
-    </main>
+    <section>
+      <header>
+        <h2>De la même promotion</h2>
+      </header>
+      <ul class="ul-flex">
+        {
+          autresArtistes.map((artiste) => (
+            <li>
+              <CardArtisteEtOeuvre artiste={artiste} />
+            </li>
+          ))
+        }
+      </ul>
+      <div class="btn-wrapper">
+        <a href="/artistes" class="btn">Voir tous les artistes</a>
+      </div>
+    </section>
+  </main>
 </Layout>
